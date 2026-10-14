@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-ink: #000000;
+  --color-surface: #0b0b0b;
+  --color-card: #131313;
+  --color-card-2: #1b1b1b;
+  --color-card-3: #262626;
+  --color-line: #262626;
+  --color-muted: #8c8c8c;
+  --color-soft: #bdbdbd;
+  --color-accent: #ff4d00;
+  --color-accent-hover: #ff6a26;
+  --color-accent-text: #ff7a3d;
+  --color-accent-deep: #3b1404;
+  --color-sand: #ffd98c;
+
+  --radius-card: 1.25rem;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-ink text-white font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-accent text-white;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply outline-none;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) opacity(0.6);
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-12;
+  }
+
+  /* Кнопки */
+  .btn-primary,
+  .btn-dark,
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-accent hover:bg-accent-hover;
+  }
+  .btn-dark {
+    @apply bg-card-2 hover:bg-card-3;
+  }
+  .btn-ghost {
+    @apply border border-line hover:border-[#3a3a3a] hover:bg-card;
+  }
+
+  /* Пилюли-фильтры */
+  .pill {
+    @apply inline-flex shrink-0 items-center gap-1.5 rounded-full bg-card-2 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-card-3;
+  }
+  .pill-active {
+    @apply bg-accent hover:bg-accent;
+  }
+
+  /* Тег жанра на карточке */
+  .tag {
+    @apply inline-flex items-center rounded-full border border-accent/30 bg-accent-deep px-2.5 py-1 text-xs font-medium text-accent-text;
+  }
+
+  .card {
+    @apply rounded-card bg-card;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-transparent bg-card-2 px-4 py-3 text-sm text-white placeholder:text-muted transition-colors focus:border-accent/60;
+  }
+
+  .label {
+    @apply mb-2 block text-sm text-muted;
+  }
+
+  .h-display {
+    @apply font-medium tracking-[-0.04em] leading-[0.95];
+  }
+
+  .scroll-x {
+    @apply flex gap-2 overflow-x-auto;
+    scrollbar-width: none;
+  }
+  .scroll-x::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Leaflet в тёмной теме */
+.leaflet-container {
+  background: #0b0b0b !important;
+  font-family: var(--font-sans) !important;
+}
+.joined-tiles {
+  filter: invert(1) hue-rotate(180deg) grayscale(0.9) brightness(0.8) contrast(1.15);
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #131313 !important;
+  color: #fff !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+}
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+}
+.leaflet-control-zoom a {
+  background: #1b1b1b !important;
+  color: #fff !important;
+  border-color: #262626 !important;
+}
+.leaflet-control-attribution {
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: #666 !important;
+}
+.leaflet-control-attribution a {
+  color: #999 !important;
+}
+.joined-pin {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  background: #ff4d00;
+  border: 3px solid #000;
+  box-shadow: 0 0 0 2px rgba(255, 77, 0, 0.35), 0 6px 16px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+.joined-pin.is-active {
+  transform: scale(1.25);
+  background: #ffd98c;
+  color: #000;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.2s ease;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
