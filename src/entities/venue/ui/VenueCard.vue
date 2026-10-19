@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { genreName } from '@shared/config'
-import { formatPrice } from '@shared/lib'
 import { UiIcon, UiPhoto } from '@shared/ui'
 import { formatName } from '../model/dictionaries'
 import type { Venue } from '../model/types'
@@ -17,9 +16,6 @@ defineProps<{ venue: Venue; active?: boolean }>()
   >
     <UiPhoto :src="venue.photo" :alt="venue.name" class="aspect-4/3 rounded-[1.25rem] sm:aspect-13/10">
       <div class="absolute top-3 right-3"><slot name="actions" /></div>
-      <div class="glass-chip absolute bottom-3 left-3 flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium">
-        <UiIcon name="star" filled :size="14" class="text-sand" /> {{ venue.rating }}
-      </div>
     </UiPhoto>
     <div class="flex min-w-0 flex-1 flex-col px-3 pt-4 pb-3">
       <div class="mb-3 flex flex-wrap gap-1.5">
@@ -31,7 +27,6 @@ defineProps<{ venue: Venue; active?: boolean }>()
       <div class="mt-auto flex items-center gap-3 pt-4 text-xs text-muted">
         <UiIcon name="pin" :size="14" />
         <span class="truncate">{{ venue.metro ? `м. ${venue.metro}` : venue.address }}</span>
-        <span class="ml-auto shrink-0">~{{ formatPrice(venue.avgCheck) }}</span>
       </div>
     </div>
   </NuxtLink>

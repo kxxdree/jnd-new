@@ -28,7 +28,7 @@ const upcoming = computed(() =>
 const popularVenues = computed(() =>
   [...cityVenues.value]
     .filter(v => !genre.value || v.genres.includes(genre.value))
-    .sort((a, b) => b.rating - a.rating)
+    .sort((a, b) => b.popularity - a.popularity)
     .slice(0, 3),
 )
 
@@ -54,7 +54,7 @@ const stats = [
         Найди свой звук сегодня
       </h1>
       <p class="mx-auto mt-7 max-w-xl text-base text-white/80 sm:text-lg">
-        Бары, концерты и джем-сейшены {{ city.where }} - по жанрам, с расписанием выступлений и билетами в пару кликов.
+        Бары, концерты и джем-сейшены - по жанрам, с расписанием выступлений и билетами в пару кликов
       </p>
 
       <form class="glass lg-refract mx-auto mt-10 flex max-w-xl gap-2 rounded-full p-2 [--lg-refract-blur:12px]" role="search" @submit.prevent="search">
@@ -92,7 +92,7 @@ const stats = [
 
     <!-- ПОПУЛЯРНЫЕ БАРЫ -->
     <section class="container-x mt-28">
-      <UiSectionHead eyebrow="Топ по оценкам" title="Популярные бары" :subtitle="`Лучшие места по мнению гостей · ${city.name}`" to="/venues" link-label="Все заведения" />
+      <UiSectionHead eyebrow="Популярное" title="Популярные бары" :subtitle="`Места, о которых говорят · ${city.name}`" to="/venues" link-label="Все заведения" />
       <div v-if="popularVenues.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <VenueCard v-for="v in popularVenues" :key="v.slug" :venue="v">
           <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>

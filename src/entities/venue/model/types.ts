@@ -22,9 +22,8 @@ export interface Venue {
   directions: string
   lat: number
   lng: number
-  rating: number
-  reviewsCount: number
-  avgCheck: number
+  /** внутренний показатель для сортировки «Сначала популярные» */
+  popularity: number
   short: string
   description: string
   phone: string

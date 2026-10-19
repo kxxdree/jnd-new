@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { drinkName, type Venue } from '@entities/venue'
 import { weekdayIndex } from '@shared/lib'
-import { UiIcon } from '@shared/ui'
-import { VenueMap } from '@widgets/venue-map'
+import { UiIcon, UiYandexMap } from '@shared/ui'
 
 defineProps<{ venue: Venue }>()
 const todayIdx = weekdayIndex()
@@ -21,7 +20,7 @@ const todayIdx = weekdayIndex()
       </div>
       <div class="card overflow-hidden p-1.5">
         <div class="h-72 overflow-hidden rounded-[1.4rem]">
-          <ClientOnly><VenueMap :venues="[venue]" :center="venue" :zoom="15" /></ClientOnly>
+          <UiYandexMap :lat="venue.lat" :lng="venue.lng" :title="venue.name" />
         </div>
         <div class="p-5">
           <h3 class="mb-2 flex items-center gap-2 font-medium"><UiIcon name="pin" class="text-accent-text" :size="18" /> Как добраться</h3>

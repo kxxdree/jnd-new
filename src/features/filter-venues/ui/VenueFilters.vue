@@ -10,9 +10,8 @@ const times = [
   { id: 'night' as const, name: 'Ночь, после 22:00' },
 ]
 const sorts = [
-  { id: 'rating' as const, name: 'По рейтингу' },
-  { id: 'reviews' as const, name: 'По отзывам' },
-  { id: 'price' as const, name: 'Сначала доступные' },
+  { id: 'popular' as const, name: 'Сначала популярные' },
+  { id: 'name' as const, name: 'По алфавиту' },
 ]
 </script>
 

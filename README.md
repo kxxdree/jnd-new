@@ -2,7 +2,7 @@
 
 Фронтенд веб-сервиса для поиска баров и музыкальных событий: фильтры по жанрам, афиша, профили заведений и групп, билеты с QR-кодом, брони столиков, кабинеты партнёров и админ-панель.
 
-**Стек:** Nuxt 4 (Composition API, SSR) · Tailwind CSS 4 · Leaflet · qrcode
+**Стек:** Nuxt 4 (Composition API, SSR) · Tailwind CSS 4 · Яндекс Карты (виджет) · qrcode
 **Архитектура:** Feature-Sliced Design
 **Стиль:** liquid glass поверх процедурного фона-абстракции
 
@@ -24,10 +24,10 @@ app/                      слой app: всё, что нужно Nuxt
 
 src/
   pages/      home, venues, venue, events, event, artists, artist, auth, account, partner, admin, rules
-  widgets/    header, footer, venue-map, event-calendar
+  widgets/    header, footer, event-calendar
   features/   select-city, favorites, filter-venues, buy-ticket, refund-ticket, book-table,
-              leave-review, auth, newsletter, share, notification-settings
-  entities/   city, venue, artist, event, review, session, ticket, booking
+              auth, newsletter, share, notification-settings
+  entities/   city, venue, artist, event, session, ticket, booking
   shared/     ui (Ui*-компоненты), lib (даты, форматирование, cookie-состояние, тосты), config (жанры)
 ```
 
@@ -60,12 +60,12 @@ src/
 
 ## Демо-доступ
 
-Бэкенда нет. Каталог лежит в `src/entities/*/api`, а пользователь, билеты, брони, отзывы и избранное хранятся в cookie.
+Бэкенда нет. Каталог лежит в `src/entities/*/api`, а пользователь, билеты, брони и избранное хранятся в cookie.
 На странице `/login` есть кнопки быстрого входа под каждую роль:
 
 | Роль | Куда попадает |
 |---|---|
-| Гость (пользователь) | `/account` - билеты с QR, брони, история, избранное, отзывы, уведомления |
+| Гость (пользователь) | `/account` - билеты с QR, брони, история, избранное, уведомления |
 | Бар | `/partner` - профиль заведения, мероприятия, входящие брони, фото и меню |
 | Группа | `/partner` - профиль группы, концерты, треки и медиа |
 | Админ | `/admin` - статистика, модерация, города, теги, пользователи, комиссии |
@@ -79,4 +79,4 @@ src/
 - `entities/ticket`, `entities/booking` → эндпоинты покупки, возврата и бронирования
 - `UiPaymentSheet` → платёжный провайдер
 - фото: сейчас подобранные снимки с Unsplash (`shared/lib/photo.ts`)
-- тайлы карты: сейчас OpenStreetMap, для продакшена нужен свой провайдер (их политика запрещает высокую нагрузку)
+- карта на странице заведения - виджет Яндекс Карт (`shared/ui/UiYandexMap.vue`), ключ API не нужен

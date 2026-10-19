@@ -30,7 +30,7 @@ export default defineNuxtConfig({
     tsConfig: { include: ['../src/**/*'] },
   },
 
-  css: ['~/styles/main.css', 'leaflet/dist/leaflet.css'],
+  css: ['~/styles/main.css'],
   vite: {
     plugins: [tailwindcss()],
   },

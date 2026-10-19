@@ -9,11 +9,11 @@ export interface VenueFilterState {
   drinks: DrinkId[]
   date: string
   time: '' | 'evening' | 'night'
-  sort: 'rating' | 'reviews' | 'price'
+  sort: 'popular' | 'name'
 }
 
 export const emptyFilters = (): VenueFilterState => ({
-  q: '', genres: [], formats: [], drinks: [], date: '', time: '', sort: 'rating',
+  q: '', genres: [], formats: [], drinks: [], date: '', time: '', sort: 'popular',
 })
 
 /** Сколько «доп.» фильтров включено (без поиска и жанров - они всегда на виду) */
@@ -21,9 +21,8 @@ export const countExtra = (f: VenueFilterState) =>
   f.formats.length + f.drinks.length + (f.date ? 1 : 0) + (f.time ? 1 : 0)
 
 const sorters: Record<VenueFilterState['sort'], (a: Venue, b: Venue) => number> = {
-  rating: (a, b) => b.rating - a.rating,
-  reviews: (a, b) => b.reviewsCount - a.reviewsCount,
-  price: (a, b) => a.avgCheck - b.avgCheck,
+  popular: (a, b) => b.popularity - a.popularity,
+  name: (a, b) => a.name.localeCompare(b.name, 'ru'),
 }
 
 export const applyVenueFilters = (list: Venue[], events: EventItem[], f: VenueFilterState) => {

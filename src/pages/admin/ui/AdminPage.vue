@@ -15,7 +15,7 @@ const moderation = ref([
   { id: 'm1', kind: 'Заведение', name: 'Vinyl Room', city: 'Москва', author: 'vinyl@room.ru', photo: ph('vinyl,bar', 501), date: '2 ч назад' },
   { id: 'm2', kind: 'Группа', name: 'Северное сияние', city: 'Санкт-Петербург', author: 'band@aurora.ru', photo: ph('band', 502), date: '5 ч назад' },
   { id: 'm3', kind: 'Событие', name: 'Halloween Rock Party', city: 'Казань', author: 'bar@rnr.ru', photo: ph('halloween,party', 503), date: 'вчера' },
-  { id: 'm4', kind: 'Отзыв', name: '«Ужасный сервис, ...»', city: 'Москва', author: 'anon@mail.ru', photo: ph('bar', 504), date: 'вчера' },
+  { id: 'm4', kind: 'Событие', name: 'Ночь винила', city: 'Москва', author: 'bar@redvelvet.ru', photo: ph('vinyl', 504), date: 'вчера' },
 ])
 const tabs = computed(() => [
   { id: 'overview' as Tab, name: 'Статистика', icon: 'chart' },

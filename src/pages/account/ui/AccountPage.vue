@@ -2,7 +2,6 @@
 import { artists } from '@entities/artist'
 import { useBookings } from '@entities/booking'
 import { events, getEvent } from '@entities/event'
-import { useMyReviews } from '@entities/review'
 import { roleNames, useSession } from '@entities/session'
 import { ticketTypeNames, useTickets } from '@entities/ticket'
 import { getVenue, VenueCard, venues } from '@entities/venue'
@@ -10,7 +9,7 @@ import { FavoriteButton, useFavorites } from '@features/favorites'
 import { NotificationSettings } from '@features/notification-settings'
 import { RefundTicketButton } from '@features/refund-ticket'
 import { formatDate, formatDay, formatPrice, plural, todayISO, useToast } from '@shared/lib'
-import { UiEmpty, UiIcon, UiModal, UiPhoto, UiQr, UiRating, UiTabs } from '@shared/ui'
+import { UiEmpty, UiIcon, UiModal, UiPhoto, UiQr, UiTabs } from '@shared/ui'
 
 useHead({ title: 'Личный кабинет - Joined' })
 
@@ -18,17 +17,15 @@ const route = useRoute()
 const { user, logout } = useSession()
 const { tickets, active } = useTickets()
 const { bookings, confirmed, cancel } = useBookings()
-const { myReviews } = useMyReviews()
 const { favs, toggle } = useFavorites()
 const { push } = useToast()
 
-type Tab = 'tickets' | 'bookings' | 'history' | 'favorites' | 'reviews' | 'notifications'
+type Tab = 'tickets' | 'bookings' | 'history' | 'favorites' | 'notifications'
 const tabs = computed(() => [
   { id: 'tickets' as Tab, name: 'Мои билеты', icon: 'ticket', badge: active.value.length },
   { id: 'bookings' as Tab, name: 'Бронирования', icon: 'calendar', badge: confirmed.value.length },
   { id: 'history' as Tab, name: 'История посещений', icon: 'clock' },
   { id: 'favorites' as Tab, name: 'Избранное', icon: 'heart' },
-  { id: 'reviews' as Tab, name: 'Отзывы и оценки', icon: 'star' },
   { id: 'notifications' as Tab, name: 'Уведомления', icon: 'bell' },
 ])
 const tab = ref<Tab>((route.query.tab as Tab) || 'tickets')
@@ -132,8 +129,8 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
               <span class="absolute top-1 -left-[34px] size-3 rounded-full bg-accent shadow-[0_0_0_4px_rgb(255_77_0/0.25),0_0_12px_#ff4d00]" />
               <p class="text-xs text-muted">{{ formatDate(h.date) }} · {{ h.kind }}</p>
               <p class="mt-1 text-lg font-medium">{{ h.title }}</p>
-              <NuxtLink :to="`/venues/${h.venue}?tab=reviews`" class="mt-1 inline-flex items-center gap-1 text-sm text-soft hover:text-sand">
-                {{ getVenue(h.venue)?.name }} - оставить отзыв <UiIcon name="arrow-right" :size="14" />
+              <NuxtLink :to="`/venues/${h.venue}`" class="mt-1 inline-flex items-center gap-1 text-sm text-soft hover:text-sand">
+                {{ getVenue(h.venue)?.name }} <UiIcon name="arrow-right" :size="14" />
               </NuxtLink>
             </li>
           </ol>
@@ -164,21 +161,6 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
             </div>
             <p v-else class="card p-5 text-sm text-muted">Подпишитесь на группу, чтобы не пропустить её концерты.</p>
           </div>
-        </div>
-
-        <!-- ОТЗЫВЫ -->
-        <div v-else-if="tab === 'reviews'" class="grid gap-4">
-          <template v-if="myReviews.length">
-            <article v-for="r in myReviews" :key="r.id" class="card p-5">
-              <div class="mb-2 flex items-center justify-between gap-4">
-                <NuxtLink :to="`/venues/${r.venue}`" class="font-medium hover:text-sand">{{ getVenue(r.venue)?.name }}</NuxtLink>
-                <UiRating :model-value="r.rating" :size="14" />
-              </div>
-              <p class="text-soft">{{ r.text }}</p>
-              <p class="mt-2 text-xs text-muted">{{ formatDate(r.date) }}</p>
-            </article>
-          </template>
-          <UiEmpty v-else icon="star" title="Вы ещё не оставляли отзывов" text="Делитесь впечатлениями после концертов - это помогает другим выбрать бар." />
         </div>
 
         <!-- УВЕДОМЛЕНИЯ -->

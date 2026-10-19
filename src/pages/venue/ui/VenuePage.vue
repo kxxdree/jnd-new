@@ -1,41 +1,39 @@
 <script setup lang="ts">
-import { cityName } from '@entities/city'
-import { events, isUpcoming } from '@entities/event'
-import { formatName, getVenue } from '@entities/venue'
-import { BookTableForm } from '@features/book-table'
-import { FavoriteButton } from '@features/favorites'
-import { ShareButton } from '@features/share'
-import { genreName } from '@shared/config'
-import { formatPrice, plural, weekdayIndex } from '@shared/lib'
-import { UiIcon, UiPhoto } from '@shared/ui'
-import { EventCalendar } from '@widgets/event-calendar'
-import VenueAbout from './VenueAbout.vue'
-import VenueGallery from './VenueGallery.vue'
-import VenueMenu from './VenueMenu.vue'
-import VenueReviews from './VenueReviews.vue'
+import { cityName } from "@entities/city";
+import { events, isUpcoming } from "@entities/event";
+import { formatName, getVenue } from "@entities/venue";
+import { BookTableForm } from "@features/book-table";
+import { FavoriteButton } from "@features/favorites";
+import { ShareButton } from "@features/share";
+import { genreName } from "@shared/config";
+import { weekdayIndex } from "@shared/lib";
+import { UiIcon, UiPhoto } from "@shared/ui";
+import { EventCalendar } from "@widgets/event-calendar";
+import VenueAbout from "./VenueAbout.vue";
+import VenueGallery from "./VenueGallery.vue";
+import VenueMenu from "./VenueMenu.vue";
 
-const route = useRoute()
-const found = getVenue(String(route.params.slug))
-if (!found) throw createError({ statusCode: 404, message: 'Заведение не найдено', fatal: true })
-const v = found
+const route = useRoute();
+const found = getVenue(String(route.params.slug));
+if (!found) throw createError({ statusCode: 404, message: "Заведение не найдено", fatal: true });
+const v = found;
 
-useHead({ title: `${v.name} - Joined`, meta: [{ name: 'description', content: v.short }] })
+useHead({ title: `${v.name} - Joined`, meta: [{ name: "description", content: v.short }] });
 
 const tabs = [
-  { id: 'schedule', name: 'Афиша' },
-  { id: 'about', name: 'О заведении' },
-  { id: 'menu', name: 'Меню' },
-  { id: 'gallery', name: 'Галерея' },
-  { id: 'booking', name: 'Бронирование' },
-  { id: 'reviews', name: 'Отзывы' },
-  { id: 'rules', name: 'Правила' },
-] as const
-type TabId = typeof tabs[number]['id']
-const tab = ref<TabId>(tabs.find(t => t.id === route.query.tab)?.id ?? 'schedule')
-watch(tab, t => navigateTo({ query: { ...route.query, tab: t } }, { replace: true }))
+  { id: "schedule", name: "Афиша" },
+  { id: "about", name: "О заведении" },
+  { id: "menu", name: "Меню" },
+  { id: "gallery", name: "Галерея" },
+  { id: "booking", name: "Бронирование" },
+  { id: "rules", name: "Правила" },
+] as const;
+type TabId = (typeof tabs)[number]["id"];
+const tab = ref<TabId>(tabs.find((t) => t.id === route.query.tab)?.id ?? "schedule");
+watch(tab, (t) => navigateTo({ query: { ...route.query, tab: t } }, { replace: true }));
 
-const venueEvents = events.filter(e => e.venue === v.slug && isUpcoming(e))
-const todayIdx = weekdayIndex()
+const venueEvents = events.filter((e) => e.venue === v.slug && isUpcoming(e));
+const todayIdx = weekdayIndex();
 </script>
 
 <template>
@@ -66,29 +64,22 @@ const todayIdx = weekdayIndex()
 
       <!-- Быстрые факты и действия -->
       <div class="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
-        <div class="card grid grid-cols-2 gap-4 p-5 sm:grid-cols-4 sm:p-6">
-          <div>
-            <p class="text-xs text-muted">Рейтинг</p>
-            <p class="mt-1 flex items-center gap-1.5 text-xl font-medium"><UiIcon name="star" filled class="text-sand" :size="18" />{{ v.rating }}</p>
-            <p class="text-xs text-muted">{{ v.reviewsCount }} {{ plural(v.reviewsCount, ['отзыв', 'отзыва', 'отзывов']) }}</p>
-          </div>
-          <div>
-            <p class="text-xs text-muted">Средний чек</p>
-            <p class="mt-1 text-xl font-medium">{{ formatPrice(v.avgCheck) }}</p>
-          </div>
+        <div class="card grid grid-cols-2 gap-4 p-5 sm:grid-cols-3 sm:p-6">
           <div>
             <p class="text-xs text-muted">Сегодня</p>
             <p class="mt-1 text-xl font-medium">{{ v.hours[todayIdx]!.time }}</p>
           </div>
-          <div>
+          <div v-if="v.metro">
+            <p class="text-xs text-muted">Метро</p>
+            <p class="mt-1 text-xl font-medium">{{ v.metro }}</p>
+          </div>
+          <div class="col-span-2 sm:col-span-1">
             <p class="text-xs text-muted">Адрес</p>
             <p class="mt-1 text-sm">{{ cityName(v.city) }}, {{ v.address }}</p>
           </div>
         </div>
         <div class="card flex items-center gap-2 p-3">
-          <button class="btn-primary flex-1 py-3.5" @click="tab = 'booking'">
-            <UiIcon name="calendar" :size="18" /> Забронировать
-          </button>
+          <button class="btn-primary flex-1 py-3.5" @click="tab = 'booking'"><UiIcon name="calendar" :size="18" /> Забронировать</button>
           <FavoriteButton kind="venues" :id="v.slug" class="size-12" />
           <ShareButton :title="v.name" />
         </div>
@@ -96,10 +87,16 @@ const todayIdx = weekdayIndex()
     </section>
 
     <!-- Вкладки: стеклянная плавающая лента -->
-    <nav class="sticky top-[5.5rem] z-30 mt-8 px-3 sm:top-24 sm:px-6">
+    <nav class="sticky top-22 z-30 mt-8 px-3 sm:top-24 sm:px-6">
       <div class="glass lg-refract mx-auto max-w-7xl rounded-full p-1.5 [--lg-refract-blur:16px]">
         <div class="scroll-x py-0">
-          <button v-for="t in tabs" :key="t.id" class="pill" :class="tab === t.id ? 'pill-active' : 'bg-transparent shadow-none backdrop-blur-none before:hidden'" @click="tab = t.id">
+          <button
+            v-for="t in tabs"
+            :key="t.id"
+            class="pill"
+            :class="tab === t.id ? 'pill-active' : 'bg-transparent shadow-none backdrop-blur-none before:hidden'"
+            @click="tab = t.id"
+          >
             {{ t.name }}
           </button>
         </div>
@@ -126,13 +123,11 @@ const todayIdx = weekdayIndex()
         </div>
       </div>
 
-      <VenueReviews v-else-if="tab === 'reviews'" :venue="v" />
-
       <div v-else-if="tab === 'rules'" class="max-w-3xl">
         <h2 class="h-display mb-8 text-4xl sm:text-5xl">Правила посещения</h2>
         <ol class="grid gap-3">
           <li v-for="(r, i) in v.rules" :key="r" class="card flex gap-5 p-5">
-            <span class="text-liquid text-2xl font-medium">{{ String(i + 1).padStart(2, '0') }}</span>
+            <span class="text-liquid text-2xl font-medium">{{ String(i + 1).padStart(2, "0") }}</span>
             <p class="pt-1 text-soft">{{ r }}</p>
           </li>
         </ol>

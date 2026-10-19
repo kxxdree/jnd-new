@@ -1,5 +1,0 @@
-export type { Review } from './model/types'
-export { reviews } from './api/reviews'
-export { useMyReviews } from './model/myReviews'
-export type { MyReview } from './model/myReviews'
-export { default as ReviewCard } from './ui/ReviewCard.vue'

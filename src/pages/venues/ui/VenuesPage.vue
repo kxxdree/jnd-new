@@ -8,7 +8,6 @@ import { CitySelect } from "@features/select-city";
 import { type GenreId, genres } from "@shared/config";
 import { plural } from "@shared/lib";
 import { UiEmpty, UiIcon, UiModal, UiPills } from "@shared/ui";
-import { VenueMap } from "@widgets/venue-map";
 
 useHead({ title: "Бары и площадки - Joined" });
 
@@ -36,8 +35,6 @@ const toggleFilters = () => {
   else sheetOpen.value = true;
 };
 
-const mobileView = ref<"list" | "map">("list");
-const active = ref<string | null>(null);
 const reset = () => {
   filters.value = emptyFilters();
 };
@@ -97,38 +94,18 @@ const reset = () => {
           <button class="btn-primary py-3.5" @click="sheetOpen = false">Показать {{ results.length }}</button>
         </div>
       </UiModal>
-
-      <!-- Переключатель список/карта (мобайл) -->
-      <div class="mt-6 flex justify-center lg:hidden">
-        <div class="segmented glass-chip w-full max-w-xs">
-          <button :aria-pressed="mobileView === 'list'" @click="mobileView = 'list'"><UiIcon name="list" :size="16" /> Список</button>
-          <button :aria-pressed="mobileView === 'map'" @click="mobileView = 'map'"><UiIcon name="map" :size="16" /> Карта</button>
-        </div>
-      </div>
     </section>
 
-    <!-- Результаты -->
-    <section class="container-x mt-6 grid gap-4 lg:grid-cols-[1fr_minmax(0,0.85fr)]">
-      <div :class="mobileView === 'map' ? 'hidden lg:block' : ''">
-        <div v-if="results.length" class="grid gap-4 sm:grid-cols-2">
-          <div v-for="v in results" :key="v.slug" @mouseenter="active = v.slug">
-            <VenueCard :venue="v" :active="active === v.slug">
-              <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>
-            </VenueCard>
-          </div>
-        </div>
-        <UiEmpty v-else icon="glass" title="Ничего не нашлось" text="Попробуйте убрать часть фильтров или выбрать другой город.">
-          <button class="btn-dark" @click="reset">Сбросить фильтры</button>
-        </UiEmpty>
+    <!-- Результаты: сетка карточек -->
+    <section class="container-x mt-8">
+      <div v-if="results.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <VenueCard v-for="v in results" :key="v.slug" :venue="v">
+          <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>
+        </VenueCard>
       </div>
-
-      <div :class="mobileView === 'list' ? 'hidden lg:block' : ''">
-        <div class="glass sticky top-24 h-[70vh] overflow-hidden rounded-[2rem] p-1.5 lg:h-[calc(100vh-8rem)]">
-          <div class="h-full overflow-hidden rounded-[1.6rem]">
-            <ClientOnly><VenueMap :venues="results" :center="city" :active="active" @select="active = $event" /></ClientOnly>
-          </div>
-        </div>
-      </div>
+      <UiEmpty v-else icon="glass" title="Ничего не нашлось" text="Попробуйте убрать часть фильтров или выбрать другой город.">
+        <button class="btn-dark" @click="reset">Сбросить фильтры</button>
+      </UiEmpty>
     </section>
   </div>
 </template>

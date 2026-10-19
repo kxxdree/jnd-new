@@ -1,6 +1,6 @@
 export const formatPrice = (value: number) => `${value.toLocaleString('ru-RU')} ₽`
 
-/** plural(5, ['отзыв', 'отзыва', 'отзывов']) → «отзывов» */
+/** plural(5, ['билет', 'билета', 'билетов']) → «билетов» */
 export const plural = (n: number, forms: [string, string, string]) => {
   const n10 = n % 10
   const n100 = n % 100
