@@ -97,7 +97,7 @@ const transactions = [
   <section class="container-x pt-10">
     <div class="card mb-8 p-6 sm:p-8">
       <p class="text-xs font-medium tracking-[0.2em] text-accent-text uppercase">Администратор системы</p>
-      <h1 class="h-display mt-2 text-4xl sm:text-6xl">Управление <span class="text-liquid italic">платформой</span></h1>
+      <h1 class="h-display mt-2 text-4xl sm:text-6xl">Управление платформой</h1>
     </div>
 
     <div class="grid gap-8 lg:grid-cols-[260px_1fr]">

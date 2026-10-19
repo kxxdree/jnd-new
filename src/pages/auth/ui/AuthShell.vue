@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ph } from '@shared/lib'
-import { UiPhoto } from '@shared/ui'
+import { ph } from "@shared/lib";
+import { UiPhoto } from "@shared/ui";
 
-defineProps<{ title: string; subtitle: string }>()
+defineProps<{ title: string; subtitle: string }>();
 </script>
 
 <template>
@@ -10,7 +10,7 @@ defineProps<{ title: string; subtitle: string }>()
     <div class="card hidden p-2 lg:block">
       <UiPhoto :src="ph('concert,crowd', 77, 1200, 1400)" class="h-full rounded-[1.4rem]">
         <div class="absolute inset-0 bg-linear-to-t from-black/80 to-transparent" />
-        <p class="h-display absolute right-10 bottom-10 left-10 text-6xl">Музыка лучше,<br><span class="text-liquid italic">когда вы вместе.</span></p>
+        <p class="h-display absolute right-10 bottom-10 left-10 text-6xl">Музыка лучше,<br />когда вы вместе</p>
       </UiPhoto>
     </div>
     <div class="flex items-center justify-center">

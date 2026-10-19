@@ -127,7 +127,7 @@ const todayIdx = weekdayIndex();
         <h2 class="h-display mb-8 text-4xl sm:text-5xl">Правила посещения</h2>
         <ol class="grid gap-3">
           <li v-for="(r, i) in v.rules" :key="r" class="card flex gap-5 p-5">
-            <span class="text-liquid text-2xl font-medium">{{ String(i + 1).padStart(2, "0") }}</span>
+            <span class="text-2xl font-medium">{{ String(i + 1).padStart(2, "0") }}</span>
             <p class="pt-1 text-soft">{{ r }}</p>
           </li>
         </ol>

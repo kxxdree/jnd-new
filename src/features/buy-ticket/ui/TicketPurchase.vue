@@ -71,7 +71,7 @@ const onPaid = () => {
 
       <div class="mt-5 flex items-baseline justify-between border-t border-line pt-5">
         <span class="text-soft">Итого</span>
-        <span class="text-liquid text-4xl font-medium">{{ formatPrice(total) }}</span>
+        <span class=" text-4xl font-medium">{{ formatPrice(total) }}</span>
       </div>
       <button class="btn-primary mt-5 w-full py-4 text-base" :disabled="!ticket.left" @click="checkout">
         <UiIcon name="ticket" :size="18" /> Купить билет
