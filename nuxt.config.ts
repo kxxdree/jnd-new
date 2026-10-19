@@ -11,7 +11,7 @@ const r = (path: string) => fileURLToPath(new URL(path, import.meta.url))
  */
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
 
   alias: {
     '@pages': r('./src/pages'),

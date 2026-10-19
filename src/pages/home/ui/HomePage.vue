@@ -112,9 +112,10 @@ const stats = [
     <!-- ПАРТНЁРАМ -->
     <section class="container-x mt-28">
       <div class="relative overflow-hidden rounded-[2.5rem] p-8 rim shadow-[0_30px_80px_-30px_rgb(0_0_0/0.95)] [--lg-rim:var(--lg-rim-warm)] sm:p-14">
-        <div class="absolute inset-0 -z-10 bg-[radial-gradient(120%_120%_at_0%_0%,#ff8a3d,#ff4d00_45%,#a82800_100%)]" />
-        <div class="pointer-events-none absolute -top-24 -right-20 size-96 rounded-full bg-sand/50 blur-3xl" />
-        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_60%_at_20%_0%,rgb(255_255_255/0.35),transparent_60%)]" />
+        <div class="absolute inset-0 -z-10 [background:radial-gradient(90%_110%_at_50%_130%,rgb(255_160_95/0.9),rgb(236_80_18/0.6)_30%,rgb(120_32_6/0.3)_58%,transparent_80%),linear-gradient(180deg,#0e0605,#1a0a05_60%,#2a1006)]" />
+        <div class="pointer-events-none absolute inset-x-10 bottom-0 h-px bg-linear-to-r from-transparent via-[#ffc496] to-transparent opacity-80" />
+        
+        <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgb(255_255_255/0.05),transparent_40%)]" />
         <div class="relative grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-end">
           <div>
             <h2 class="h-display text-4xl sm:text-6xl">Вы бар или группа?</h2>

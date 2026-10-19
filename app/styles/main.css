@@ -50,16 +50,18 @@
   /* вдавленный элемент (бейдж, поле, дорожка) */
   --lg-sunken: rgb(0 0 0 / 0.34);
   --lg-sunken-shadow: inset 0 2px 4px rgb(0 0 0 / 0.55), inset 0 -1px 0 rgb(255 255 255 / 0.035);
-  /* тёплая кромка для оранжевых элементов - тоже едва заметная */
-  --lg-rim-warm: linear-gradient(180deg, rgb(255 225 200 / 0.45), rgb(255 255 255 / 0.06) 40%, rgb(255 255 255 / 0) 70%, rgb(255 190 150 / 0.12));
+  /* акцент: тёмное стекло, которое светится оранжевым изнутри снизу */
+  --lg-rim-warm: linear-gradient(180deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.02) 40%, rgb(255 140 80 / 0.28) 82%, rgb(255 196 150 / 0.6));
   --accent-fill:
-    radial-gradient(110% 80% at 50% -20%, rgb(255 255 255 / 0.22), transparent 55%),
-    linear-gradient(180deg, #ff8a45, #ff5a14 50%, #e44000);
+    radial-gradient(130% 120% at 50% 140%, rgb(255 168 100 / 0.95), rgb(242 88 22 / 0.7) 32%, rgb(150 40 8 / 0.35) 58%, transparent 78%),
+    linear-gradient(180deg, #120705, #1c0b05 55%, #2a1006);
   --accent-shadow:
-    inset 0 1px 1px rgb(255 235 215 / 0.3),
-    inset 0 -3px 8px rgb(110 25 0 / 0.5),
-    0 2px 3px rgb(0 0 0 / 0.45),
-    0 12px 28px -10px rgb(0 0 0 / 0.85);
+    inset 0 -1.5px 2px rgb(255 190 140 / 0.55),
+    inset 0 1px 1px rgb(255 255 255 / 0.04),
+    0 2px 3px rgb(0 0 0 / 0.5),
+    0 12px 28px -10px rgb(0 0 0 / 0.85),
+    0 10px 26px -14px rgb(255 100 30 / 0.45);
+  --accent-ink: #fff1e6;
 }
 
 @layer base {
@@ -90,6 +92,28 @@
   input[type="date"]::-webkit-calendar-picker-indicator,
   input[type="time"]::-webkit-calendar-picker-indicator {
     filter: invert(1) opacity(0.6);
+  }
+
+  /* Tailwind 4 больше не ставит pointer кнопкам - возвращаем для всего кликабельного */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="radio"],
+  [role="tab"],
+  a[href],
+  select:not(:disabled),
+  summary,
+  label:has(> input[type="checkbox"]),
+  label:has(input[type="checkbox"].peer),
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="date"],
+  input[type="time"],
+  .leaflet-marker-icon {
+    cursor: pointer;
+  }
+  button:disabled,
+  select:disabled {
+    cursor: not-allowed;
   }
 
   :focus-visible {
@@ -212,15 +236,17 @@
   /* светлая тёплая кромка и тёмная тень отделяют кнопку от тёплого фона */
   .btn-primary {
     --lg-rim: var(--lg-rim-warm);
+    color: var(--accent-ink);
     background: var(--accent-fill);
     box-shadow: var(--accent-shadow);
+    text-shadow: 0 1px 8px rgb(255 120 50 / 0.35);
   }
   .btn-primary:hover:not(:disabled) {
-    filter: brightness(1.08);
+    filter: brightness(1.18) saturate(1.05);
   }
   .btn-primary:active:not(:disabled),
   .pill-active:active {
-    box-shadow: inset 0 2px 6px rgb(110 25 0 / 0.55), 0 1px 2px rgb(0 0 0 / 0.5);
+    box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.6), inset 0 -1px 2px rgb(255 190 140 / 0.4), 0 1px 2px rgb(0 0 0 / 0.5);
   }
 
   .btn-dark {
@@ -276,6 +302,7 @@
   .pill-active,
   .pill-active:hover {
     --lg-rim: var(--lg-rim-warm);
+    color: var(--accent-ink);
     background: var(--accent-fill);
     box-shadow: var(--accent-shadow);
   }

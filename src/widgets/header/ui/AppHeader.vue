@@ -61,7 +61,7 @@ watch(open, (v) => {
         <template v-if="user">
           <NuxtLink v-if="cabinet" :to="cabinet.to" class="btn-ghost">{{ cabinet.label }}</NuxtLink>
           <NuxtLink to="/account" class="btn-dark py-2 pl-2">
-            <span class="grid size-7 place-items-center rounded-full rim bg-linear-to-b from-[#ff9050] to-[#ee4300] text-xs font-semibold uppercase [--lg-rim:var(--lg-rim-warm)]">{{ user.name[0] }}</span>
+            <span class="grid size-7 place-items-center rounded-full rim [background:var(--accent-fill)] [box-shadow:var(--accent-shadow)] text-[var(--accent-ink)] text-xs font-semibold uppercase [--lg-rim:var(--lg-rim-warm)]">{{ user.name[0] }}</span>
             {{ user.name }}
           </NuxtLink>
         </template>
