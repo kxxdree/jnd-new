@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { AppHeader } from '@widgets/header'
+
 /** Лэйаут кабинетов (партнёр, админ): без большого футера */
 </script>
 
