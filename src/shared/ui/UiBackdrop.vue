@@ -8,10 +8,10 @@ const grain = `url("data:image/svg+xml,${encodeURIComponent(
 
 <template>
   <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-ink [transform:translateZ(0)]" aria-hidden="true">
-    <img :src="background" alt="" fetchpriority="high" decoding="async" class="absolute inset-0 h-full w-full object-cover" />
+    <img :src="background" alt="" fetchpriority="high" decoding="async" class="absolute inset-0 h-full w-full object-cover grayscale" />
 
-    <div class="absolute inset-0 bg-black/55" />
-    <div class="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_35%,rgb(5_2_1/0.8)_100%)]" />
+    <div class="absolute inset-0 bg-black/25" />
+    <div class="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_40%,rgb(5_5_5/0.6)_100%)]" />
 
     <div class="absolute inset-0 opacity-[0.12] mix-blend-overlay" :style="{ backgroundImage: grain }" />
   </div>
