@@ -1,4 +1,4 @@
-import type { Role } from '~/data/types'
+import type { Role } from '@entities/session'
 
 declare module '#app' {
   interface PageMeta {

@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import { AppFooter } from '@widgets/footer'
+import { AppHeader } from '@widgets/header'
+</script>
+
 <template>
   <div class="flex min-h-dvh flex-col">
     <AppHeader />

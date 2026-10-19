@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type * as Leaflet from 'leaflet'
-import type { Venue } from '~/data/types'
+import type { Venue } from '@entities/venue'
 
 /** Карта заведений (Leaflet + тёмные тайлы CARTO). Использовать внутри <ClientOnly>. */
 const props = withDefaults(
@@ -63,7 +63,7 @@ onMounted(async () => {
     scrollWheelZoom: false,
     dragging: props.interactive,
   })
-  // OSM-тайлы, затемнённые CSS-фильтром (.joined-tiles в main.css). Для продакшена — свой тайл-провайдер.
+  // OSM-тайлы, затемнённые CSS-фильтром (.joined-tiles в main.css). Для продакшена - свой тайл-провайдер.
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     className: 'joined-tiles',

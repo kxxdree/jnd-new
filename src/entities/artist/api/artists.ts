@@ -1,0 +1,162 @@
+import { ph } from '@shared/lib'
+import type { Artist } from '../model/types'
+
+const tracks = (album: string, year: number, titles: string[]) =>
+  titles.map((title, i) => ({ title, album, year, duration: `${3 + (i % 3)}:${String(10 + i * 7).padStart(2, '0')}` }))
+
+export const artists: Artist[] = [
+  {
+    slug: 'orange-sunset',
+    name: 'Orange Sunset',
+    city: 'moscow',
+    genres: ['indie', 'pop', 'live'],
+    short: 'Инди-поп квартет с тёплым ламповым звуком',
+    bio: 'Квартет, собравшийся в 2018 году на студенческих джемах. Мелодичный инди-поп с синтезаторами 80-х и гитарами в духе британской волны. Два альбома, сотни концертов и туры по 20 городам.',
+    founded: 2018, followers: 24800,
+    photo: ph('band,concert', 31),
+    members: [
+      { name: 'Алиса Миронова', role: 'Вокал, синтезаторы' },
+      { name: 'Денис Котов', role: 'Гитара' },
+      { name: 'Марк Ли', role: 'Бас' },
+      { name: 'Ника Шаль', role: 'Барабаны' },
+    ],
+    tracks: [
+      ...tracks('Тёплый шум', 2024, ['Тёплый шум', 'Город на ладони', 'Неон', 'Последний трамвай']),
+      ...tracks('Закат', 2021, ['Закат', 'Мандарины']),
+    ],
+    videos: [
+      { title: 'Тёплый шум - live at Garage Hall', photo: ph('concert', 301), duration: '4:12' },
+      { title: 'Неон (official video)', photo: ph('neon', 302), duration: '3:48' },
+      { title: 'Акустика на крыше', photo: ph('rooftop', 303), duration: '18:20' },
+    ],
+  },
+  {
+    slug: 'blue-note-trio',
+    name: 'Blue Note Trio',
+    city: 'moscow',
+    genres: ['jazz', 'blues'],
+    short: 'Классический джазовый трио: рояль, контрабас, барабаны',
+    bio: 'Трио, играющее стандарты Эллингтона, Монка и Эванса, а также собственные композиции. Резиденты Red Velvet и частые гости джазовых фестивалей.',
+    founded: 2015, followers: 9300,
+    photo: ph('jazz,piano', 32),
+    members: [
+      { name: 'Илья Громов', role: 'Фортепиано' },
+      { name: 'Сергей Вайс', role: 'Контрабас' },
+      { name: 'Артём Ким', role: 'Барабаны' },
+    ],
+    tracks: tracks('Midnight Standards', 2023, ['Round Midnight', 'Autumn Leaves', 'Blue Moscow', 'Velvet', 'So What']),
+    videos: [
+      { title: 'Live at Red Velvet', photo: ph('jazz', 311), duration: '42:10' },
+      { title: 'Blue Moscow', photo: ph('piano', 312), duration: '6:05' },
+    ],
+  },
+  {
+    slug: 'kinetic',
+    name: 'KINETIC',
+    city: 'spb',
+    genres: ['electronic'],
+    short: 'Live-электроника: модульные синтезаторы и визуалы',
+    bio: 'Дуэт из Петербурга, создающий танцевальную электронику вживую на модульных синтезаторах. Каждый сет сопровождается генеративными визуалами.',
+    founded: 2019, followers: 41200,
+    photo: ph('dj,synthesizer', 33),
+    members: [
+      { name: 'Влад Орлов', role: 'Модульный синтезатор' },
+      { name: 'Ева Ройз', role: 'Драм-машины, визуалы' },
+    ],
+    tracks: tracks('Pulse', 2025, ['Pulse', 'Nevsky 4AM', 'Static', 'Rain Machine', 'Bridges']),
+    videos: [
+      { title: 'Boiler Room style set', photo: ph('dj', 321), duration: '58:00' },
+      { title: 'Nevsky 4AM', photo: ph('techno', 322), duration: '5:30' },
+    ],
+  },
+  {
+    slug: 'iron-wolves',
+    name: 'Iron Wolves',
+    city: 'kazan',
+    genres: ['rock', 'live'],
+    short: 'Хард-рок с мощными риффами и харизматичным фронтменом',
+    bio: 'Казанская рок-группа, играющая энергичный хард-рок в лучших традициях жанра. Победители фестиваля «Сотворение мира» 2022 года.',
+    founded: 2012, followers: 18600,
+    photo: ph('rock,band', 34),
+    members: [
+      { name: 'Тимур Гараев', role: 'Вокал' },
+      { name: 'Олег Синицын', role: 'Соло-гитара' },
+      { name: 'Рустам Хаков', role: 'Ритм-гитара' },
+      { name: 'Павел Бойко', role: 'Бас' },
+      { name: 'Ильдар Сафин', role: 'Барабаны' },
+    ],
+    tracks: tracks('Стая', 2022, ['Стая', 'Железо', 'Ночная трасса', 'Волга', 'Огонь']),
+    videos: [
+      { title: 'Стая (live)', photo: ph('rock,concert', 331), duration: '4:50' },
+    ],
+  },
+  {
+    slug: 'string-theory',
+    name: 'String Theory Quartet',
+    city: 'moscow',
+    genres: ['classical'],
+    short: 'Струнный квартет: классика и каверы на поп-хиты',
+    bio: 'Четыре выпускника консерватории, которые играют Баха и Radiohead в одной программе. Концерты при свечах в барах и лофтах.',
+    founded: 2017, followers: 15400,
+    photo: ph('violin,concert', 35),
+    members: [
+      { name: 'Анна Белова', role: 'Первая скрипка' },
+      { name: 'Мария Чен', role: 'Вторая скрипка' },
+      { name: 'Глеб Рязанов', role: 'Альт' },
+      { name: 'Ксения Орт', role: 'Виолончель' },
+    ],
+    tracks: tracks('Candlelight', 2024, ['Karma Police', 'Air on the G String', 'Clocks', 'Spring', 'Creep']),
+    videos: [
+      { title: 'Candlelight: Radiohead', photo: ph('candle,violin', 341), duration: '62:00' },
+    ],
+  },
+  {
+    slug: 'mc-north',
+    name: 'MC North',
+    city: 'spb',
+    genres: ['hiphop'],
+    short: 'Петербургский хип-хоп с живым бэндом',
+    bio: 'Рэп-исполнитель, выступающий с живым составом: бас, клавиши и барабаны. Тексты о северном городе и его ночах.',
+    founded: 2016, followers: 56300,
+    photo: ph('rapper,microphone', 36),
+    members: [{ name: 'Никита Северов', role: 'MC' }, { name: 'Live band', role: 'Бас, клавиши, барабаны' }],
+    tracks: tracks('Белые ночи', 2025, ['Белые ночи', 'Разводные мосты', 'Сквозняк', 'Питер']),
+    videos: [{ title: 'Белые ночи (клип)', photo: ph('city,night', 351), duration: '3:33' }],
+  },
+  {
+    slug: 'delta-blues-band',
+    name: 'Delta Blues Band',
+    city: 'nsk',
+    genres: ['blues', 'rock'],
+    short: 'Блюз Миссисипи из Сибири',
+    bio: 'Губная гармоника, слайд-гитара и хрипловатый вокал. Группа играет классический дельта-блюз и чикагский электрический блюз.',
+    founded: 2010, followers: 7200,
+    photo: ph('blues,guitar', 37),
+    members: [
+      { name: 'Борис Лапин', role: 'Вокал, гармоника' },
+      { name: 'Ян Новак', role: 'Слайд-гитара' },
+      { name: 'Фёдор Ершов', role: 'Бас' },
+    ],
+    tracks: tracks('Cold River Blues', 2020, ['Cold River', 'Crossroads', 'Siberian Train', 'Whiskey Rain']),
+    videos: [{ title: 'Cold River (live)', photo: ph('blues', 361), duration: '7:12' }],
+  },
+  {
+    slug: 'velvet-drive',
+    name: 'Velvet Drive',
+    city: 'ekb',
+    genres: ['rock', 'indie'],
+    short: 'Пост-панк из Екатеринбурга',
+    bio: 'Холодные гитары, драм-машина и баритон - уральский пост-панк в лучших традициях. Регулярно гастролируют по стране.',
+    founded: 2020, followers: 21900,
+    photo: ph('postpunk,band', 38),
+    members: [
+      { name: 'Лев Карпов', role: 'Вокал, гитара' },
+      { name: 'Софья Дым', role: 'Синтезатор' },
+      { name: 'Егор Плюх', role: 'Бас' },
+    ],
+    tracks: tracks('Бетон', 2023, ['Бетон', 'Плотина', 'Уралмаш', 'Тишина']),
+    videos: [{ title: 'Бетон (live)', photo: ph('concert,dark', 371), duration: '4:01' }],
+  },
+]
+
+export const getArtist = (slug: string) => artists.find(a => a.slug === slug)

@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import type { Role } from '~/data/types'
-import { cities as baseCities, drinks, formats, genres, ph, venues } from '~/data/catalog'
+import { roleNames, type Role } from '@entities/session'
+import { cities as baseCities } from '@entities/city'
+import { drinks, formats, venues } from '@entities/venue'
+import { genres } from '@shared/config'
+import { formatPrice, ph, plural, useToast } from '@shared/lib'
+import { UiBarChart, UiEmpty, UiIcon, UiPhoto, UiTabs, UiToggle } from '@shared/ui'
 
-definePageMeta({ middleware: 'auth', roles: ['admin'], layout: 'dashboard' })
-useHead({ title: 'Админ-панель — Joined' })
+useHead({ title: 'Админ-панель - Joined' })
 
 const { push } = useToast()
 
@@ -92,17 +95,17 @@ const transactions = [
 
 <template>
   <section class="container-x pt-10">
-    <div class="mb-10">
-      <p class="text-sm text-accent-text">Администратор системы</p>
-      <h1 class="h-display mt-1 text-4xl sm:text-6xl">Управление платформой</h1>
+    <div class="card mb-8 p-6 sm:p-8">
+      <p class="text-xs font-medium tracking-[0.2em] text-accent-text uppercase">Администратор системы</p>
+      <h1 class="h-display mt-2 text-4xl sm:text-6xl">Управление <span class="text-liquid italic">платформой</span></h1>
     </div>
 
-    <div class="grid gap-8 lg:grid-cols-[240px_1fr]">
-      <aside class="lg:sticky lg:top-24 lg:h-fit"><DashTabs v-model="tab" :tabs="tabs" /></aside>
+    <div class="grid gap-8 lg:grid-cols-[260px_1fr]">
+      <aside class="lg:sticky lg:top-28 lg:h-fit"><UiTabs v-model="tab" :tabs="tabs" /></aside>
 
       <div class="min-w-0">
         <!-- СТАТИСТИКА -->
-        <div v-if="tab === 'overview'" class="grid gap-3">
+        <div v-if="tab === 'overview'" class="grid gap-4">
           <div class="grid grid-cols-2 gap-3 xl:grid-cols-4">
             <div v-for="k in kpis" :key="k.label" class="card p-5">
               <p class="text-sm text-muted">{{ k.label }}</p>
@@ -113,14 +116,14 @@ const transactions = [
           <div class="grid gap-3 xl:grid-cols-[1.4fr_1fr]">
             <div class="card p-5 sm:p-6">
               <h2 class="mb-8 text-lg font-medium">Посещения по месяцам</h2>
-              <BarChart :data="visits" :height="220" />
+              <UiBarChart :data="visits" :height="220" />
             </div>
             <div class="card p-5 sm:p-6">
               <h2 class="mb-5 text-lg font-medium">Доля продаж по жанрам</h2>
               <div class="space-y-3">
                 <div v-for="g in byGenre.slice(0, 6)" :key="g.label">
                   <div class="mb-1 flex justify-between text-sm"><span class="text-soft">{{ g.label }}</span><span>{{ g.value }}%</span></div>
-                  <div class="h-1.5 overflow-hidden rounded-full bg-card-2"><div class="h-full rounded-full bg-accent" :style="{ width: `${g.value / 34 * 100}%` }" /></div>
+                  <div class="h-2 overflow-hidden rounded-full bg-black/30 shadow-[inset_0_1px_2px_rgb(0_0_0/0.4)]"><div class="h-full rounded-full bg-linear-to-r from-[#ff4d00] to-[#ffb27a]" :style="{ width: `${g.value / 34 * 100}%` }" /></div>
                 </div>
               </div>
             </div>
@@ -128,9 +131,9 @@ const transactions = [
         </div>
 
         <!-- МОДЕРАЦИЯ -->
-        <div v-else-if="tab === 'moderation'" class="grid gap-3">
+        <div v-else-if="tab === 'moderation'" class="grid gap-4">
           <div v-for="m in moderation" :key="m.id" class="card flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
-            <PhotoImg :src="m.photo" class="size-16 shrink-0 rounded-xl" />
+            <UiPhoto :src="m.photo" class="size-16 shrink-0 rounded-2xl" />
             <div class="min-w-0 flex-1">
               <span class="tag mb-1">{{ m.kind }}</span>
               <p class="truncate font-medium">{{ m.name }}</p>
@@ -141,35 +144,35 @@ const transactions = [
               <button class="btn-primary" @click="moderate(m.id, true)">Одобрить</button>
             </div>
           </div>
-          <EmptyState v-if="!moderation.length" icon="check" title="Очередь пуста" text="Все заявки обработаны." />
+          <UiEmpty v-if="!moderation.length" icon="check" title="Очередь пуста" text="Все заявки обработаны." />
         </div>
 
         <!-- ГОРОДА -->
-        <div v-else-if="tab === 'cities'" class="grid gap-3">
+        <div v-else-if="tab === 'cities'" class="grid gap-4">
           <form class="flex gap-2" @submit.prevent="addCity">
             <input v-model="newCity" class="field" placeholder="Новый город или регион">
-            <button class="btn-primary shrink-0" type="submit"><AppIcon name="plus" :size="16" /> Добавить</button>
+            <button class="btn-primary shrink-0" type="submit"><UiIcon name="plus" :size="16" /> Добавить</button>
           </form>
           <div class="card divide-y divide-line px-5">
             <div v-for="c in cityList" :key="c.id" class="flex items-center gap-4 py-4">
-              <AppIcon name="pin" class="text-muted" :size="18" />
+              <UiIcon name="pin" class="text-muted" :size="18" />
               <div class="min-w-0 flex-1">
                 <p class="font-medium">{{ c.name }}</p>
                 <p class="text-sm text-muted">{{ c.venues }} {{ plural(c.venues, ['заведение', 'заведения', 'заведений']) }}</p>
               </div>
-              <ToggleSwitch v-model="c.active" :label="c.active ? 'Активен' : 'Скрыт'" class="py-0!" />
+              <UiToggle v-model="c.active" :label="c.active ? 'Активен' : 'Скрыт'" class="py-0!" />
             </div>
           </div>
         </div>
 
         <!-- ТЕГИ -->
-        <div v-else-if="tab === 'tags'" class="grid gap-3">
+        <div v-else-if="tab === 'tags'" class="grid gap-4">
           <div v-for="(g, i) in tagGroups" :key="g.title" class="card p-5 sm:p-6">
             <h2 class="mb-4 text-lg font-medium">{{ g.title }}</h2>
             <div class="flex flex-wrap gap-2">
               <span v-for="(t, j) in g.items" :key="t" class="pill gap-2 pr-2">
                 {{ t }}
-                <button class="grid size-5 place-items-center rounded-full bg-black/40 hover:bg-accent" :aria-label="`Удалить ${t}`" @click="g.items.splice(j, 1)"><AppIcon name="x" :size="12" /></button>
+                <button class="grid size-5 place-items-center rounded-full bg-black/30 transition-colors hover:bg-accent" :aria-label="`Удалить ${t}`" @click="g.items.splice(j, 1)"><UiIcon name="x" :size="12" /></button>
               </span>
             </div>
             <form class="mt-4 flex gap-2" @submit.prevent="addTag(i)">
@@ -180,9 +183,9 @@ const transactions = [
         </div>
 
         <!-- ПОЛЬЗОВАТЕЛИ -->
-        <div v-else-if="tab === 'users'" class="grid gap-3">
-          <label class="flex items-center gap-3 rounded-xl bg-card-2 px-4">
-            <AppIcon name="search" class="text-muted" :size="18" />
+        <div v-else-if="tab === 'users'" class="grid gap-4">
+          <label class="glass flex items-center gap-3 rounded-full px-5">
+            <UiIcon name="search" class="text-muted" :size="18" />
             <input v-model="userQuery" type="search" placeholder="Имя или email" class="w-full bg-transparent py-3 text-sm placeholder:text-muted">
           </label>
           <div class="card overflow-x-auto">
@@ -203,13 +206,13 @@ const transactions = [
                     <p class="text-xs text-muted">{{ u.email }}</p>
                   </td>
                   <td class="px-5 py-3">
-                    <select v-model="u.role" class="rounded-lg bg-card-2 px-2 py-1.5 text-sm" :aria-label="`Роль ${u.name}`">
+                    <select v-model="u.role" class="pill appearance-none py-1.5" :aria-label="`Роль ${u.name}`">
                       <option v-for="(n, r) in roleNames" :key="r" :value="r">{{ n }}</option>
                     </select>
                   </td>
                   <td class="px-5 py-3 text-soft">{{ u.joined }}</td>
                   <td class="px-5 py-3">
-                    <span class="tag" :class="u.blocked ? '' : 'border-line bg-card-2 text-soft'">{{ u.blocked ? 'Заблокирован' : 'Активен' }}</span>
+                    <span class="tag" :class="u.blocked ? '' : 'tag-neutral'">{{ u.blocked ? 'Заблокирован' : 'Активен' }}</span>
                   </td>
                   <td class="px-5 py-3 text-right">
                     <button class="text-sm text-muted hover:text-white" @click="u.blocked = !u.blocked">{{ u.blocked ? 'Разблокировать' : 'Заблокировать' }}</button>
@@ -221,7 +224,7 @@ const transactions = [
         </div>
 
         <!-- ПЛАТЕЖИ -->
-        <div v-else-if="tab === 'payments'" class="grid gap-3">
+        <div v-else-if="tab === 'payments'" class="grid gap-4">
           <form class="card grid gap-5 p-5 sm:p-8" @submit.prevent="push('Настройки сохранены')">
             <h2 class="text-xl font-medium">Комиссии</h2>
             <div class="grid gap-5 sm:grid-cols-3">
@@ -238,9 +241,9 @@ const transactions = [
               </select>
             </label>
             <div class="divide-y divide-line border-t border-line">
-              <ToggleSwitch v-model="payments.providers.card" label="Банковские карты" hint="Visa, Mastercard, МИР" />
-              <ToggleSwitch v-model="payments.providers.sbp" label="Система быстрых платежей" />
-              <ToggleSwitch v-model="payments.providers.wallet" label="Электронные кошельки" />
+              <UiToggle v-model="payments.providers.card" label="Банковские карты" hint="Visa, Mastercard, МИР" />
+              <UiToggle v-model="payments.providers.sbp" label="Система быстрых платежей" />
+              <UiToggle v-model="payments.providers.wallet" label="Электронные кошельки" />
             </div>
             <div class="flex justify-end"><button class="btn-primary px-8 py-3.5" type="submit">Сохранить</button></div>
           </form>
