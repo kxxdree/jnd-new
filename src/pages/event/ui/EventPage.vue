@@ -67,7 +67,7 @@ useHead({ title: `${ev.title} - Joined`, meta: [{ name: 'description', content: 
         <div v-if="lineup.length" class="card p-6 sm:p-8">
           <h2 class="mb-5 text-2xl font-medium">Лайнап</h2>
           <div class="grid gap-3 sm:grid-cols-2">
-            <NuxtLink v-for="a in lineup" :key="a!.slug" :to="`/artists/${a!.slug}`" class="group flex items-center gap-4 rounded-3xl bg-white/5 p-2 pr-4 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] transition-colors hover:bg-white/10">
+            <NuxtLink v-for="a in lineup" :key="a!.slug" :to="`/artists/${a!.slug}`" class="group flex items-center gap-4 rim raised rounded-3xl p-2 pr-4">
               <UiPhoto :src="a!.photo" class="size-16 shrink-0 rounded-2xl" />
               <div class="min-w-0">
                 <p class="truncate font-medium group-hover:text-sand">{{ a!.name }}</p>

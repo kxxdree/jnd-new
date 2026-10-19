@@ -23,7 +23,7 @@ const socials = [
 
 <template>
   <footer class="relative mt-32 overflow-hidden px-3 pb-3 sm:px-6 sm:pb-6">
-    <div class="glass mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] [--lg-tint:rgb(16_9_6/0.35)]">
+    <div class="glass mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] [--lg-tint:rgb(16_16_18/0.48)]">
       <div class="grid gap-10 p-6 sm:p-10 md:grid-cols-[1.2fr_auto_auto_1.3fr] md:gap-14 lg:p-14">
         <div>
           <UiLogo />

@@ -12,7 +12,7 @@ const model = defineModel<T>({ required: true })
       v-for="t in tabs"
       :key="t.id"
       class="pill gap-3 lg:justify-start lg:rounded-2xl lg:py-3"
-      :class="model === t.id ? 'pill-active' : 'lg:bg-transparent lg:shadow-none lg:backdrop-blur-none'"
+      :class="model === t.id ? 'pill-active' : 'lg:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:before:hidden'"
       :aria-pressed="model === t.id"
       @click="model = t.id"
     >

@@ -41,7 +41,7 @@ watch(open, (v) => {
     <!-- Плавающая стеклянная капсула -->
     <div
       class="glass lg-refract mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 rounded-full pr-2 pl-5 transition-[box-shadow,background] duration-500 [--lg-refract-blur:14px] sm:pl-6"
-      :class="scrolled ? '[--lg-tint:rgb(16_9_6/0.6)]' : '[--lg-tint:rgb(16_9_6/0.3)]'"
+      :class="scrolled ? '[--lg-tint:rgb(16_16_18/0.66)]' : '[--lg-tint:rgb(16_16_18/0.42)]'"
     >
       <UiLogo />
 
@@ -51,7 +51,7 @@ watch(open, (v) => {
           :key="l.to"
           :to="l.to"
           class="relative rounded-full px-4 py-2 text-sm transition-colors duration-300"
-          :class="isActive(l.to) ? 'bg-white/14 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.3),inset_0_0_0_1px_rgb(255_255_255/0.08)]' : 'text-soft hover:text-white'"
+          :class="isActive(l.to) ? 'rim bg-white/10 text-white' : 'text-soft hover:text-white'"
         >
           {{ l.label }}
         </NuxtLink>
@@ -61,7 +61,7 @@ watch(open, (v) => {
         <template v-if="user">
           <NuxtLink v-if="cabinet" :to="cabinet.to" class="btn-ghost">{{ cabinet.label }}</NuxtLink>
           <NuxtLink to="/account" class="btn-dark py-2 pl-2">
-            <span class="grid size-7 place-items-center rounded-full bg-linear-to-b from-[#ff7a33] to-[#ff4d00] text-xs font-semibold uppercase shadow-[inset_0_1px_0_rgb(255_255_255/0.5)]">{{ user.name[0] }}</span>
+            <span class="grid size-7 place-items-center rounded-full rim bg-linear-to-b from-[#ff9050] to-[#ee4300] text-xs font-semibold uppercase [--lg-rim:var(--lg-rim-warm)]">{{ user.name[0] }}</span>
             {{ user.name }}
           </NuxtLink>
         </template>

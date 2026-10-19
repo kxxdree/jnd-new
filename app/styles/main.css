@@ -5,17 +5,17 @@
 @theme {
   --font-sans: "Inter Tight", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  --color-ink: #050201;
-  --color-surface: rgb(16 10 8 / 0.72);
-  --color-card: rgb(14 9 7 / 0.42);
+  --color-ink: #050505;
+  --color-surface: rgb(18 18 20 / 0.75);
+  --color-card: rgb(16 16 18 / 0.48);
   --color-card-2: rgb(255 255 255 / 0.07);
   --color-card-3: rgb(255 255 255 / 0.13);
   --color-line: rgb(255 255 255 / 0.1);
-  --color-muted: #a8a19d;
-  --color-soft: #ddd6d2;
+  --color-muted: #a3a3a9;
+  --color-soft: #dadade;
   --color-accent: #ff4d00;
   --color-accent-hover: #ff6a26;
-  --color-accent-text: #ff8a4c;
+  --color-accent-text: #ffa66e;
   --color-accent-deep: rgb(255 77 0 / 0.16);
   --color-sand: #ffd98c;
 
@@ -28,16 +28,38 @@
    Liquid Glass - базовые параметры
    ============================================================ */
 :root {
-  --lg-tint: rgb(18 10 6 / 0.46);
-  --lg-blur: 22px;
-  --lg-saturate: 175%;
-  --lg-rim: linear-gradient(140deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.06) 32%, rgb(255 255 255 / 0) 55%, rgb(255 255 255 / 0.08) 78%, rgb(255 255 255 / 0.32));
-  --lg-sheen: radial-gradient(120% 70% at 18% -10%, rgb(255 255 255 / 0.16), transparent 55%);
-  --lg-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.22),
-    inset 0 -1px 0 rgb(255 255 255 / 0.05),
-    inset 0 0 24px rgb(255 255 255 / 0.03),
-    0 18px 50px -18px rgb(0 0 0 / 0.65);
+  /* нейтральное дымчатое стекло: не окрашивается тёплым фоном */
+  --lg-tint: rgb(16 16 18 / 0.5);
+  --lg-blur: 24px;
+  --lg-saturate: 110%;
+  /* кромка: едва заметная волосяная линия, освещённая сверху */
+  --lg-rim: linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.035) 30%, rgb(255 255 255 / 0.015) 70%, rgb(255 255 255 / 0.04));
+  --lg-sheen: linear-gradient(150deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.015) 55%, transparent);
+  --lg-shadow: inset 0 0 30px rgb(255 255 255 / 0.02), inset 0 -24px 40px -28px rgb(0 0 0 / 0.5), 0 24px 60px -24px rgb(0 0 0 / 0.8);
+  /* маленькие элементы: кнопки, пилюли, теги */
+  --lg-fill: rgb(18 18 20 / 0.55);
+  --lg-fill-hover: rgb(44 44 48 / 0.6);
+  /* выпуклый элемент («таблетка»): мягкий свет сверху, тёмный низ, плотная тень */
+  --lg-raised: linear-gradient(180deg, rgb(255 255 255 / 0.075), rgb(255 255 255 / 0.025) 45%, rgb(0 0 0 / 0.14)), rgb(24 24 27 / 0.74);
+  --lg-raised-hover: linear-gradient(180deg, rgb(255 255 255 / 0.11), rgb(255 255 255 / 0.04) 45%, rgb(0 0 0 / 0.1)), rgb(34 34 38 / 0.78);
+  --lg-raised-shadow:
+    inset 0 1px 1px rgb(255 255 255 / 0.05),
+    inset 0 -3px 8px rgb(0 0 0 / 0.45),
+    0 2px 3px rgb(0 0 0 / 0.45),
+    0 12px 28px -10px rgb(0 0 0 / 0.85);
+  /* вдавленный элемент (бейдж, поле, дорожка) */
+  --lg-sunken: rgb(0 0 0 / 0.34);
+  --lg-sunken-shadow: inset 0 2px 4px rgb(0 0 0 / 0.55), inset 0 -1px 0 rgb(255 255 255 / 0.035);
+  /* тёплая кромка для оранжевых элементов - тоже едва заметная */
+  --lg-rim-warm: linear-gradient(180deg, rgb(255 225 200 / 0.45), rgb(255 255 255 / 0.06) 40%, rgb(255 255 255 / 0) 70%, rgb(255 190 150 / 0.12));
+  --accent-fill:
+    radial-gradient(110% 80% at 50% -20%, rgb(255 255 255 / 0.22), transparent 55%),
+    linear-gradient(180deg, #ff8a45, #ff5a14 50%, #e44000);
+  --accent-shadow:
+    inset 0 1px 1px rgb(255 235 215 / 0.3),
+    inset 0 -3px 8px rgb(110 25 0 / 0.5),
+    0 2px 3px rgb(0 0 0 / 0.45),
+    0 12px 28px -10px rgb(0 0 0 / 0.85);
 }
 
 @layer base {
@@ -62,7 +84,7 @@
   }
 
   select option {
-    background: #160c08;
+    background: #141416;
   }
 
   input[type="date"]::-webkit-calendar-picker-indicator,
@@ -94,11 +116,32 @@
     box-shadow: var(--lg-shadow);
   }
 
-  /* Блик по краю - градиентная рамка через маску */
+  /* Кромка - градиентная рамка через маску. .rim можно повесить на любой элемент */
+  .rim {
+    position: relative;
+  }
+  .rim,
+  .btn-primary,
+  .btn-dark,
+  .btn-ghost,
+  .btn-icon,
+  .pill,
+  .tag,
+  .segmented {
+    isolation: isolate;
+  }
   .glass::before,
   .card::before,
   .glass-strong::before,
-  .glass-chip::before {
+  .glass-chip::before,
+  .btn-primary::before,
+  .btn-dark::before,
+  .btn-ghost::before,
+  .btn-icon::before,
+  .pill::before,
+  .tag::before,
+  .segmented::before,
+  .rim::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -116,16 +159,29 @@
     border-radius: var(--radius-card);
   }
 
+  /* Объём для любых элементов: выпуклый и вдавленный (вместе с .rim) */
+  .raised {
+    background: var(--lg-raised);
+    box-shadow: var(--lg-raised-shadow);
+    transition: background 0.25s, box-shadow 0.25s;
+  }
+  .raised:hover {
+    background: var(--lg-raised-hover);
+  }
+  .sunken {
+    background: var(--lg-sunken);
+    box-shadow: var(--lg-sunken-shadow);
+  }
+
   .glass-strong {
-    --lg-tint: rgb(16 9 6 / 0.62);
-    --lg-blur: 34px;
+    --lg-tint: rgb(18 18 20 / 0.72);
+    --lg-blur: 36px;
   }
 
   .glass-chip {
-    --lg-tint: rgb(14 7 4 / 0.4);
     --lg-blur: 14px;
-    --lg-saturate: 130%;
-    --lg-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 6px 18px -8px rgb(0 0 0 / 0.5);
+    background: var(--lg-raised);
+    box-shadow: var(--lg-raised-shadow);
   }
 
   /* Карточка-ссылка: «всплывает» под курсором */
@@ -134,7 +190,8 @@
   }
   .card-hover:hover {
     transform: translateY(-4px);
-    box-shadow: var(--lg-shadow), 0 30px 60px -24px rgb(255 77 0 / 0.45);
+    box-shadow: var(--lg-shadow), 0 34px 70px -26px rgb(0 0 0 / 0.95);
+    --lg-rim: linear-gradient(180deg, rgb(255 255 255 / 0.18), rgb(255 255 255 / 0.05) 30%, rgb(255 255 255 / 0.02) 70%, rgb(255 255 255 / 0.05));
   }
 
   /* ---------- Кнопки ---------- */
@@ -152,48 +209,53 @@
   }
 
   /* «Жидкий» оранжевый: объём + свечение */
+  /* светлая тёплая кромка и тёмная тень отделяют кнопку от тёплого фона */
   .btn-primary {
-    background:
-      radial-gradient(120% 90% at 50% -20%, rgb(255 255 255 / 0.45), transparent 50%),
-      linear-gradient(180deg, #ff7a33, #ff4d00 55%, #e03a00);
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.55),
-      inset 0 -2px 6px rgb(120 20 0 / 0.45),
-      0 10px 30px -8px rgb(255 77 0 / 0.75);
+    --lg-rim: var(--lg-rim-warm);
+    background: var(--accent-fill);
+    box-shadow: var(--accent-shadow);
   }
   .btn-primary:hover:not(:disabled) {
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.6),
-      inset 0 -2px 6px rgb(120 20 0 / 0.45),
-      0 14px 40px -6px rgb(255 90 20 / 0.9);
+    filter: brightness(1.08);
+  }
+  .btn-primary:active:not(:disabled),
+  .pill-active:active {
+    box-shadow: inset 0 2px 6px rgb(110 25 0 / 0.55), 0 1px 2px rgb(0 0 0 / 0.5);
   }
 
-  .btn-dark,
-  .btn-ghost {
-    background: var(--lg-sheen), rgb(14 7 4 / 0.42);
-    -webkit-backdrop-filter: blur(14px) saturate(130%);
-    backdrop-filter: blur(14px) saturate(130%);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22), inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  .btn-dark {
+    background: var(--lg-raised);
+    -webkit-backdrop-filter: blur(16px) saturate(110%);
+    backdrop-filter: blur(16px) saturate(110%);
+    box-shadow: var(--lg-raised-shadow);
   }
-  .btn-dark:hover:not(:disabled),
-  .btn-ghost:hover:not(:disabled) {
-    background: var(--lg-sheen), rgb(30 16 10 / 0.55);
+  .btn-dark:hover:not(:disabled) {
+    background: var(--lg-raised-hover);
+  }
+  /* нажатие: кнопка «проваливается» */
+  .btn-dark:active:not(:disabled),
+  .btn-icon:active,
+  .pill:not(.pill-active):active {
+    box-shadow: var(--lg-sunken-shadow);
   }
   .btn-ghost {
     background: transparent;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: rgb(255 255 255 / 0.06);
   }
 
   /* Круглая иконка-кнопка */
   .btn-icon {
     @apply relative grid size-11 shrink-0 place-items-center rounded-full text-white;
-    background: var(--lg-sheen), rgb(14 7 4 / 0.42);
-    -webkit-backdrop-filter: blur(14px) saturate(130%);
-    backdrop-filter: blur(14px) saturate(130%);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), inset 0 0 0 1px rgb(255 255 255 / 0.1);
-    transition: transform 0.35s var(--ease-liquid), background 0.25s;
+    background: var(--lg-raised);
+    -webkit-backdrop-filter: blur(16px) saturate(110%);
+    backdrop-filter: blur(16px) saturate(110%);
+    box-shadow: var(--lg-raised-shadow);
+    transition: transform 0.35s var(--ease-liquid), background 0.25s, box-shadow 0.25s;
   }
   .btn-icon:hover {
-    background: var(--lg-sheen), rgb(30 16 10 / 0.55);
+    background: var(--lg-raised-hover);
   }
   .btn-icon:active {
     transform: scale(0.92);
@@ -202,61 +264,63 @@
   /* ---------- Пилюли-фильтры ---------- */
   .pill {
     @apply relative inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-white select-none;
-    background: rgb(14 7 4 / 0.42);
-    -webkit-backdrop-filter: blur(14px) saturate(130%);
-    backdrop-filter: blur(14px) saturate(130%);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), inset 0 0 0 1px rgb(255 255 255 / 0.09);
+    background: var(--lg-raised);
+    -webkit-backdrop-filter: blur(16px) saturate(110%);
+    backdrop-filter: blur(16px) saturate(110%);
+    box-shadow: var(--lg-raised-shadow);
     transition: transform 0.35s var(--ease-liquid), background 0.25s, box-shadow 0.35s;
   }
   .pill:hover {
-    background: rgb(30 16 10 / 0.55);
+    background: var(--lg-raised-hover);
   }
   .pill-active,
   .pill-active:hover {
-    background:
-      radial-gradient(120% 90% at 50% -20%, rgb(255 255 255 / 0.45), transparent 50%),
-      linear-gradient(180deg, #ff7a33, #ff4d00 60%, #e03a00);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), 0 8px 22px -8px rgb(255 77 0 / 0.85);
+    --lg-rim: var(--lg-rim-warm);
+    background: var(--accent-fill);
+    box-shadow: var(--accent-shadow);
   }
 
   /* ---------- Сегментный переключатель ---------- */
   .segmented {
     @apply relative inline-grid auto-cols-fr grid-flow-col gap-1 rounded-full p-1;
-    background: rgb(0 0 0 / 0.25);
-    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.4), inset 0 0 0 1px rgb(255 255 255 / 0.08);
+    background: var(--lg-sunken);
+    box-shadow: var(--lg-sunken-shadow);
+    --lg-rim: linear-gradient(180deg, rgb(255 255 255 / 0.02), rgb(255 255 255 / 0.06));
   }
   .segmented > button {
     @apply flex items-center justify-center gap-2 rounded-full px-4 py-1.5 text-sm text-muted transition-colors;
   }
   .segmented > button[aria-pressed="true"] {
     @apply text-white;
-    background: var(--lg-sheen), rgb(255 255 255 / 0.14);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 4px 12px -4px rgb(0 0 0 / 0.5);
+    background: var(--lg-raised-hover);
+    box-shadow: var(--lg-raised-shadow), inset 0 1px 0 rgb(255 255 255 / 0.06);
   }
 
   /* ---------- Тег жанра ---------- */
   .tag {
     @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium text-[#ffb487];
-    background: rgb(255 77 0 / 0.18);
+    position: relative;
+    background: var(--lg-sunken);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    box-shadow: inset 0 0 0 1px rgb(255 120 60 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.15);
+    box-shadow: var(--lg-sunken-shadow);
+    /* у вдавленного элемента свет ловит нижний край */
+    --lg-rim: linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0.02) 50%, rgb(255 180 140 / 0.14));
   }
   .tag-neutral {
     @apply text-soft;
-    background: rgb(255 255 255 / 0.08);
-    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+    --lg-rim: linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0.02) 50%, rgb(255 255 255 / 0.1));
   }
 
   /* ---------- Поля ввода ---------- */
   .field {
     @apply w-full rounded-2xl px-4 py-3 text-sm text-white placeholder:text-muted;
-    background: rgb(0 0 0 / 0.22);
-    box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.45), inset 0 0 0 1px rgb(255 255 255 / 0.1);
+    background: var(--lg-sunken);
+    box-shadow: var(--lg-sunken-shadow), inset 0 0 0 1px rgb(255 255 255 / 0.03);
     transition: box-shadow 0.25s;
   }
   .field:focus {
-    box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.45), inset 0 0 0 1px rgb(255 122 51 / 0.8), 0 0 0 4px rgb(255 77 0 / 0.15);
+    box-shadow: var(--lg-sunken-shadow), inset 0 0 0 1px rgb(255 166 110 / 0.45), 0 0 0 4px rgb(255 120 50 / 0.1);
   }
 
   .label {
@@ -287,7 +351,7 @@
       background: var(--lg-sheen), var(--lg-tint);
       -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate));
       backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate));
-      box-shadow: var(--lg-shadow), inset 0 0 0 1px rgb(255 255 255 / 0.08);
+      box-shadow: var(--lg-shadow), inset 0 1px 0 rgb(255 255 255 / 0.05);
     }
   }
 

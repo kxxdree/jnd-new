@@ -16,7 +16,7 @@ watchEffect(async () => {
 
 <template>
   <div
-    class="overflow-hidden rounded-2xl bg-white p-2 shadow-[0_0_0_6px_rgb(255_255_255/0.12),0_20px_50px_-10px_rgb(255_77_0/0.5)] [&>svg]:h-full [&>svg]:w-full"
+    class="overflow-hidden rounded-2xl bg-white p-2 shadow-[0_0_0_6px_rgb(255_255_255/0.06),0_24px_50px_-12px_rgb(0_0_0/0.85)] [&>svg]:h-full [&>svg]:w-full"
     :style="{ width: `${size}px`, height: `${size}px` }"
     role="img"
     :aria-label="`QR-код ${value}`"

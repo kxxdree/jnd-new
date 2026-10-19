@@ -49,8 +49,8 @@ const artistNames = (e: EventItem) =>
         <button
           v-for="d in week"
           :key="d"
-          class="flex flex-col items-center rounded-2xl py-3 transition-all duration-300"
-          :class="selected === d ? 'pill-active' : 'bg-white/5 hover:bg-white/10'"
+          class="rim flex flex-col items-center rounded-2xl py-3 transition-all duration-300"
+          :class="selected === d ? 'pill-active' : 'raised'"
           @click="selected = d"
         >
           <span class="text-[11px] uppercase" :class="selected === d ? 'text-white/85' : isWeekend(d) ? 'text-accent-text' : 'text-muted'">{{ formatWeekday(d) }}</span>
@@ -85,7 +85,7 @@ const artistNames = (e: EventItem) =>
       <div class="mt-6">
         <h3 class="mb-3 text-sm text-muted capitalize">{{ formatWeekdayLong(selected) }}, {{ formatDay(selected) }}</h3>
         <div v-if="dayEvents.length" class="grid gap-2">
-          <NuxtLink v-for="e in dayEvents" :key="e.id" :to="`/events/${e.id}`" class="group flex items-center gap-4 rounded-3xl bg-white/5 p-2 pr-4 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] transition-colors hover:bg-white/10">
+          <NuxtLink v-for="e in dayEvents" :key="e.id" :to="`/events/${e.id}`" class="group flex items-center gap-4 rim raised rounded-3xl p-2 pr-4">
             <UiPhoto :src="e.photo" class="size-16 shrink-0 rounded-2xl" />
             <div class="min-w-0 flex-1">
               <p class="truncate font-medium group-hover:text-sand">{{ e.title }}</p>
@@ -97,7 +97,7 @@ const artistNames = (e: EventItem) =>
             </div>
           </NuxtLink>
         </div>
-        <p v-else class="rounded-3xl bg-white/5 p-5 text-sm text-muted">В этот день выступлений нет - бар работает в обычном режиме.</p>
+        <p v-else class="sunken rounded-3xl p-5 text-sm text-muted">В этот день выступлений нет - бар работает в обычном режиме.</p>
       </div>
     </div>
 

@@ -99,7 +99,7 @@ const todayIdx = weekdayIndex()
     <nav class="sticky top-[5.5rem] z-30 mt-8 px-3 sm:top-24 sm:px-6">
       <div class="glass lg-refract mx-auto max-w-7xl rounded-full p-1.5 [--lg-refract-blur:16px]">
         <div class="scroll-x py-0">
-          <button v-for="t in tabs" :key="t.id" class="pill" :class="tab === t.id ? 'pill-active' : 'bg-transparent shadow-none backdrop-blur-none'" @click="tab = t.id">
+          <button v-for="t in tabs" :key="t.id" class="pill" :class="tab === t.id ? 'pill-active' : 'bg-transparent shadow-none backdrop-blur-none before:hidden'" @click="tab = t.id">
             {{ t.name }}
           </button>
         </div>

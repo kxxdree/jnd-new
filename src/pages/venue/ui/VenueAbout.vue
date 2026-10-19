@@ -38,7 +38,7 @@ const todayIdx = weekdayIndex()
             v-for="(h, i) in venue.hours"
             :key="h.day"
             class="flex justify-between rounded-xl px-3 py-1.5"
-            :class="i === todayIdx ? 'bg-accent/20 text-white shadow-[inset_0_0_0_1px_rgb(255_122_51/0.5)]' : ''"
+            :class="i === todayIdx ? 'rim bg-[rgb(255_110_40/0.14)] text-white [--lg-rim:var(--lg-rim-warm)]' : ''"
           >
             <dt :class="i === todayIdx ? '' : 'text-soft'">{{ h.day }}<span v-if="i === todayIdx" class="ml-2 text-xs text-accent-text">сегодня</span></dt>
             <dd>{{ h.time }}</dd>

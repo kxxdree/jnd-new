@@ -13,7 +13,7 @@ defineProps<{ venue: Venue; active?: boolean }>()
   <NuxtLink
     :to="`/venues/${venue.slug}`"
     class="card card-hover group flex flex-col overflow-hidden p-2"
-    :class="active ? 'shadow-[0_0_0_2px_rgb(255_122_51/0.9),0_20px_50px_-15px_rgb(255_77_0/0.6)]' : ''"
+    :class="active ? 'shadow-[0_0_0_1.5px_rgb(255_200_160/0.85),0_24px_50px_-15px_rgb(0_0_0/0.9)]' : ''"
   >
     <UiPhoto :src="venue.photo" :alt="venue.name" class="aspect-4/3 rounded-[1.25rem] sm:aspect-13/10">
       <div class="absolute top-3 right-3"><slot name="actions" /></div>

@@ -43,10 +43,10 @@ const submit = () => {
         type="button"
         role="radio"
         :aria-checked="form.role === r.id"
-        class="flex flex-col items-start gap-2 rounded-3xl p-3 text-left transition-all duration-300"
+        class="rim flex flex-col items-start gap-2 rounded-3xl p-3 text-left transition-all duration-300"
         :class="form.role === r.id
-          ? 'bg-accent/20 shadow-[inset_0_0_0_1.5px_rgb(255_122_51/0.9),inset_0_1px_0_rgb(255_255_255/0.25)]'
-          : 'bg-white/5 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.1)] hover:bg-white/10'"
+          ? 'raised [background:linear-gradient(180deg,rgb(255_140_70/0.26),rgb(255_90_20/0.1)_50%,rgb(0_0_0/0.14)),rgb(46_24_14/0.8)] [--lg-rim:var(--lg-rim-warm)]'
+          : 'raised'"
         @click="form.role = r.id"
       >
         <UiIcon :name="r.icon" :class="form.role === r.id ? 'text-accent-text' : 'text-muted'" />

@@ -43,10 +43,10 @@ const onPaid = () => {
           role="radio"
           :aria-checked="selected === t.id"
           :disabled="!t.left"
-          class="relative rounded-3xl p-4 text-left transition-all duration-300 disabled:opacity-40"
+          class="rim rounded-3xl p-4 text-left transition-all duration-300 disabled:opacity-40"
           :class="selected === t.id
-            ? 'bg-accent/20 shadow-[inset_0_0_0_1.5px_rgb(255_122_51/0.9),inset_0_1px_0_rgb(255_255_255/0.25),0_10px_30px_-12px_rgb(255_77_0/0.7)]'
-            : 'bg-white/5 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.1)] hover:bg-white/10'"
+            ? 'raised [background:linear-gradient(180deg,rgb(255_140_70/0.26),rgb(255_90_20/0.1)_50%,rgb(0_0_0/0.14)),rgb(46_24_14/0.8)] [--lg-rim:var(--lg-rim-warm)]'
+            : 'raised'"
           @click="selected = t.id"
         >
           <div class="flex items-center justify-between gap-3">

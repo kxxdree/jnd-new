@@ -111,7 +111,7 @@ const stats = [
 
     <!-- ПАРТНЁРАМ -->
     <section class="container-x mt-28">
-      <div class="relative overflow-hidden rounded-[2.5rem] p-8 shadow-[inset_0_1px_0_rgb(255_255_255/0.5),inset_0_0_0_1px_rgb(255_255_255/0.15),0_30px_80px_-30px_rgb(255_77_0/0.8)] sm:p-14">
+      <div class="relative overflow-hidden rounded-[2.5rem] p-8 rim shadow-[0_30px_80px_-30px_rgb(0_0_0/0.95)] [--lg-rim:var(--lg-rim-warm)] sm:p-14">
         <div class="absolute inset-0 -z-10 bg-[radial-gradient(120%_120%_at_0%_0%,#ff8a3d,#ff4d00_45%,#a82800_100%)]" />
         <div class="pointer-events-none absolute -top-24 -right-20 size-96 rounded-full bg-sand/50 blur-3xl" />
         <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_60%_at_20%_0%,rgb(255_255_255/0.35),transparent_60%)]" />
@@ -123,7 +123,7 @@ const stats = [
             </p>
           </div>
           <div class="flex flex-col gap-2 sm:flex-row md:justify-end">
-            <NuxtLink to="/register?role=venue" class="btn-primary bg-none bg-black/80 py-3.5 shadow-[inset_0_1px_0_rgb(255_255_255/0.2)] hover:bg-black">Добавить заведение</NuxtLink>
+            <NuxtLink to="/register?role=venue" class="btn-dark bg-black/70 py-3.5 hover:bg-black/85">Добавить заведение</NuxtLink>
             <NuxtLink to="/register?role=artist" class="btn-dark py-3.5">Я музыкант</NuxtLink>
           </div>
         </div>

@@ -13,8 +13,8 @@ const model = defineModel<boolean>({ required: true })
     <span
       class="relative inline-flex h-8 w-[3.25rem] shrink-0 items-center rounded-full transition-[background,box-shadow] duration-300"
       :class="model
-        ? 'bg-linear-to-b from-[#ff7a33] to-[#ff4d00] shadow-[inset_0_1px_0_rgb(255_255_255/0.45),0_6px_16px_-6px_rgb(255_77_0/0.8)]'
-        : 'bg-black/30 shadow-[inset_0_1px_3px_rgb(0_0_0/0.5),inset_0_0_0_1px_rgb(255_255_255/0.1)]'"
+        ? 'bg-linear-to-b from-[#ff9050] to-[#ee4300] shadow-[inset_0_-2px_4px_rgb(120_25_0/0.35),0_0_0_1px_rgb(0_0_0/0.3)]'
+        : 'bg-black/35 shadow-[inset_0_1px_3px_rgb(0_0_0/0.55),inset_0_0_0_1px_rgb(255_255_255/0.06)]'"
     >
       <input v-model="model" type="checkbox" class="peer sr-only">
       <span
