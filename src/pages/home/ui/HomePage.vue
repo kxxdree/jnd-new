@@ -51,7 +51,7 @@ const stats = [
         <CitySelect />
       </div>
       <h1 class="h-display text-[15vw] sm:text-8xl lg:text-[9rem]">
-        Найди свой<br><span class="text-liquid italic">звук</span> сегодня
+        Найди свой звук сегодня
       </h1>
       <p class="mx-auto mt-7 max-w-xl text-base text-white/80 sm:text-lg">
         Бары, концерты и джем-сейшены {{ city.where }} - по жанрам, с расписанием выступлений и билетами в пару кликов.
