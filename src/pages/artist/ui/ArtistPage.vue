@@ -33,10 +33,6 @@ const where = (venueSlug: string) => {
           <UiPhoto :src="a.photo" :alt="a.name" class="absolute inset-0 h-full w-full" />
           <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black/10 via-transparent to-black" />
 
-          <NuxtLink to="/artists" class="btn-icon absolute top-4 left-4 size-12 sm:top-6 sm:left-6" aria-label="Все артисты">
-            <UiIcon name="chevron-left" :size="22" />
-          </NuxtLink>
-
           <div class="absolute inset-0 grid place-items-center px-4">
             <h1 class="h-display text-center text-[13vw] font-bold lowercase sm:text-8xl lg:text-9xl">{{ a.name }}</h1>
           </div>

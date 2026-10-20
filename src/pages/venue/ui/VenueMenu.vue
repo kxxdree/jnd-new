@@ -16,15 +16,15 @@ const tab = ref<'bar' | 'kitchen'>('bar')
         <button :aria-pressed="tab === 'kitchen'" @click="tab = 'kitchen'"><UiIcon name="utensils" :size="16" /> Кухня</button>
       </div>
     </div>
-    <div class="grid gap-x-12 md:grid-cols-2">
-      <div v-for="item in venue.menu[tab]" :key="item.name" class="flex items-baseline gap-3 border-b border-line py-5">
-        <div class="min-w-0">
-          <p class="font-medium">{{ item.name }}</p>
-          <p v-if="item.desc" class="mt-1 text-sm text-muted">{{ item.desc }}</p>
-        </div>
-        <span class="mx-1 flex-1 -translate-y-1 border-b border-dotted border-white/20" />
-        <span class="shrink-0 font-medium text-sand">{{ formatPrice(item.price) }}</span>
-      </div>
-    </div>
+    <!-- Прайс-лист: название + описание мелким в строку, цена справа -->
+    <ul>
+      <li v-for="item in venue.menu[tab]" :key="item.name" class="flex items-baseline justify-between gap-6 border-b border-line py-3.5 last:border-b-0">
+        <p class="min-w-0 text-sm">
+          {{ item.name }}
+          <span v-if="item.desc" class="ml-2 text-xs text-muted">({{ item.desc }})</span>
+        </p>
+        <span class="shrink-0 text-base tabular-nums">{{ formatPrice(item.price) }}</span>
+      </li>
+    </ul>
   </div>
 </template>
