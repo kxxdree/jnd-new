@@ -36,7 +36,7 @@ const list = computed(() =>
     </section>
 
     <section class="container-x">
-      <div v-if="list.length" class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
+      <div v-if="list.length" class="grid grid-cols-2 md:grid-cols-3">
         <ArtistCard v-for="a in list" :key="a.slug" :artist="a" :city-label="cityName(a.city)" />
       </div>
       <UiEmpty v-else icon="music" title="Никого не нашли" text="Попробуйте другой жанр или город." />
