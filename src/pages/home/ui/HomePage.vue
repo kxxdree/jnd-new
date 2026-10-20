@@ -2,7 +2,7 @@
 import { artists } from "@entities/artist";
 import { useCurrentCity } from "@entities/city";
 import { byDateTime, EventCard, events, isUpcoming } from "@entities/event";
-import { getVenue, VenueCard, venues } from "@entities/venue";
+import { getVenue, VenuePosterCard, venues } from "@entities/venue";
 import { FavoriteButton } from "@features/favorites";
 import { UiBackdrop, UiEmpty, UiIcon, UiSectionHead } from "@shared/ui";
 
@@ -89,9 +89,9 @@ const stats = [
         link-label="Все заведения"
       />
       <div v-if="popularVenues.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <VenueCard v-for="v in popularVenues" :key="v.slug" :venue="v" square>
+        <VenuePosterCard v-for="v in popularVenues" :key="v.slug" :venue="v">
           <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>
-        </VenueCard>
+        </VenuePosterCard>
       </div>
       <UiEmpty v-else icon="glass" title="Ничего не нашлось" text="В этом городе пока нет заведений." />
     </section>

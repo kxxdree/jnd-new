@@ -4,17 +4,17 @@ import { UiIcon, UiPhoto } from '@shared/ui'
 import { formatName } from '../model/dictionaries'
 import type { Venue } from '../model/types'
 
-/** Слот actions - для кнопок фич (например, «в избранное») поверх фото; square - прямые углы */
-defineProps<{ venue: Venue; active?: boolean; square?: boolean }>()
+/** Слот actions - для кнопок фич (например, «в избранное») поверх фото */
+defineProps<{ venue: Venue; active?: boolean }>()
 </script>
 
 <template>
   <NuxtLink
     :to="`/venues/${venue.slug}`"
     class="card card-hover group flex flex-col overflow-hidden p-2"
-    :class="[active && 'shadow-[0_0_0_1.5px_rgb(255_200_160/0.85),0_24px_50px_-15px_rgb(0_0_0/0.9)]', square && 'rounded-none']"
+    :class="active ? 'shadow-[0_0_0_1.5px_rgb(255_200_160/0.85),0_24px_50px_-15px_rgb(0_0_0/0.9)]' : ''"
   >
-    <UiPhoto :src="venue.photo" :alt="venue.name" class="aspect-4/3 sm:aspect-13/10" :class="square ? 'rounded-none' : 'rounded-[1.25rem]'">
+    <UiPhoto :src="venue.photo" :alt="venue.name" class="aspect-4/3 rounded-[1.25rem] sm:aspect-13/10">
       <div class="absolute top-3 right-3"><slot name="actions" /></div>
     </UiPhoto>
     <div class="flex min-w-0 flex-1 flex-col px-3 pt-4 pb-3">
