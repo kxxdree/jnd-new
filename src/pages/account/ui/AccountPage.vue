@@ -45,7 +45,7 @@ const history = computed(() => [
 
 // --- Избранное
 const favVenues = computed(() => venues.filter(v => favs.value.venues.includes(v.slug)))
-const favArtists = computed(() => artists.filter(a => favs.value.artists.includes(a.slug) || favs.value.follows.includes(a.slug)))
+const favArtists = computed(() => artists.filter(a => favs.value.artists.includes(a.slug)))
 </script>
 
 <template>
@@ -146,18 +146,18 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
             <p v-else class="card p-5 text-sm text-muted">Нажмите ♥ на карточке бара, чтобы сохранить его здесь.</p>
           </div>
           <div>
-            <h2 class="mb-4 text-2xl font-medium">Артисты и подписки</h2>
+            <h2 class="mb-4 text-2xl font-medium">Артисты</h2>
             <div v-if="favArtists.length" class="grid gap-3">
               <div v-for="a in favArtists" :key="a.slug" class="card flex items-center gap-4 p-2 pr-4">
                 <UiPhoto :src="a.photo" class="size-14 shrink-0 rounded-2xl" />
                 <NuxtLink :to="`/artists/${a.slug}`" class="min-w-0 flex-1">
                   <p class="truncate font-medium hover:text-sand">{{ a.name }}</p>
-                  <p class="text-xs text-muted">{{ favs.follows.includes(a.slug) ? 'Подписка на уведомления' : 'В избранном' }}</p>
+                  <p class="text-xs text-muted">В избранном</p>
                 </NuxtLink>
-                <button class="btn-dark" @click="toggle(favs.follows.includes(a.slug) ? 'follows' : 'artists', a.slug)">Убрать</button>
+                <button class="btn-dark" @click="toggle('artists', a.slug)">Убрать</button>
               </div>
             </div>
-            <p v-else class="card p-5 text-sm text-muted">Подпишитесь на группу, чтобы не пропустить её концерты.</p>
+            <p v-else class="card p-5 text-sm text-muted">Добавьте артиста в избранное на его странице, чтобы сохранить его здесь.</p>
           </div>
         </div>
       </div>

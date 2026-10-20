@@ -104,33 +104,9 @@ const stats = [
 
     <!-- АРТИСТЫ -->
     <section class="container-x mt-28">
-      <UiSectionHead eyebrow="Сцена" title="Артисты" subtitle="Подписывайтесь и узнавайте о концертах первыми" to="/artists" link-label="Все артисты" />
+      <UiSectionHead eyebrow="Сцена" title="Артисты" subtitle="Группы и музыканты, которых стоит услышать вживую" to="/artists" link-label="Все артисты" />
       <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <ArtistCard v-for="a in topArtists" :key="a.slug" :artist="a" :city-label="cityName(a.city)" />
-      </div>
-    </section>
-
-    <!-- ПАРТНЁРАМ -->
-    <section class="container-x mt-28">
-      <div class="relative overflow-hidden rounded-[2.5rem] p-8 rim shadow-[0_30px_80px_-30px_rgb(0_0_0/0.95)] [--lg-rim:var(--lg-rim-warm)] sm:p-14">
-        <div
-          class="absolute inset-0 -z-10 [background:radial-gradient(90%_110%_at_50%_130%,rgb(255_160_95/0.9),rgb(236_80_18/0.6)_30%,rgb(120_32_6/0.3)_58%,transparent_80%),linear-gradient(180deg,#0e0605,#1a0a05_60%,#2a1006)]"
-        />
-        <div class="pointer-events-none absolute inset-x-10 bottom-0 h-px bg-linear-to-r from-transparent via-[#ffc496] to-transparent opacity-80" />
-
-        <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgb(255_255_255/0.05),transparent_40%)]" />
-        <div class="relative grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-end">
-          <div>
-            <h2 class="h-display text-4xl sm:text-6xl">Вы бар или группа?</h2>
-            <p class="mt-4 max-w-lg text-white/90">
-              Публикуйте афишу, продавайте билеты и принимайте брони столиков. Joined приведёт к вам гостей, которые любят именно вашу музыку.
-            </p>
-          </div>
-          <div class="flex flex-col gap-2 sm:flex-row md:justify-end">
-            <NuxtLink to="/register?role=venue" class="btn-dark bg-black/70 py-3.5 hover:bg-black/85">Добавить заведение</NuxtLink>
-            <NuxtLink to="/register?role=artist" class="btn-dark py-3.5">Я музыкант</NuxtLink>
-          </div>
-        </div>
       </div>
     </section>
   </div>

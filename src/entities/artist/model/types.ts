@@ -22,6 +22,8 @@ export interface Artist {
   founded: number
   followers: number
   photo: string
+  /** ссылки на соцсети; кнопка показывается, только если ссылка задана */
+  socials?: { instagram?: string; telegram?: string }
   members: Member[]
   tracks: Track[]
   videos: { title: string; photo: string; duration: string }[]

@@ -3,7 +3,7 @@ import { UiIcon } from '@shared/ui'
 import { type FavoriteKind, useFavorites } from '../model/favorites'
 
 /** Кнопка-сердечко. variant="label" - широкая кнопка с подписью */
-const props = withDefaults(defineProps<{ kind: Exclude<FavoriteKind, 'follows'>; id: string; variant?: 'icon' | 'label' }>(), {
+const props = withDefaults(defineProps<{ kind: FavoriteKind; id: string; variant?: 'icon' | 'label' }>(), {
   variant: 'icon',
 })
 const { has, toggle } = useFavorites()
