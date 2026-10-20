@@ -45,48 +45,45 @@ const reset = () => {
     <section class="container-x pt-12 pb-10 text-center sm:pt-20">
       <h1 class="h-display text-[14vw] sm:text-8xl lg:text-[8.5rem]">Бары и сцены</h1>
       <p class="mt-4 text-white/80">{{ results.length }} {{ plural(results.length, ["место", "места", "мест"]) }} {{ city.where }}</p>
-    </section>
 
-    <!-- Панель поиска в стиле афиши: шапка, крупный поиск, жанры текстом, раскрывающиеся фильтры -->
-    <section class="container-x">
-      <div class="card relative z-30 rounded-none p-5 sm:p-8">
-        <div class="mb-6 flex items-start justify-between gap-4">
-          <!-- выпадашка города раскрывается вправо, поэтому селект слева -->
-          <CitySelect />
-        </div>
-
-        <div class="flex items-center gap-3 border-b border-line transition-colors focus-within:border-sand">
-          <UiIcon name="search" class="shrink-0 text-white/50" :size="22" />
+      <!-- Поиск как на странице артистов: строка с городом и фильтрами, жанры пилюлями -->
+      <div class="search-bar relative z-30 mx-auto mt-8 flex max-w-2xl flex-col gap-1 p-2 sm:flex-row">
+        <label class="flex flex-1 items-center gap-3 px-3">
+          <UiIcon name="search" class="text-white/60" :size="18" />
           <input
             v-model="filters.q"
             type="search"
-            placeholder="Название, улица, метро"
-            class="w-full min-w-0 bg-transparent py-3 font-display text-xl uppercase placeholder:text-white/25 sm:text-3xl"
+            placeholder="Название, улица или метро"
+            class="w-full bg-transparent py-2.5 text-sm placeholder:text-white/50"
             aria-label="Поиск по заведениям"
           />
-          <button class="pill shrink-0" :class="{ 'pill-active': panelOpen }" :aria-expanded="panelOpen" @click="toggleFilters">
-            <UiIcon name="filter" :size="16" /> <span class="hidden sm:inline">Фильтры</span>
+        </label>
+        <div class="flex gap-1">
+          <CitySelect class="flex-1 [&>button]:h-full [&>button]:w-full" />
+          <button class="pill" :class="{ 'pill-active': panelOpen }" :aria-expanded="panelOpen" @click="toggleFilters">
+            <UiIcon name="filter" :size="16" /> Фильтры
             <span v-if="extraCount" class="grid size-5 place-items-center rounded-md bg-accent text-[11px] text-white">{{ extraCount }}</span>
           </button>
         </div>
-
-        <UiPills v-model="filters.genres" :options="genres" multiple variant="text" class="mt-5" />
-
-        <!-- Десктоп: доп. фильтры раскрываются внутри панели -->
-        <Transition
-          enter-active-class="transition duration-400 ease-[var(--ease-liquid)]"
-          enter-from-class="opacity-0 -translate-y-2"
-          leave-active-class="transition duration-200"
-          leave-to-class="opacity-0"
-        >
-          <div v-if="panelOpen" class="mt-6 hidden border-t border-line pt-6 md:block">
-            <VenueFilters v-model="filters" />
-            <div class="mt-6 flex justify-end">
-              <button class="btn-ghost" @click="reset">Сбросить всё</button>
-            </div>
-          </div>
-        </Transition>
       </div>
+      <div class="mt-6"><UiPills v-model="filters.genres" :options="genres" multiple center /></div>
+    </section>
+
+    <section class="container-x">
+      <!-- Десктоп: раскрывающаяся панель доп. фильтров -->
+      <Transition
+        enter-active-class="transition duration-400 ease-[var(--ease-liquid)]"
+        enter-from-class="opacity-0 -translate-y-2"
+        leave-active-class="transition duration-200"
+        leave-to-class="opacity-0"
+      >
+        <div v-if="panelOpen" class="card mb-8 hidden p-6 md:block">
+          <VenueFilters v-model="filters" />
+          <div class="mt-6 flex justify-end">
+            <button class="btn-ghost" @click="reset">Сбросить всё</button>
+          </div>
+        </div>
+      </Transition>
 
       <!-- Мобайл: стеклянный лист -->
       <UiModal v-model="sheetOpen" title="Фильтры">
@@ -99,7 +96,7 @@ const reset = () => {
     </section>
 
     <!-- Результаты: сетка карточек -->
-    <section class="container-x mt-8">
+    <section class="container-x">
       <div v-if="results.length" class="grid sm:grid-cols-2 lg:grid-cols-3">
         <VenueCard v-for="v in results" :key="v.slug" :venue="v">
           <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>
