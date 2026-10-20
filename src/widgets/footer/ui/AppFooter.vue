@@ -27,7 +27,7 @@ const socials = [
       <div class="grid gap-10 p-6 sm:p-10 md:grid-cols-[1.2fr_auto_auto_1.3fr] md:gap-14 lg:p-14">
         <div>
           <UiLogo />
-          <p class="mt-4 max-w-xs text-sm text-soft">Бары, сцены и живая музыка в одном месте. Находите свой звук каждый вечер.</p>
+          <p class="mt-4 max-w-xs text-sm text-soft">Места, сцены и музыка в одном месте</p>
           <div class="mt-6 flex items-center gap-2">
             <a v-for="s in socials" :key="s.icon" href="#" :aria-label="s.label" class="btn-icon size-10"><UiIcon :name="s.icon" :size="18" /></a>
           </div>
@@ -59,11 +59,11 @@ const socials = [
 
       <!-- Гигантский стеклянный вордмарк -->
       <div class="pointer-events-none relative -mt-4 select-none overflow-hidden text-center" aria-hidden="true">
-        <span class="text-liquid block translate-y-[18%] text-[27vw] leading-[0.8] font-semibold tracking-[-0.07em] opacity-90 lg:text-[21rem]">JOINED</span>
+        <span class=" block translate-y-[18%] text-[27vw] leading-[0.8] font-semibold tracking-[-0.07em] opacity-90 lg:text-[21rem]">JOINED</span>
       </div>
 
       <div class="relative flex flex-wrap justify-between gap-2 border-t border-line px-6 py-5 text-xs text-white/60 sm:px-10 lg:px-14">
-        <span>© {{ new Date().getFullYear() }} Joined. Бары и живая музыка</span>
+        <span>© {{ new Date().getFullYear() }} Joined. Места и живая музыка</span>
         <span>18+</span>
       </div>
     </div>

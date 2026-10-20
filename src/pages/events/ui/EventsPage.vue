@@ -1,50 +1,56 @@
 <script setup lang="ts">
-import { useCurrentCity } from '@entities/city'
-import { byDateTime, type EventItem, events, isUpcoming, minPrice } from '@entities/event'
-import { getVenue } from '@entities/venue'
-import { CitySelect } from '@features/select-city'
-import { type GenreId, genres } from '@shared/config'
-import { addDays, dayNumber, formatPrice, formatWeekdayLong, isWeekend, monthShort, todayISO } from '@shared/lib'
-import { UiEmpty, UiPills } from '@shared/ui'
+import { useCurrentCity } from "@entities/city";
+import { byDateTime, type EventItem, events, isUpcoming, minPrice } from "@entities/event";
+import { getVenue } from "@entities/venue";
+import { CitySelect } from "@features/select-city";
+import { type GenreId, genres } from "@shared/config";
+import { addDays, dayNumber, formatPrice, formatWeekdayLong, isWeekend, monthShort, todayISO } from "@shared/lib";
+import { UiEmpty, UiPills } from "@shared/ui";
 
-useHead({ title: 'Афиша - Joined' })
+useHead({ title: "Афиша - Joined" });
 
-const route = useRoute()
-const { cityId, city } = useCurrentCity()
-const genre = ref<GenreId | ''>((route.query.genre as GenreId) ?? '')
+const route = useRoute();
+const { cityId, city } = useCurrentCity();
+const genre = ref<GenreId | "">((route.query.genre as GenreId) ?? "");
 
 const periods = [
-  { id: 'today', name: 'Сегодня' },
-  { id: 'tomorrow', name: 'Завтра' },
-  { id: 'weekend', name: 'Выходные' },
-  { id: 'week', name: 'Неделя' },
-  { id: 'month', name: 'Месяц' },
-] as const
-type Period = typeof periods[number]['id']
-const period = ref<Period | ''>('')
+  { id: "today", name: "Сегодня" },
+  { id: "tomorrow", name: "Завтра" },
+  { id: "weekend", name: "Выходные" },
+  { id: "week", name: "Неделя" },
+  { id: "month", name: "Месяц" },
+] as const;
+type Period = (typeof periods)[number]["id"];
+const period = ref<Period | "">("");
 
 const inPeriod = (date: string) => {
-  const today = todayISO()
+  const today = todayISO();
   switch (period.value) {
-    case 'today': return date === today
-    case 'tomorrow': return date === addDays(today, 1)
-    case 'weekend': return date <= addDays(today, 7) && isWeekend(date)
-    case 'week': return date <= addDays(today, 7)
-    case 'month': return date <= addDays(today, 31)
-    default: return true
+    case "today":
+      return date === today;
+    case "tomorrow":
+      return date === addDays(today, 1);
+    case "weekend":
+      return date <= addDays(today, 7) && isWeekend(date);
+    case "week":
+      return date <= addDays(today, 7);
+    case "month":
+      return date <= addDays(today, 31);
+    default:
+      return true;
   }
-}
+};
 
 const grouped = computed(() => {
   const list = events
-    .filter(e => isUpcoming(e) && getVenue(e.venue)?.city === cityId.value)
-    .filter(e => !genre.value || e.genres.includes(genre.value))
-    .filter(e => inPeriod(e.date))
-    .sort(byDateTime)
-  const map = new Map<string, EventItem[]>()
-  for (const e of list) map.set(e.date, [...(map.get(e.date) ?? []), e])
-  return [...map.entries()]
-})
+    .filter((e) => isUpcoming(e) && getVenue(e.venue)?.city === cityId.value)
+    .filter((e) => !genre.value || e.genres.includes(genre.value))
+    .filter((e) => inPeriod(e.date))
+    .sort(byDateTime);
+  const map = new Map<string, EventItem[]>();
+  for (const e of list) map.set(e.date, [...(map.get(e.date) ?? []), e]);
+  return [...map.entries()];
+});
 </script>
 
 <template>
@@ -62,7 +68,6 @@ const grouped = computed(() => {
       <div v-if="grouped.length" class="card p-5 sm:p-10">
         <div class="mb-6 flex items-start justify-between gap-4 text-xs tracking-widest uppercase sm:mb-8">
           <span class="text-soft">Афиша<br />{{ city.name }}</span>
-          <span class="text-sm tracking-normal normal-case">Joined™</span>
         </div>
 
         <div v-for="[date, items] in grouped" :key="date" class="grid gap-4 border-t border-line py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] md:gap-8">
@@ -83,7 +88,15 @@ const grouped = computed(() => {
         </div>
       </div>
       <UiEmpty v-else icon="calendar" title="Событий не найдено" text="Попробуйте выбрать другой жанр, дату или город.">
-        <button class="btn-dark" @click="genre = ''; period = ''">Сбросить фильтры</button>
+        <button
+          class="btn-dark"
+          @click="
+            genre = '';
+            period = '';
+          "
+        >
+          Сбросить фильтры
+        </button>
       </UiEmpty>
     </section>
   </div>

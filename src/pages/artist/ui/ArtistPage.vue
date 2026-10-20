@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { getArtist } from '@entities/artist'
 import { cityName } from '@entities/city'
-import { events, isUpcoming, minPrice } from '@entities/event'
+import { byDateTime, type EventItem, events, isUpcoming, minPrice } from '@entities/event'
 import { getVenue } from '@entities/venue'
 import { FavoriteButton } from '@features/favorites'
 import { genreName } from '@shared/config'
-import { dayNumber, formatPrice, formatWeekday, monthShort } from '@shared/lib'
+import { dayNumber, formatPrice, formatWeekdayLong, isWeekend, monthShort } from '@shared/lib'
 import { UiEmpty, UiIcon, UiPhoto, UiSectionHead } from '@shared/ui'
 
 const route = useRoute()
@@ -16,7 +16,12 @@ const a = found
 useHead({ title: `${a.name} - Joined`, meta: [{ name: 'description', content: a.short }] })
 
 const own = events.filter(e => e.artists.includes(a.slug))
-const upcoming = own.filter(isUpcoming).sort((x, y) => x.date.localeCompare(y.date))
+// концерты по датам, как на странице афиши
+const grouped = (() => {
+  const map = new Map<string, EventItem[]>()
+  for (const e of own.filter(isUpcoming).sort(byDateTime)) map.set(e.date, [...(map.get(e.date) ?? []), e])
+  return [...map.entries()]
+})()
 const where = (venueSlug: string) => {
   const v = getVenue(venueSlug)
   return v ? `${v.name} · ${cityName(v.city)}` : ''
@@ -49,20 +54,10 @@ const where = (venueSlug: string) => {
           </div>
 
           <div>
-            <dl class="space-y-6 text-sm leading-relaxed">
-              <div class="grid gap-2 sm:grid-cols-[8rem_1fr] sm:gap-4">
-                <dt class="flex items-baseline gap-2 text-xs text-muted uppercase">Кратко<span class="flex-1 border-b border-dotted border-white/30" /></dt>
-                <dd>{{ a.short }}</dd>
-              </div>
-              <div class="grid gap-2 sm:grid-cols-[8rem_1fr] sm:gap-4">
-                <dt class="flex items-baseline gap-2 text-xs text-muted uppercase">Жанры<span class="flex-1 border-b border-dotted border-white/30" /></dt>
-                <dd>{{ a.genres.map(genreName).join(', ') }}</dd>
-              </div>
-              <div class="grid gap-2 sm:grid-cols-[8rem_1fr] sm:gap-4">
-                <dt class="flex items-baseline gap-2 text-xs text-muted uppercase">Био<span class="flex-1 border-b border-dotted border-white/30" /></dt>
-                <dd class="text-soft">{{ a.bio }}</dd>
-              </div>
-            </dl>
+            <p class="text-sm leading-relaxed text-soft">{{ a.bio }}</p>
+            <p class="mt-4 flex flex-wrap gap-x-3 text-xs font-semibold tracking-wider uppercase">
+              <span v-for="g in a.genres" :key="g">{{ genreName(g) }}</span>
+            </p>
 
             <div class="mt-10 flex items-center gap-2">
               <FavoriteButton kind="artists" :id="a.slug" variant="label" />
@@ -80,24 +75,28 @@ const where = (venueSlug: string) => {
 
     <!-- Ближайшие выступления -->
     <section class="container-x mt-24">
-      <UiSectionHead eyebrow="Туры" title="Ближайшие концерты" />
-      <div v-if="upcoming.length" class="grid gap-3">
-        <div v-for="e in upcoming" :key="e.id" class="card card-hover flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
-          <div class="flex items-center gap-4 sm:w-56">
-            <div class="glass-chip w-16 shrink-0 rounded-2xl py-2 text-center">
-              <div class="text-3xl leading-none font-medium">{{ dayNumber(e.date) }}</div>
-              <div class="mt-1 text-[11px] text-muted uppercase">{{ monthShort(e.date) }}, {{ formatWeekday(e.date) }}</div>
-            </div>
-            <div class="min-w-0 sm:hidden">
-              <p class="font-medium">{{ e.title }}</p>
-              <p class="text-sm text-muted">{{ where(e.venue) }}</p>
-            </div>
+      <UiSectionHead eyebrow="Туры" title="Ближайшие выступления" />
+      <!-- В стиле афиши: крупная дата слева, концерты дня справа -->
+      <div v-if="grouped.length" class="card p-5 sm:p-10">
+        <div class="mb-6 flex items-start justify-between gap-4 text-xs tracking-widest uppercase sm:mb-8">
+          <span class="text-soft">Концерты<br />{{ a.name }}</span>
+        </div>
+
+        <div v-for="[date, items] in grouped" :key="date" class="grid gap-4 border-t border-line py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] md:gap-8">
+          <h2 class="h-display text-[16vw] leading-[0.85] uppercase sm:text-8xl lg:text-9xl" :class="isWeekend(date) ? 'text-sand' : ''">
+            {{ monthShort(date) }} {{ dayNumber(date) }}
+          </h2>
+
+          <div class="space-y-4 md:pt-2">
+            <p class="text-xs tracking-widest uppercase" :class="isWeekend(date) ? 'text-accent-text' : 'text-muted'">{{ formatWeekdayLong(date) }}</p>
+            <NuxtLink v-for="e in items" :key="e.id" :to="`/events/${e.id}`" class="group flex items-baseline justify-between gap-4">
+              <div class="min-w-0">
+                <p class="font-medium uppercase transition-colors group-hover:text-sand">{{ e.title }}</p>
+                <p class="mt-0.5 text-xs tracking-wider text-muted uppercase">{{ where(e.venue) }} · {{ e.time }}</p>
+              </div>
+              <span class="shrink-0 text-sm tabular-nums">от {{ formatPrice(minPrice(e)) }}</span>
+            </NuxtLink>
           </div>
-          <div class="hidden min-w-0 flex-1 sm:block">
-            <p class="truncate font-medium">{{ e.title }}</p>
-            <p class="truncate text-sm text-muted">{{ where(e.venue) }} · {{ e.time }}</p>
-          </div>
-          <NuxtLink :to="`/events/${e.id}`" class="btn-primary shrink-0">Билеты от {{ formatPrice(minPrice(e)) }}</NuxtLink>
         </div>
       </div>
       <UiEmpty v-else icon="calendar" title="Концертов пока нет" text="Новые даты появятся здесь, как только артист их объявит." />
