@@ -4,7 +4,6 @@ import { useCurrentCity } from "@entities/city";
 import { byDateTime, EventCard, events, isUpcoming } from "@entities/event";
 import { getVenue, VenueCard, venues } from "@entities/venue";
 import { FavoriteButton } from "@features/favorites";
-import { CitySelect } from "@features/select-city";
 import { UiBackdrop, UiEmpty, UiIcon, UiSectionHead } from "@shared/ui";
 
 useHead({ title: "JOINED" });
@@ -39,9 +38,6 @@ const stats = [
     <section class="relative isolate -mt-19 flex min-h-dvh flex-col justify-center pt-19 sm:-mt-20 sm:pt-20">
       <UiBackdrop />
       <div class="container-x py-14 text-center sm:py-24">
-        <div class="mb-8 flex justify-center">
-          <CitySelect />
-        </div>
         <h1 class="h-display text-[15vw] sm:text-8xl lg:text-[9rem]">Найди свой звук сегодня</h1>
         <p class="mx-auto mt-7 max-w-xl text-base text-white/80 sm:text-lg">
           Бары, концерты и джем-сейшены - по жанрам, с расписанием выступлений и билетами в пару кликов

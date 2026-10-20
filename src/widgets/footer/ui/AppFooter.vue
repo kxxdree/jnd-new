@@ -4,7 +4,7 @@ import { UiIcon, UiLogo } from "@shared/ui";
 
 const nav = [
   { to: "/", label: "Главная" },
-  { to: "/venues", label: "Бары" },
+  { to: "/venues", label: "Места" },
   { to: "/events", label: "Афиша" },
   { to: "/artists", label: "Артисты" },
 ];

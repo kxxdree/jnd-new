@@ -23,7 +23,7 @@ const tabs = computed(() => [
   { id: 'profile' as Tab, name: isVenue.value ? 'Профиль заведения' : 'Профиль группы', icon: 'edit' },
   { id: 'events' as Tab, name: 'Мероприятия', icon: 'calendar' },
   ...(isVenue.value ? [{ id: 'bookings' as Tab, name: 'Бронирования', icon: 'users', badge: incoming.value.filter(b => b.status === 'new').length }] : []),
-  { id: 'media' as Tab, name: isVenue.value ? 'Фото и меню' : 'Треки и медиа', icon: 'image' },
+  { id: 'media' as Tab, name: isVenue.value ? 'Фото и меню' : 'Медиа', icon: 'image' },
 ])
 const tab = ref<Tab>('overview')
 
@@ -227,21 +227,13 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
               <UiPhoto v-for="src in venue.gallery" :key="src" :src="src" class="aspect-square rounded-2xl" />
             </div>
           </div>
-          <div class="card p-5 sm:p-6">
-            <h2 class="mb-4 text-xl font-medium">{{ isVenue ? 'Меню бара' : 'Дискография' }}</h2>
+          <div v-if="isVenue" class="card p-5 sm:p-6">
+            <h2 class="mb-4 text-xl font-medium">Меню бара</h2>
             <div class="divide-y divide-line">
-              <template v-if="isVenue">
-                <div v-for="m in venue.menu.bar" :key="m.name" class="flex items-center justify-between gap-4 py-3">
-                  <span class="truncate">{{ m.name }}</span>
-                  <span class="text-soft">{{ formatPrice(m.price) }}</span>
-                </div>
-              </template>
-              <template v-else>
-                <div v-for="t in artist.tracks" :key="t.title" class="flex items-center justify-between gap-4 py-3">
-                  <span class="truncate">{{ t.title }} <span class="text-muted">· {{ t.album }}</span></span>
-                  <span class="text-soft">{{ t.duration }}</span>
-                </div>
-              </template>
+              <div v-for="m in venue.menu.bar" :key="m.name" class="flex items-center justify-between gap-4 py-3">
+                <span class="truncate">{{ m.name }}</span>
+                <span class="text-soft">{{ formatPrice(m.price) }}</span>
+              </div>
             </div>
           </div>
         </div>

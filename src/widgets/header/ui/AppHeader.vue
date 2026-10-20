@@ -9,7 +9,7 @@ const scrolled = ref(false)
 
 const links = [
   { to: '/', label: 'Главная' },
-  { to: '/venues', label: 'Бары' },
+  { to: '/venues', label: 'Места' },
   { to: '/events', label: 'Афиша' },
   { to: '/artists', label: 'Артисты' },
 ]

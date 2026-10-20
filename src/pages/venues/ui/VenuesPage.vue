@@ -44,7 +44,7 @@ const reset = () => {
   <div>
     <section class="container-x pt-12 pb-10 text-center sm:pt-20">
       <h1 class="h-display text-[14vw] sm:text-8xl lg:text-[8.5rem]">Бары и сцены</h1>
-      <p class="mt-4 text-white/80">{{ results.length }} {{ plural(results.length, ["заведение", "заведения", "заведений"]) }} {{ city.where }}</p>
+      <p class="mt-4 text-white/80">{{ results.length }} {{ plural(results.length, ["место", "места", "мест"]) }} {{ city.where }}</p>
     </section>
 
     <!-- Панель поиска -->
