@@ -103,7 +103,7 @@ const reset = () => {
           <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>
         </VenueCard>
       </div>
-      <UiEmpty v-else icon="glass" title="Ничего не нашлось" text="Попробуйте убрать часть фильтров или выбрать другой город.">
+      <UiEmpty v-else icon="glass" title="Ничего не нашлось">
         <button class="btn-dark" @click="reset">Сбросить фильтры</button>
       </UiEmpty>
     </section>
