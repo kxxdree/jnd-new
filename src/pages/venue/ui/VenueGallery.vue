@@ -27,8 +27,8 @@ const step = (d: number) => {
     <UiModal v-model="open" :title="`${(current ?? 0) + 1} / ${photos.length}`" wide>
       <UiPhoto v-if="current !== null" :src="photos[current]!" class="aspect-4/3 rounded-3xl" />
       <div class="mt-4 flex justify-between">
-        <button class="btn-dark" :disabled="!current" @click="step(-1)"><UiIcon name="chevron-left" :size="16" /> Назад</button>
-        <button class="btn-dark" :disabled="current === photos.length - 1" @click="step(1)">Вперёд <UiIcon name="chevron-right" :size="16" /></button>
+        <button class="btn-icon" :disabled="!current" aria-label="Предыдущее фото" @click="step(-1)"><UiIcon name="chevron-left" :size="20" /></button>
+        <button class="btn-icon" :disabled="current === photos.length - 1" aria-label="Следующее фото" @click="step(1)"><UiIcon name="chevron-right" :size="20" /></button>
       </div>
     </UiModal>
   </div>
