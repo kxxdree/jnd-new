@@ -138,7 +138,7 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
         <div v-else-if="tab === 'favorites'" class="grid gap-10">
           <div>
             <h2 class="mb-4 text-2xl font-medium">Заведения</h2>
-            <div v-if="favVenues.length" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div v-if="favVenues.length" class="grid sm:grid-cols-2 xl:grid-cols-3">
               <VenueCard v-for="v in favVenues" :key="v.slug" :venue="v">
                 <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>
               </VenueCard>

@@ -11,7 +11,7 @@ defineProps<{ artist: Artist; cityLabel?: string }>()
   <NuxtLink :to="`/artists/${artist.slug}`" class="card card-hover group flex flex-col overflow-hidden rounded-none">
     <UiPhoto :src="artist.photo" :alt="artist.name" class="aspect-square">
       <div class="absolute inset-0 bg-linear-to-t from-black/75 via-black/15 to-transparent" />
-      <h3 class="absolute inset-x-0 bottom-0 line-clamp-3 p-3 font-display text-lg leading-[0.95] font-semibold tracking-[-0.02em] wrap-break-word hyphens-auto uppercase sm:p-4 sm:text-xl lg:p-5 lg:text-[1.65rem]" lang="ru">
+      <h3 class="absolute inset-x-0 bottom-0 line-clamp-3 transition-colors group-hover:text-sand p-3 font-display text-lg leading-[0.95] font-semibold tracking-[-0.02em] wrap-break-word hyphens-auto uppercase sm:p-4 sm:text-xl lg:p-5 lg:text-[1.65rem]" lang="ru">
         {{ artist.name }}
       </h3>
     </UiPhoto>

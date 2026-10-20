@@ -10,11 +10,11 @@ defineProps<{ venue: Venue }>()
 
 <template>
   <!-- Карточка-постер, как у событий: фото с крупным названием + плашка с адресом и жанрами -->
-  <NuxtLink :to="`/venues/${venue.slug}`" class="card card-hover group flex flex-col overflow-hidden rounded-none">
+  <NuxtLink :to="`/venues/${venue.slug}`" class="card group flex flex-col overflow-hidden rounded-none">
     <UiPhoto :src="venue.photo" :alt="venue.name" class="aspect-5/4">
       <div class="absolute inset-0 bg-linear-to-t from-black/75 via-black/15 to-transparent" />
       <div class="absolute top-3 right-3"><slot name="actions" /></div>
-      <h3 class="absolute inset-x-0 bottom-0 line-clamp-3 p-5 font-display text-2xl leading-[0.95] font-semibold tracking-[-0.02em] wrap-break-word hyphens-auto uppercase sm:text-[1.65rem]" lang="ru">
+      <h3 class="absolute inset-x-0 bottom-0 line-clamp-3 transition-colors group-hover:text-sand p-5 font-display text-2xl leading-[0.95] font-semibold tracking-[-0.02em] wrap-break-word hyphens-auto uppercase sm:text-[1.65rem]" lang="ru">
         {{ venue.name }}
       </h3>
     </UiPhoto>

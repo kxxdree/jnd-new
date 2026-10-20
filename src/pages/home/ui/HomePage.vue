@@ -2,7 +2,7 @@
 import { artists } from "@entities/artist";
 import { useCurrentCity } from "@entities/city";
 import { byDateTime, EventCard, events, isUpcoming } from "@entities/event";
-import { getVenue, VenuePosterCard, venues } from "@entities/venue";
+import { getVenue, VenueCard, venues } from "@entities/venue";
 import { FavoriteButton } from "@features/favorites";
 import { UiBackdrop, UiEmpty, UiIcon, UiSectionHead } from "@shared/ui";
 
@@ -62,7 +62,7 @@ const stats = [
     <!-- БЛИЖАЙШИЕ СОБЫТИЯ -->
     <section class="container-x mt-28">
       <UiSectionHead eyebrow="Афиша" title="Ближайшие события" to="/events" link-label="Вся афиша" />
-      <div v-if="upcoming.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div v-if="upcoming.length" class="grid sm:grid-cols-2 lg:grid-cols-3">
         <EventCard v-for="e in upcoming" :key="e.id" :event="e" :venue-name="getVenue(e.venue)?.name" />
       </div>
       <UiEmpty v-else icon="calendar" title="Пока нет событий" text="Попробуйте другой город - афиша обновляется каждый день." />
@@ -88,10 +88,10 @@ const stats = [
         to="/venues"
         link-label="Все заведения"
       />
-      <div v-if="popularVenues.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <VenuePosterCard v-for="v in popularVenues" :key="v.slug" :venue="v">
+      <div v-if="popularVenues.length" class="grid sm:grid-cols-2 lg:grid-cols-3">
+        <VenueCard v-for="v in popularVenues" :key="v.slug" :venue="v">
           <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>
-        </VenuePosterCard>
+        </VenueCard>
       </div>
       <UiEmpty v-else icon="glass" title="Ничего не нашлось" text="В этом городе пока нет заведений." />
     </section>
