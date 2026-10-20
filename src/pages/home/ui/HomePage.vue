@@ -43,7 +43,7 @@ const stats = [
           Бары, концерты и джем-сейшены - по жанрам, с расписанием выступлений и билетами в пару кликов
         </p> -->
 
-        <form class="glass lg-refract mx-auto mt-10 flex max-w-xl gap-2 rounded-full p-2 [--lg-refract-blur:12px]" role="search" @submit.prevent="search">
+        <form class="search-bar mx-auto mt-10 flex max-w-xl gap-2 p-2" role="search" @submit.prevent="search">
           <label class="flex flex-1 items-center gap-3 pl-4">
             <UiIcon name="search" class="text-white/60" />
             <input

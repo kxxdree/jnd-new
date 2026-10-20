@@ -49,13 +49,13 @@ const artistNames = (e: EventItem) =>
         <button
           v-for="d in week"
           :key="d"
-          class="rim flex flex-col items-center rounded-2xl py-3 transition-all duration-300"
-          :class="selected === d ? 'pill-active' : 'raised'"
+          class="flex flex-col items-center rounded-lg py-3 transition-colors duration-300"
+          :class="selected === d ? 'bg-white text-ink' : 'bg-white/10 hover:bg-white/15'"
           @click="selected = d"
         >
-          <span class="text-[11px] uppercase" :class="selected === d ? 'text-white/85' : isWeekend(d) ? 'text-accent-text' : 'text-muted'">{{ formatWeekday(d) }}</span>
+          <span class="text-[11px] uppercase" :class="selected === d ? 'text-ink/70' : isWeekend(d) ? 'text-accent-text' : 'text-muted'">{{ formatWeekday(d) }}</span>
           <span class="mt-1 text-lg font-medium">{{ dayNumber(d) }}</span>
-          <span class="mt-1 size-1.5 rounded-full" :class="byDate.get(d) ? (selected === d ? 'bg-white' : 'bg-accent shadow-[0_0_6px_#ff4d00]') : ''" />
+          <span class="mt-1 size-1.5 rounded-full" :class="byDate.get(d) ? 'bg-accent' : ''" />
         </button>
       </div>
 
@@ -69,13 +69,13 @@ const artistNames = (e: EventItem) =>
             <span v-if="!d" />
             <button
               v-else
-              class="relative aspect-square rounded-2xl text-sm transition-all duration-300 disabled:opacity-25"
-              :class="selected === d ? 'pill-active' : byDate.get(d) ? 'bg-white/12 hover:bg-white/18' : 'bg-white/4'"
+              class="relative aspect-square rounded-lg text-sm transition-colors duration-300 disabled:opacity-25"
+              :class="selected === d ? 'bg-white text-ink' : byDate.get(d) ? 'bg-white/12 hover:bg-white/18' : 'bg-white/4'"
               :disabled="d < today"
               @click="selected = d"
             >
               {{ dayNumber(d) }}
-              <span v-if="byDate.get(d)" class="absolute bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full" :class="selected === d ? 'bg-white' : 'bg-accent'" />
+              <span v-if="byDate.get(d)" class="absolute bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-accent" />
             </button>
           </template>
         </div>

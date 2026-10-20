@@ -1,8 +1,8 @@
 <script setup lang="ts" generic="T extends string">
-/** Ряд стеклянных пилюль-фильтров. Пустая строка / пустой массив = «Все» */
+/** Ряд стеклянных пилюль-фильтров. Пустая строка / пустой массив = «Все»; variant text - постерные текстовые переключатели */
 const props = withDefaults(
-  defineProps<{ options: readonly { id: T; name: string }[]; allLabel?: string | false; center?: boolean; multiple?: boolean }>(),
-  { allLabel: 'Все', center: false, multiple: false },
+  defineProps<{ options: readonly { id: T; name: string }[]; allLabel?: string | false; center?: boolean; multiple?: boolean; variant?: 'pill' | 'text' }>(),
+  { allLabel: 'Все', center: false, multiple: false, variant: 'pill' },
 )
 const model = defineModel<T | '' | T[]>({ required: true })
 
@@ -14,6 +14,9 @@ const isActive = (id: T | '') => {
   return model.value === id
 }
 
+// для текстового варианта «Все» - обычный пункт списка
+const items = computed(() => (props.allLabel === false ? props.options : [{ id: '' as T | '', name: props.allLabel }, ...props.options]))
+
 const select = (id: T | '') => {
   if (!props.multiple) return (model.value = id)
   const list = (model.value as T[]) ?? []
@@ -23,7 +26,21 @@ const select = (id: T | '') => {
 </script>
 
 <template>
-  <div class="scroll-x -mx-4 px-4 sm:mx-0 sm:flex-wrap sm:px-0" :class="center ? 'sm:justify-center' : ''" role="group">
+  <div v-if="variant === 'text'" class="flex flex-wrap gap-x-5 gap-y-2" :class="center ? 'justify-center' : ''" role="group">
+    <button
+      v-for="o in items"
+      :key="o.id"
+      type="button"
+      class="flex items-center gap-2 py-1 text-xs font-semibold tracking-wider uppercase transition-colors"
+      :class="isActive(o.id) ? 'text-white' : 'text-muted hover:text-white'"
+      :aria-pressed="isActive(o.id)"
+      @click="select(o.id)"
+    >
+      <span class="size-1.5 rounded-full transition-colors" :class="isActive(o.id) ? 'bg-accent' : 'bg-white/20'" />
+      {{ o.name }}
+    </button>
+  </div>
+  <div v-else class="scroll-x -mx-4 px-4 sm:mx-0 sm:flex-wrap sm:px-0" :class="center ? 'sm:justify-center' : ''" role="group">
     <button v-if="allLabel !== false" type="button" class="pill" :class="{ 'pill-active': isActive('') }" :aria-pressed="isActive('')" @click="select('')">
       {{ allLabel }}
     </button>

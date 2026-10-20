@@ -184,7 +184,7 @@ const transactions = [
 
         <!-- ПОЛЬЗОВАТЕЛИ -->
         <div v-else-if="tab === 'users'" class="grid gap-4">
-          <label class="glass flex items-center gap-3 rounded-full px-5">
+          <label class="search-bar flex items-center gap-3 px-5">
             <UiIcon name="search" class="text-muted" :size="18" />
             <input v-model="userQuery" type="search" placeholder="Имя или email" class="w-full bg-transparent py-3 text-sm placeholder:text-muted">
           </label>

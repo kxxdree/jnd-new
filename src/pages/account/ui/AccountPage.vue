@@ -52,7 +52,7 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
   <section class="container-x pt-10">
     <!-- Шапка профиля -->
     <div class="card mb-8 flex flex-wrap items-center gap-5 p-5 sm:p-8">
-      <div class="pill-active grid size-20 place-items-center rounded-full text-3xl font-semibold uppercase">{{ user?.name[0] }}</div>
+      <div class="grid size-20 place-items-center rounded-full bg-accent text-3xl font-semibold uppercase">{{ user?.name[0] }}</div>
       <div class="min-w-0 flex-1">
         <h1 class="h-display truncate text-4xl sm:text-6xl">{{ user?.name }}</h1>
         <p class="mt-1 text-muted">{{ user?.email }} · {{ user ? roleNames[user.role] : '' }}</p>

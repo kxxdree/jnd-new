@@ -47,44 +47,46 @@ const reset = () => {
       <p class="mt-4 text-white/80">{{ results.length }} {{ plural(results.length, ["место", "места", "мест"]) }} {{ city.where }}</p>
     </section>
 
-    <!-- Панель поиска -->
+    <!-- Панель поиска в стиле афиши: шапка, крупный поиск, жанры текстом, раскрывающиеся фильтры -->
     <section class="container-x">
-      <div class="glass z-30 flex flex-col gap-2 rounded-4xl p-2 sm:flex-row sm:items-center sm:rounded-full">
-        <CitySelect />
-        <label class="flex flex-1 items-center gap-3 px-3">
-          <UiIcon name="search" class="text-white/60" :size="18" />
+      <div class="card relative z-30 rounded-none p-5 sm:p-8">
+        <div class="mb-6 flex items-start justify-between gap-4">
+          <!-- выпадашка города раскрывается вправо, поэтому селект слева -->
+          <CitySelect />
+        </div>
+
+        <div class="flex items-center gap-3 border-b border-line transition-colors focus-within:border-sand">
+          <UiIcon name="search" class="shrink-0 text-white/50" :size="22" />
           <input
             v-model="filters.q"
             type="search"
-            placeholder="Название, улица или метро"
-            class="w-full bg-transparent py-2.5 text-sm placeholder:text-white/50"
+            placeholder="Название, улица, метро"
+            class="w-full min-w-0 bg-transparent py-3 font-display text-xl uppercase placeholder:text-white/25 sm:text-3xl"
             aria-label="Поиск по заведениям"
           />
-        </label>
-        <button class="pill justify-center" :class="{ 'pill-active': panelOpen }" @click="toggleFilters">
-          <UiIcon name="filter" :size="16" /> Фильтры
-          <span v-if="extraCount" class="grid size-5 place-items-center rounded-full bg-white text-xs text-black">{{ extraCount }}</span>
-        </button>
-      </div>
-
-      <div class="mt-4">
-        <UiPills v-model="filters.genres" :options="genres" multiple />
-      </div>
-
-      <!-- Десктоп: раскрывающаяся панель -->
-      <Transition
-        enter-active-class="transition duration-400 ease-[var(--ease-liquid)]"
-        enter-from-class="opacity-0 -translate-y-2"
-        leave-active-class="transition duration-200"
-        leave-to-class="opacity-0"
-      >
-        <div v-if="panelOpen" class="card mt-4 hidden p-6 md:block">
-          <VenueFilters v-model="filters" />
-          <div class="mt-6 flex justify-end">
-            <button class="btn-ghost" @click="reset">Сбросить всё</button>
-          </div>
+          <button class="pill shrink-0" :class="{ 'pill-active': panelOpen }" :aria-expanded="panelOpen" @click="toggleFilters">
+            <UiIcon name="filter" :size="16" /> <span class="hidden sm:inline">Фильтры</span>
+            <span v-if="extraCount" class="grid size-5 place-items-center rounded-md bg-accent text-[11px] text-white">{{ extraCount }}</span>
+          </button>
         </div>
-      </Transition>
+
+        <UiPills v-model="filters.genres" :options="genres" multiple variant="text" class="mt-5" />
+
+        <!-- Десктоп: доп. фильтры раскрываются внутри панели -->
+        <Transition
+          enter-active-class="transition duration-400 ease-[var(--ease-liquid)]"
+          enter-from-class="opacity-0 -translate-y-2"
+          leave-active-class="transition duration-200"
+          leave-to-class="opacity-0"
+        >
+          <div v-if="panelOpen" class="mt-6 hidden border-t border-line pt-6 md:block">
+            <VenueFilters v-model="filters" />
+            <div class="mt-6 flex justify-end">
+              <button class="btn-ghost" @click="reset">Сбросить всё</button>
+            </div>
+          </div>
+        </Transition>
+      </div>
 
       <!-- Мобайл: стеклянный лист -->
       <UiModal v-model="sheetOpen" title="Фильтры">
