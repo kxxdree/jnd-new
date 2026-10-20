@@ -60,7 +60,7 @@ const stats = [
     </section>
 
     <!-- БЛИЖАЙШИЕ СОБЫТИЯ -->
-    <section class="container-x">
+    <section class="container-x mt-28">
       <UiSectionHead eyebrow="Афиша" title="Ближайшие события" to="/events" link-label="Вся афиша" />
       <div v-if="upcoming.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <EventCard v-for="e in upcoming" :key="e.id" :event="e" :venue-name="getVenue(e.venue)?.name" />
