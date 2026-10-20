@@ -9,7 +9,7 @@ const scrolled = ref(false)
 
 const links = [
   { to: '/', label: 'Главная' },
-  { to: '/venues', label: 'Бары' },
+  { to: '/venues', label: 'Места' },
   { to: '/events', label: 'Афиша' },
   { to: '/artists', label: 'Артисты' },
 ]
@@ -40,7 +40,7 @@ watch(open, (v) => {
   <header class="sticky top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4">
     <!-- Плавающая стеклянная капсула -->
     <div
-      class="glass lg-refract mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 rounded-full pr-2 pl-5 transition-[box-shadow,background] duration-500 [--lg-refract-blur:14px] sm:pl-6"
+      class="glass lg-refract mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 rounded-3xl pr-3 pl-5 transition-[box-shadow,background] duration-500 [--lg-refract-blur:14px] sm:pl-6"
       :class="scrolled ? '[--lg-tint:rgb(16_16_18/0.66)]' : '[--lg-tint:rgb(16_16_18/0.42)]'"
     >
       <UiLogo />

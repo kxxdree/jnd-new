@@ -43,10 +43,10 @@ const onPaid = () => {
           role="radio"
           :aria-checked="selected === t.id"
           :disabled="!t.left"
-          class="rim rounded-3xl p-4 text-left transition-all duration-300 disabled:opacity-40"
+          class="rounded-xl border p-4 text-left transition-colors duration-300 disabled:opacity-40"
           :class="selected === t.id
-            ? 'raised [background:linear-gradient(180deg,rgb(255_140_70/0.26),rgb(255_90_20/0.1)_50%,rgb(0_0_0/0.14)),rgb(46_24_14/0.8)] [--lg-rim:var(--lg-rim-warm)]'
-            : 'raised'"
+            ? 'border-accent bg-accent/10'
+            : 'border-transparent bg-white/10 hover:bg-white/15'"
           @click="selected = t.id"
         >
           <div class="flex items-center justify-between gap-3">
@@ -62,7 +62,7 @@ const onPaid = () => {
 
       <div class="mt-5 flex items-center justify-between">
         <span class="text-sm text-soft">Количество</span>
-        <div class="glass-chip flex items-center gap-1 rounded-full p-1">
+        <div class="flex items-center gap-1">
           <button class="btn-icon size-9" :disabled="qty <= 1" aria-label="Меньше" @click="qty--"><UiIcon name="minus" :size="16" /></button>
           <span class="w-8 text-center font-medium">{{ qty }}</span>
           <button class="btn-icon size-9" :disabled="qty >= maxQty" aria-label="Больше" @click="qty++"><UiIcon name="plus" :size="16" /></button>

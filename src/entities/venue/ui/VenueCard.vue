@@ -1,32 +1,31 @@
 <script setup lang="ts">
 import { genreName } from '@shared/config'
-import { UiIcon, UiPhoto } from '@shared/ui'
+import { UiPhoto } from '@shared/ui'
 import { formatName } from '../model/dictionaries'
 import type { Venue } from '../model/types'
 
 /** Слот actions - для кнопок фич (например, «в избранное») поверх фото */
-defineProps<{ venue: Venue; active?: boolean }>()
+defineProps<{ venue: Venue }>()
 </script>
 
 <template>
-  <NuxtLink
-    :to="`/venues/${venue.slug}`"
-    class="card card-hover group flex flex-col overflow-hidden p-2"
-    :class="active ? 'shadow-[0_0_0_1.5px_rgb(255_200_160/0.85),0_24px_50px_-15px_rgb(0_0_0/0.9)]' : ''"
-  >
-    <UiPhoto :src="venue.photo" :alt="venue.name" class="aspect-4/3 rounded-[1.25rem] sm:aspect-13/10">
+  <!-- Карточка-постер, как у событий: фото с крупным названием + плашка с адресом и жанрами -->
+  <NuxtLink :to="`/venues/${venue.slug}`" class="card group flex flex-col overflow-hidden rounded-none">
+    <UiPhoto :src="venue.photo" :alt="venue.name" class="aspect-5/4">
+      <div class="absolute inset-0 bg-linear-to-t from-black/75 via-black/15 to-transparent" />
       <div class="absolute top-3 right-3"><slot name="actions" /></div>
+      <h3 class="absolute inset-x-0 bottom-0 line-clamp-3 transition-colors group-hover:text-sand p-5 font-display text-2xl leading-[0.95] font-semibold tracking-[-0.02em] wrap-break-word hyphens-auto uppercase sm:text-[1.65rem]" lang="ru">
+        {{ venue.name }}
+      </h3>
     </UiPhoto>
-    <div class="flex min-w-0 flex-1 flex-col px-3 pt-4 pb-3">
-      <div class="mb-3 flex flex-wrap gap-1.5">
-        <span class="tag">{{ formatName(venue.format) }}</span>
-        <span v-for="g in venue.genres.slice(0, 2)" :key="g" class="tag tag-neutral">{{ genreName(g) }}</span>
-      </div>
-      <h3 class="text-lg leading-snug font-medium transition-colors group-hover:text-sand">{{ venue.name }}</h3>
-      <p class="mt-1 line-clamp-2 text-sm text-soft">{{ venue.short }}</p>
-      <div class="mt-auto flex items-center gap-3 pt-4 text-xs text-muted">
-        <UiIcon name="pin" :size="14" />
-        <span class="truncate">{{ venue.metro ? `м. ${venue.metro}` : venue.address }}</span>
+
+    <div class="flex flex-1 flex-col justify-end p-5">
+      <div class="grid min-w-0 gap-0.5 text-[11px] leading-tight font-semibold tracking-wider uppercase">
+        <span class="text-soft">{{ formatName(venue.format) }}</span>
+        <span class="truncate text-muted">{{ venue.metro ? `м. ${venue.metro}` : venue.address }}</span>
+        <span class="mt-2 flex flex-wrap gap-x-2">
+          <span v-for="g in venue.genres.slice(0, 2)" :key="g">{{ genreName(g) }}</span>
+        </span>
       </div>
     </div>
   </NuxtLink>

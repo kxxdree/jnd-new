@@ -4,7 +4,6 @@ import { useCurrentCity } from "@entities/city";
 import { byDateTime, EventCard, events, isUpcoming } from "@entities/event";
 import { getVenue, VenueCard, venues } from "@entities/venue";
 import { FavoriteButton } from "@features/favorites";
-import { CitySelect } from "@features/select-city";
 import { UiBackdrop, UiEmpty, UiIcon, UiSectionHead } from "@shared/ui";
 
 useHead({ title: "JOINED" });
@@ -39,21 +38,18 @@ const stats = [
     <section class="relative isolate -mt-19 flex min-h-dvh flex-col justify-center pt-19 sm:-mt-20 sm:pt-20">
       <UiBackdrop />
       <div class="container-x py-14 text-center sm:py-24">
-        <div class="mb-8 flex justify-center">
-          <CitySelect />
-        </div>
         <h1 class="h-display text-[15vw] sm:text-8xl lg:text-[9rem]">Найди свой звук сегодня</h1>
-        <p class="mx-auto mt-7 max-w-xl text-base text-white/80 sm:text-lg">
+        <!-- <p class="mx-auto mt-7 max-w-xl text-base text-white/80 sm:text-lg">
           Бары, концерты и джем-сейшены - по жанрам, с расписанием выступлений и билетами в пару кликов
-        </p>
+        </p> -->
 
-        <form class="glass lg-refract mx-auto mt-10 flex max-w-xl gap-2 rounded-full p-2 [--lg-refract-blur:12px]" role="search" @submit.prevent="search">
+        <form class="search-bar mx-auto mt-10 flex max-w-xl gap-2 p-2" role="search" @submit.prevent="search">
           <label class="flex flex-1 items-center gap-3 pl-4">
             <UiIcon name="search" class="text-white/60" />
             <input
               v-model="query"
               type="search"
-              placeholder="Бар, артист или жанр"
+              placeholder="Место, артист или жанр"
               class="w-full bg-transparent py-2 text-sm placeholder:text-white/50"
               aria-label="Поиск"
             />
@@ -64,9 +60,9 @@ const stats = [
     </section>
 
     <!-- БЛИЖАЙШИЕ СОБЫТИЯ -->
-    <section class="container-x">
+    <section class="container-x mt-28">
       <UiSectionHead eyebrow="Афиша" title="Ближайшие события" to="/events" link-label="Вся афиша" />
-      <div v-if="upcoming.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div v-if="upcoming.length" class="grid sm:grid-cols-2 lg:grid-cols-3">
         <EventCard v-for="e in upcoming" :key="e.id" :event="e" :venue-name="getVenue(e.venue)?.name" />
       </div>
       <UiEmpty v-else icon="calendar" title="Пока нет событий" text="Попробуйте другой город - афиша обновляется каждый день." />
@@ -92,7 +88,7 @@ const stats = [
         to="/venues"
         link-label="Все заведения"
       />
-      <div v-if="popularVenues.length" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div v-if="popularVenues.length" class="grid sm:grid-cols-2 lg:grid-cols-3">
         <VenueCard v-for="v in popularVenues" :key="v.slug" :venue="v">
           <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>
         </VenueCard>

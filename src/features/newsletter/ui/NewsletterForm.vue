@@ -12,7 +12,7 @@ const submit = () => {
 </script>
 
 <template>
-  <form class="glass-chip flex gap-1.5 rounded-full p-1.5" @submit.prevent="submit">
+  <form class="search-bar flex gap-1.5 p-1.5" @submit.prevent="submit">
     <input v-model="email" type="email" placeholder="sample@gmail.com" aria-label="Email" class="min-w-0 flex-1 bg-transparent px-4 text-sm placeholder:text-white/50">
     <button class="btn-primary shrink-0" type="submit">Подписаться</button>
   </form>

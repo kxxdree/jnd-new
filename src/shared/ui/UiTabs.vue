@@ -11,8 +11,8 @@ const model = defineModel<T>({ required: true })
     <button
       v-for="t in tabs"
       :key="t.id"
-      class="pill gap-3 lg:justify-start lg:rounded-2xl lg:py-3"
-      :class="model === t.id ? 'pill-active' : 'lg:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:before:hidden'"
+      class="pill gap-3 lg:justify-start lg:py-3"
+      :class="model === t.id ? 'pill-active' : 'lg:bg-transparent lg:hover:bg-white/10'"
       :aria-pressed="model === t.id"
       @click="model = t.id"
     >
@@ -20,8 +20,8 @@ const model = defineModel<T>({ required: true })
       {{ t.name }}
       <span
         v-if="t.badge"
-        class="ml-auto grid min-w-5 place-items-center rounded-full px-1.5 text-xs"
-        :class="model === t.id ? 'bg-white/90 text-black' : 'bg-accent/25 text-[#ffc8a3]'"
+        class="ml-auto grid min-w-5 place-items-center rounded-md px-1.5 text-xs"
+        :class="model === t.id ? 'bg-accent text-white' : 'bg-accent/25 text-[#ffc8a3]'"
       >{{ t.badge }}</span>
     </button>
   </nav>

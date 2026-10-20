@@ -52,7 +52,7 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
   <section class="container-x pt-10">
     <!-- Шапка профиля -->
     <div class="card mb-8 flex flex-wrap items-center gap-5 p-5 sm:p-8">
-      <div class="pill-active grid size-20 place-items-center rounded-full text-3xl font-semibold uppercase">{{ user?.name[0] }}</div>
+      <div class="grid size-20 place-items-center rounded-full bg-accent text-3xl font-semibold uppercase">{{ user?.name[0] }}</div>
       <div class="min-w-0 flex-1">
         <h1 class="h-display truncate text-4xl sm:text-6xl">{{ user?.name }}</h1>
         <p class="mt-1 text-muted">{{ user?.email }} · {{ user ? roleNames[user.role] : '' }}</p>
@@ -138,7 +138,7 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
         <div v-else-if="tab === 'favorites'" class="grid gap-10">
           <div>
             <h2 class="mb-4 text-2xl font-medium">Заведения</h2>
-            <div v-if="favVenues.length" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div v-if="favVenues.length" class="grid sm:grid-cols-2 xl:grid-cols-3">
               <VenueCard v-for="v in favVenues" :key="v.slug" :venue="v">
                 <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>
               </VenueCard>

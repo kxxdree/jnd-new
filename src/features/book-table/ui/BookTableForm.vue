@@ -45,7 +45,7 @@ const onPaid = () => {
       <div>
         <span class="label">Количество гостей</span>
         <div class="flex items-center gap-3">
-          <div class="glass-chip flex items-center gap-1 rounded-full p-1">
+          <div class="flex items-center gap-1">
             <button type="button" class="btn-icon size-10" :disabled="form.guests <= venue.booking.minGuests" aria-label="Меньше" @click="form.guests--">
               <UiIcon name="minus" :size="18" />
             </button>
