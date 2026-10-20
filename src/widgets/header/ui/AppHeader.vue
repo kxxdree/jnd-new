@@ -76,6 +76,9 @@ watch(open, (v) => {
       </button>
     </div>
 
+    <!-- Подложка под мобильным меню: тап вне меню закрывает его -->
+    <div v-if="open" class="fixed inset-0 -z-10 md:hidden" aria-hidden="true" @click="open = false" />
+
     <!-- Мобильное меню: стеклянный лист -->
     <Transition
       enter-active-class="transition duration-400 ease-[var(--ease-liquid)]"
@@ -83,17 +86,17 @@ watch(open, (v) => {
       leave-active-class="transition duration-200"
       leave-to-class="opacity-0 -translate-y-2"
     >
-      <div v-if="open" class="glass-strong fixed inset-x-3 top-[5.25rem] bottom-3 overflow-y-auto rounded-[2rem] p-3 md:hidden">
+      <div v-if="open" class="glass-strong fixed inset-x-3 top-[5.25rem] max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-[2rem] p-3 md:hidden">
         <nav class="flex flex-col">
           <NuxtLink
             v-for="l in [...links, ...(cabinet ? [cabinet] : [])]"
             :key="l.to"
             :to="l.to"
-            class="flex items-center justify-between rounded-3xl px-4 py-5 text-3xl font-medium tracking-tight transition-colors"
+            class="flex items-center justify-between rounded-3xl px-4 py-3.5 text-xl font-medium tracking-tight transition-colors"
             :class="isActive(l.to) ? 'bg-white/10 text-white' : 'text-white/75'"
           >
             {{ l.label }}
-            <UiIcon name="arrow-up-right" :size="24" :class="isActive(l.to) ? 'text-accent-text' : ''" />
+            <UiIcon name="arrow-up-right" :size="20" :class="isActive(l.to) ? 'text-accent-text' : ''" />
           </NuxtLink>
 
           <div class="mt-6 flex flex-col gap-2 px-1 pb-1">

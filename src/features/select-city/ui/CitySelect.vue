@@ -34,7 +34,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
       leave-active-class="transition duration-150"
       leave-to-class="opacity-0 scale-95"
     >
-      <div v-if="open" class="glass-strong absolute top-full left-1/2 z-40 mt-2 w-64 origin-top -translate-x-1/2 rounded-3xl p-2 sm:left-0 sm:translate-x-0">
+      <div v-if="open" class="glass-strong absolute top-full [--lg-tint:#121214] left-1/2 z-40 mt-2 w-64 origin-top -translate-x-1/2 rounded-3xl p-2 sm:left-0 sm:translate-x-0">
         <button type="button" class="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-left text-sm text-accent-text hover:bg-white/10" @click="onDetect">
           <UiIcon name="locate" :size="16" />
           {{ locating ? 'Определяем…' : 'Определить автоматически' }}

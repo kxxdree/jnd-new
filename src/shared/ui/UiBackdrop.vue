@@ -7,7 +7,7 @@ const grain = `url("data:image/svg+xml,${encodeURIComponent(
 </script>
 
 <template>
-  <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-ink [transform:translateZ(0)]" aria-hidden="true">
+  <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-ink [mask-image:linear-gradient(to_bottom,black_65%,transparent)]" aria-hidden="true">
     <img :src="background" alt="" fetchpriority="high" decoding="async" class="absolute inset-0 h-full w-full object-cover grayscale" />
 
     <div class="absolute inset-0 bg-black/25" />

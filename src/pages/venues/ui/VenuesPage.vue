@@ -49,7 +49,7 @@ const reset = () => {
 
     <!-- Панель поиска -->
     <section class="container-x">
-      <div class="glass flex flex-col gap-2 rounded-4xl p-2 sm:flex-row sm:items-center sm:rounded-full">
+      <div class="glass z-30 flex flex-col gap-2 rounded-4xl p-2 sm:flex-row sm:items-center sm:rounded-full">
         <CitySelect />
         <label class="flex flex-1 items-center gap-3 px-3">
           <UiIcon name="search" class="text-white/60" :size="18" />

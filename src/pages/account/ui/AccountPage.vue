@@ -6,7 +6,6 @@ import { roleNames, useSession } from '@entities/session'
 import { ticketTypeNames, useTickets } from '@entities/ticket'
 import { getVenue, VenueCard, venues } from '@entities/venue'
 import { FavoriteButton, useFavorites } from '@features/favorites'
-import { NotificationSettings } from '@features/notification-settings'
 import { RefundTicketButton } from '@features/refund-ticket'
 import { formatDate, formatDay, formatPrice, plural, todayISO, useToast } from '@shared/lib'
 import { UiEmpty, UiIcon, UiModal, UiPhoto, UiQr, UiTabs } from '@shared/ui'
@@ -20,15 +19,14 @@ const { bookings, confirmed, cancel } = useBookings()
 const { favs, toggle } = useFavorites()
 const { push } = useToast()
 
-type Tab = 'tickets' | 'bookings' | 'history' | 'favorites' | 'notifications'
+type Tab = 'tickets' | 'bookings' | 'history' | 'favorites'
 const tabs = computed(() => [
   { id: 'tickets' as Tab, name: 'Мои билеты', icon: 'ticket', badge: active.value.length },
   { id: 'bookings' as Tab, name: 'Бронирования', icon: 'calendar', badge: confirmed.value.length },
   { id: 'history' as Tab, name: 'История посещений', icon: 'clock' },
   { id: 'favorites' as Tab, name: 'Избранное', icon: 'heart' },
-  { id: 'notifications' as Tab, name: 'Уведомления', icon: 'bell' },
 ])
-const tab = ref<Tab>((route.query.tab as Tab) || 'tickets')
+const tab = ref<Tab>(tabs.value.some(t => t.id === route.query.tab) ? (route.query.tab as Tab) : 'tickets')
 watch(tab, t => navigateTo({ query: { tab: t } }, { replace: true }))
 
 // --- QR билета
@@ -47,7 +45,7 @@ const history = computed(() => [
 
 // --- Избранное
 const favVenues = computed(() => venues.filter(v => favs.value.venues.includes(v.slug)))
-const favArtists = computed(() => artists.filter(a => favs.value.artists.includes(a.slug) || favs.value.follows.includes(a.slug)))
+const favArtists = computed(() => artists.filter(a => favs.value.artists.includes(a.slug)))
 </script>
 
 <template>
@@ -148,23 +146,20 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
             <p v-else class="card p-5 text-sm text-muted">Нажмите ♥ на карточке бара, чтобы сохранить его здесь.</p>
           </div>
           <div>
-            <h2 class="mb-4 text-2xl font-medium">Артисты и подписки</h2>
+            <h2 class="mb-4 text-2xl font-medium">Артисты</h2>
             <div v-if="favArtists.length" class="grid gap-3">
               <div v-for="a in favArtists" :key="a.slug" class="card flex items-center gap-4 p-2 pr-4">
                 <UiPhoto :src="a.photo" class="size-14 shrink-0 rounded-2xl" />
                 <NuxtLink :to="`/artists/${a.slug}`" class="min-w-0 flex-1">
                   <p class="truncate font-medium hover:text-sand">{{ a.name }}</p>
-                  <p class="text-xs text-muted">{{ favs.follows.includes(a.slug) ? 'Подписка на уведомления' : 'В избранном' }}</p>
+                  <p class="text-xs text-muted">В избранном</p>
                 </NuxtLink>
-                <button class="btn-dark" @click="toggle(favs.follows.includes(a.slug) ? 'follows' : 'artists', a.slug)">Убрать</button>
+                <button class="btn-dark" @click="toggle('artists', a.slug)">Убрать</button>
               </div>
             </div>
-            <p v-else class="card p-5 text-sm text-muted">Подпишитесь на группу, чтобы не пропустить её концерты.</p>
+            <p v-else class="card p-5 text-sm text-muted">Добавьте артиста в избранное на его странице, чтобы сохранить его здесь.</p>
           </div>
         </div>
-
-        <!-- УВЕДОМЛЕНИЯ -->
-        <NotificationSettings v-else-if="tab === 'notifications'" :email="user?.email" />
       </div>
     </div>
 

@@ -4,7 +4,7 @@ import { type EventItem, events, isUpcoming } from '@entities/event'
 import { useSession } from '@entities/session'
 import { getVenue, venues } from '@entities/venue'
 import { type GenreId, genres } from '@shared/config'
-import { addDays, compact, formatDay, formatPrice, ph, plural, todayISO, useToast } from '@shared/lib'
+import { addDays, formatDay, formatPrice, ph, plural, todayISO, useToast } from '@shared/lib'
 import { UiBarChart, UiIcon, UiModal, UiPhoto, UiPills, UiTabs } from '@shared/ui'
 
 useHead({ title: 'Кабинет партнёра - Joined' })
@@ -36,7 +36,7 @@ const kpis = computed(() => isVenue.value
       { label: 'Выручка', value: formatPrice(1284000), delta: '+12%' },
     ]
   : [
-      { label: 'Подписчики', value: compact(artist.followers), delta: '+6%' },
+      { label: 'Просмотры профиля', value: '8 640', delta: '+11%' },
       { label: 'Прослушивания', value: '58 200', delta: '+31%' },
       { label: 'Продано билетов', value: '1 930', delta: '+14%' },
       { label: 'Концертов в месяц', value: '6', delta: '+2' },

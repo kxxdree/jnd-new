@@ -30,17 +30,19 @@ const todayIdx = weekdayIndex()
       </div>
     </div>
     <div class="grid h-fit gap-4">
+      <!-- График работы в стиле афиши: крупный день слева, часы справа -->
       <div class="card p-6">
-        <h3 class="mb-4 flex items-center gap-2 font-medium"><UiIcon name="clock" class="text-accent-text" :size="18" /> График работы</h3>
-        <dl class="space-y-1 text-sm">
-          <div
-            v-for="(h, i) in venue.hours"
-            :key="h.day"
-            class="flex justify-between rounded-xl px-3 py-1.5"
-            :class="i === todayIdx ? 'rim bg-[rgb(255_110_40/0.14)] text-white [--lg-rim:var(--lg-rim-warm)]' : ''"
-          >
-            <dt :class="i === todayIdx ? '' : 'text-soft'">{{ h.day }}<span v-if="i === todayIdx" class="ml-2 text-xs text-accent-text">сегодня</span></dt>
-            <dd>{{ h.time }}</dd>
+        <div class="mb-5 flex items-start justify-between gap-4 text-xs tracking-widest uppercase">
+          <span class="text-soft">График<br />работы</span>
+          <span class="text-right text-sm tracking-normal normal-case">{{ venue.name }}</span>
+        </div>
+        <dl>
+          <div v-for="(h, i) in venue.hours" :key="h.day" class="flex items-center justify-between gap-4 border-t border-line py-2.5">
+            <dt class="h-display text-4xl leading-[0.85] uppercase" :class="i === todayIdx ? 'text-sand' : ''">{{ h.day }}</dt>
+            <dd class="text-right">
+              <span v-if="i === todayIdx" class="block text-xs tracking-widest text-accent-text uppercase">сегодня</span>
+              <span class="text-sm tracking-wider uppercase tabular-nums" :class="i === todayIdx ? '' : 'text-soft'">{{ h.time }}</span>
+            </dd>
           </div>
         </dl>
       </div>

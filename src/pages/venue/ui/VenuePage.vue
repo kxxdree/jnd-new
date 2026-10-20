@@ -2,7 +2,6 @@
 import { cityName } from "@entities/city";
 import { events, isUpcoming } from "@entities/event";
 import { formatName, getVenue } from "@entities/venue";
-import { BookTableForm } from "@features/book-table";
 import { FavoriteButton } from "@features/favorites";
 import { ShareButton } from "@features/share";
 import { genreName } from "@shared/config";
@@ -113,22 +112,32 @@ const todayIdx = weekdayIndex();
       <VenueMenu v-else-if="tab === 'menu'" :venue="v" />
       <VenueGallery v-else-if="tab === 'gallery'" :photos="v.gallery" />
 
-      <div v-else-if="tab === 'booking'" class="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
-        <BookTableForm :venue="v" />
-        <div class="card h-fit p-6">
-          <h3 class="mb-4 flex items-center gap-2 font-medium"><UiIcon name="info" class="text-accent-text" :size="18" /> Условия бронирования</h3>
-          <ul class="space-y-3 text-sm text-soft">
-            <li v-for="c in v.booking.conditions" :key="c" class="flex gap-3"><UiIcon name="check" :size="16" class="mt-0.5 text-accent-text" />{{ c }}</li>
-          </ul>
+      <!-- Бронирование: условия в стиле меню + контакты для брони -->
+      <div v-else-if="tab === 'booking'" class="card p-6 sm:p-10">
+        <h2 class="h-display mb-6 text-4xl sm:text-5xl">Условия бронирования</h2>
+        <ul>
+          <li class="flex items-baseline justify-between gap-6 border-b border-line py-3.5">
+            <p class="min-w-0 text-sm">Количество гостей</p>
+            <span class="shrink-0 text-base tabular-nums">{{ v.booking.minGuests }}–{{ v.booking.maxGuests }}</span>
+          </li>
+          <li v-for="c in v.booking.conditions" :key="c" class="border-b border-line py-3.5 text-sm last:border-b-0">{{ c }}</li>
+        </ul>
+
+        <div class="mt-8 flex flex-col gap-2 sm:flex-row">
+          <a :href="`https://t.me/${v.telegram.replace('@', '')}`" target="_blank" rel="noopener" class="btn-primary py-3.5">
+            <UiIcon name="telegram" :size="18" /> Написать в Telegram
+          </a>
+          <a :href="`tel:${v.phone.replace(/[^\d+]/g, '')}`" class="btn-dark py-3.5"><UiIcon name="phone" :size="18" /> {{ v.phone }}</a>
         </div>
       </div>
 
-      <div v-else-if="tab === 'rules'" class="max-w-3xl">
-        <h2 class="h-display mb-8 text-4xl sm:text-5xl">Правила посещения</h2>
-        <ol class="grid gap-3">
-          <li v-for="(r, i) in v.rules" :key="r" class="card flex gap-5 p-5">
-            <span class="text-2xl font-medium">{{ String(i + 1).padStart(2, "0") }}</span>
-            <p class="pt-1 text-soft">{{ r }}</p>
+      <!-- Правила: тот же вид, что у меню и условий бронирования -->
+      <div v-else-if="tab === 'rules'" class="card p-6 sm:p-10">
+        <h2 class="h-display mb-6 text-4xl sm:text-5xl">Правила посещения</h2>
+        <ol>
+          <li v-for="(r, i) in v.rules" :key="r" class="flex items-baseline gap-6 border-b border-line py-3.5 last:border-b-0">
+            <span class="shrink-0 text-xs text-muted tabular-nums">{{ String(i + 1).padStart(2, "0") }}</span>
+            <p class="min-w-0 text-sm">{{ r }}</p>
           </li>
         </ol>
       </div>

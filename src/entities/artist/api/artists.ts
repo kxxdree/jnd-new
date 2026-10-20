@@ -14,6 +14,7 @@ export const artists: Artist[] = [
     bio: 'Квартет, собравшийся в 2018 году на студенческих джемах. Мелодичный инди-поп с синтезаторами 80-х и гитарами в духе британской волны. Два альбома, сотни концертов и туры по 20 городам.',
     founded: 2018, followers: 24800,
     photo: ph('band,concert', 31),
+    socials: { instagram: 'https://instagram.com/orange.sunset', telegram: 'https://t.me/orange_sunset' },
     members: [
       { name: 'Алиса Миронова', role: 'Вокал, синтезаторы' },
       { name: 'Денис Котов', role: 'Гитара' },
@@ -39,6 +40,7 @@ export const artists: Artist[] = [
     bio: 'Трио, играющее стандарты Эллингтона, Монка и Эванса, а также собственные композиции. Резиденты Red Velvet и частые гости джазовых фестивалей.',
     founded: 2015, followers: 9300,
     photo: ph('jazz,piano', 32),
+    socials: { instagram: 'https://instagram.com/blue.note.trio', telegram: 'https://t.me/blue_note_trio' },
     members: [
       { name: 'Илья Громов', role: 'Фортепиано' },
       { name: 'Сергей Вайс', role: 'Контрабас' },
@@ -59,6 +61,7 @@ export const artists: Artist[] = [
     bio: 'Дуэт из Петербурга, создающий танцевальную электронику вживую на модульных синтезаторах. Каждый сет сопровождается генеративными визуалами.',
     founded: 2019, followers: 41200,
     photo: ph('dj,synthesizer', 33),
+    socials: { instagram: 'https://instagram.com/kinetic', telegram: 'https://t.me/kinetic' },
     members: [
       { name: 'Влад Орлов', role: 'Модульный синтезатор' },
       { name: 'Ева Ройз', role: 'Драм-машины, визуалы' },
@@ -78,6 +81,7 @@ export const artists: Artist[] = [
     bio: 'Казанская рок-группа, играющая энергичный хард-рок в лучших традициях жанра. Победители фестиваля «Сотворение мира» 2022 года.',
     founded: 2012, followers: 18600,
     photo: ph('rock,band', 34),
+    socials: { instagram: 'https://instagram.com/iron.wolves', telegram: 'https://t.me/iron_wolves' },
     members: [
       { name: 'Тимур Гараев', role: 'Вокал' },
       { name: 'Олег Синицын', role: 'Соло-гитара' },
@@ -99,6 +103,7 @@ export const artists: Artist[] = [
     bio: 'Четыре выпускника консерватории, которые играют Баха и Radiohead в одной программе. Концерты при свечах в барах и лофтах.',
     founded: 2017, followers: 15400,
     photo: ph('violin,concert', 35),
+    socials: { instagram: 'https://instagram.com/string.theory', telegram: 'https://t.me/string_theory' },
     members: [
       { name: 'Анна Белова', role: 'Первая скрипка' },
       { name: 'Мария Чен', role: 'Вторая скрипка' },
@@ -119,6 +124,7 @@ export const artists: Artist[] = [
     bio: 'Рэп-исполнитель, выступающий с живым составом: бас, клавиши и барабаны. Тексты о северном городе и его ночах.',
     founded: 2016, followers: 56300,
     photo: ph('rapper,microphone', 36),
+    socials: { instagram: 'https://instagram.com/mc.north', telegram: 'https://t.me/mc_north' },
     members: [{ name: 'Никита Северов', role: 'MC' }, { name: 'Live band', role: 'Бас, клавиши, барабаны' }],
     tracks: tracks('Белые ночи', 2025, ['Белые ночи', 'Разводные мосты', 'Сквозняк', 'Питер']),
     videos: [{ title: 'Белые ночи (клип)', photo: ph('city,night', 351), duration: '3:33' }],
@@ -132,6 +138,7 @@ export const artists: Artist[] = [
     bio: 'Губная гармоника, слайд-гитара и хрипловатый вокал. Группа играет классический дельта-блюз и чикагский электрический блюз.',
     founded: 2010, followers: 7200,
     photo: ph('blues,guitar', 37),
+    socials: { instagram: 'https://instagram.com/delta.blues.band', telegram: 'https://t.me/delta_blues_band' },
     members: [
       { name: 'Борис Лапин', role: 'Вокал, гармоника' },
       { name: 'Ян Новак', role: 'Слайд-гитара' },
@@ -149,6 +156,7 @@ export const artists: Artist[] = [
     bio: 'Холодные гитары, драм-машина и баритон - уральский пост-панк в лучших традициях. Регулярно гастролируют по стране.',
     founded: 2020, followers: 21900,
     photo: ph('postpunk,band', 38),
+    socials: { instagram: 'https://instagram.com/velvet.drive', telegram: 'https://t.me/velvet_drive' },
     members: [
       { name: 'Лев Карпов', role: 'Вокал, гитара' },
       { name: 'Софья Дым', role: 'Синтезатор' },

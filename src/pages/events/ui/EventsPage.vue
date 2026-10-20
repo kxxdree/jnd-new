@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useCurrentCity } from '@entities/city'
-import { byDateTime, EventCard, type EventItem, events, isUpcoming } from '@entities/event'
+import { byDateTime, type EventItem, events, isUpcoming, minPrice } from '@entities/event'
 import { getVenue } from '@entities/venue'
 import { CitySelect } from '@features/select-city'
 import { type GenreId, genres } from '@shared/config'
-import { addDays, formatDay, formatWeekdayLong, isWeekend, todayISO } from '@shared/lib'
+import { addDays, dayNumber, formatPrice, formatWeekdayLong, isWeekend, monthShort, todayISO } from '@shared/lib'
 import { UiEmpty, UiPills } from '@shared/ui'
 
 useHead({ title: 'Афиша - Joined' })
@@ -58,14 +58,27 @@ const grouped = computed(() => {
     </section>
 
     <section class="container-x">
-      <div v-if="grouped.length" class="space-y-14">
-        <div v-for="[date, items] in grouped" :key="date">
-          <div class="glass mb-5 inline-flex items-baseline gap-3 rounded-full px-5 py-2.5">
-            <h2 class="text-xl font-medium tracking-tight sm:text-2xl">{{ formatDay(date) }}</h2>
-            <span class="text-sm capitalize" :class="isWeekend(date) ? 'text-accent-text' : 'text-muted'">{{ formatWeekdayLong(date) }}</span>
-          </div>
-          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <EventCard v-for="e in items" :key="e.id" :event="e" :venue-name="getVenue(e.venue)?.name" />
+      <!-- Афиша-постер: крупная дата слева, события дня справа -->
+      <div v-if="grouped.length" class="card p-5 sm:p-10">
+        <div class="mb-6 flex items-start justify-between gap-4 text-xs tracking-widest uppercase sm:mb-8">
+          <span class="text-soft">Афиша<br />{{ city.name }}</span>
+          <span class="text-sm tracking-normal normal-case">Joined™</span>
+        </div>
+
+        <div v-for="[date, items] in grouped" :key="date" class="grid gap-4 border-t border-line py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] md:gap-8">
+          <h2 class="h-display text-[16vw] leading-[0.85] uppercase sm:text-8xl lg:text-9xl" :class="isWeekend(date) ? 'text-sand' : ''">
+            {{ monthShort(date) }} {{ dayNumber(date) }}
+          </h2>
+
+          <div class="space-y-4 md:pt-2">
+            <p class="text-xs tracking-widest uppercase" :class="isWeekend(date) ? 'text-accent-text' : 'text-muted'">{{ formatWeekdayLong(date) }}</p>
+            <NuxtLink v-for="e in items" :key="e.id" :to="`/events/${e.id}`" class="group flex items-baseline justify-between gap-4">
+              <div class="min-w-0">
+                <p class="font-medium uppercase transition-colors group-hover:text-sand">{{ e.title }}</p>
+                <p class="mt-0.5 text-xs tracking-wider text-muted uppercase">{{ getVenue(e.venue)?.name }} · {{ e.time }}</p>
+              </div>
+              <span class="shrink-0 text-sm tabular-nums">от {{ formatPrice(minPrice(e)) }}</span>
+            </NuxtLink>
           </div>
         </div>
       </div>
