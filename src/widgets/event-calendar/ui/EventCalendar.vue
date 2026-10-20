@@ -1,125 +1,60 @@
 <script setup lang="ts">
 import { getArtist } from '@entities/artist'
-import { type EventItem, minPrice } from '@entities/event'
-import {
-  addDays, dayNumber, formatDay, formatPrice, formatWeekday, formatWeekdayLong, isWeekend, monthGrid, todayISO,
-} from '@shared/lib'
-import { UiIcon, UiPhoto } from '@shared/ui'
+import { byDateTime, type EventItem, minPrice } from '@entities/event'
+import { addDays, dayNumber, formatPrice, formatWeekdayLong, isWeekend, monthShort, todayISO } from '@shared/lib'
+import { UiEmpty, UiPills } from '@shared/ui'
 
-/** Музыкальный календарь заведения: неделя / месяц + лайнап ближайших выходных */
-const props = defineProps<{ events: EventItem[] }>()
+/** Музыкальный календарь заведения в стиле афиши: крупная дата слева, выступления дня справа */
+const props = defineProps<{ events: EventItem[]; title?: string }>()
 
-const view = ref<'week' | 'month'>('week')
-const today = todayISO()
-const selected = ref(today)
-const monthOffset = ref(0)
+const periods = [
+  { id: 'week', name: 'Неделя' },
+  { id: 'month', name: 'Месяц' },
+] as const
+const period = ref<typeof periods[number]['id'] | ''>('')
 
-const byDate = computed(() => {
+const grouped = computed(() => {
+  const today = todayISO()
+  const until = period.value === 'week' ? addDays(today, 7) : period.value === 'month' ? addDays(today, 31) : ''
   const map = new Map<string, EventItem[]>()
-  for (const e of props.events) map.set(e.date, [...(map.get(e.date) ?? []), e])
-  return map
+  for (const e of [...props.events].sort(byDateTime)) {
+    if (until && e.date > until) continue
+    map.set(e.date, [...(map.get(e.date) ?? []), e])
+  }
+  return [...map.entries()]
 })
-
-const week = computed(() => Array.from({ length: 7 }, (_, i) => addDays(today, i)))
-const month = computed(() => monthGrid(today, monthOffset.value))
-const dayEvents = computed(() => byDate.value.get(selected.value) ?? [])
-const weekendLineup = computed(() => week.value.filter(isWeekend).flatMap(d => byDate.value.get(d) ?? []))
 
 const artistNames = (e: EventItem) =>
   e.artists.map(a => getArtist(a)?.name).filter(Boolean).join(', ') || 'Резиденты заведения'
 </script>
 
 <template>
-  <div class="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
-    <div class="card p-4 sm:p-6">
-      <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div class="segmented">
-          <button :aria-pressed="view === 'week'" @click="view = 'week'">Неделя</button>
-          <button :aria-pressed="view === 'month'" @click="view = 'month'">Месяц</button>
-        </div>
-        <div v-if="view === 'month'" class="flex items-center gap-2">
-          <button class="btn-icon size-9" aria-label="Предыдущий месяц" :disabled="monthOffset <= 0" @click="monthOffset--"><UiIcon name="chevron-left" :size="16" /></button>
-          <span class="min-w-32 text-center text-sm capitalize">{{ month.title }}</span>
-          <button class="btn-icon size-9" aria-label="Следующий месяц" @click="monthOffset++"><UiIcon name="chevron-right" :size="16" /></button>
-        </div>
+  <div>
+    <UiPills v-model="period" :options="periods" all-label="Все даты" class="mb-4" />
+
+    <div v-if="grouped.length" class="card p-5 sm:p-10">
+      <div class="mb-6 flex items-start justify-between gap-4 text-xs tracking-widest uppercase sm:mb-8">
+        <span class="text-soft">Афиша<br />{{ title }}</span>
+        <span class="text-sm tracking-normal normal-case">Joined™</span>
       </div>
 
-      <!-- Неделя -->
-      <div v-if="view === 'week'" class="grid grid-cols-7 gap-1.5">
-        <button
-          v-for="d in week"
-          :key="d"
-          class="flex flex-col items-center rounded-lg py-3 transition-colors duration-300"
-          :class="selected === d ? 'bg-white text-ink' : 'bg-white/10 hover:bg-white/15'"
-          @click="selected = d"
-        >
-          <span class="text-[11px] uppercase" :class="selected === d ? 'text-ink/70' : isWeekend(d) ? 'text-accent-text' : 'text-muted'">{{ formatWeekday(d) }}</span>
-          <span class="mt-1 text-lg font-medium">{{ dayNumber(d) }}</span>
-          <span class="mt-1 size-1.5 rounded-full" :class="byDate.get(d) ? 'bg-accent' : ''" />
-        </button>
-      </div>
+      <div v-for="[date, items] in grouped" :key="date" class="grid gap-4 border-t border-line py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] md:gap-8">
+        <h3 class="h-display text-[16vw] leading-[0.85] uppercase sm:text-8xl lg:text-9xl" :class="isWeekend(date) ? 'text-sand' : ''">
+          {{ monthShort(date) }} {{ dayNumber(date) }}
+        </h3>
 
-      <!-- Месяц -->
-      <div v-else>
-        <div class="mb-1.5 grid grid-cols-7 gap-1.5 text-center text-[11px] text-muted uppercase">
-          <span v-for="w in ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']" :key="w">{{ w }}</span>
-        </div>
-        <div class="grid grid-cols-7 gap-1.5">
-          <template v-for="(d, i) in month.cells" :key="i">
-            <span v-if="!d" />
-            <button
-              v-else
-              class="relative aspect-square rounded-lg text-sm transition-colors duration-300 disabled:opacity-25"
-              :class="selected === d ? 'bg-white text-ink' : byDate.get(d) ? 'bg-white/12 hover:bg-white/18' : 'bg-white/4'"
-              :disabled="d < today"
-              @click="selected = d"
-            >
-              {{ dayNumber(d) }}
-              <span v-if="byDate.get(d)" class="absolute bottom-1.5 left-1/2 size-1 -translate-x-1/2 rounded-full bg-accent" />
-            </button>
-          </template>
-        </div>
-      </div>
-
-      <!-- События выбранного дня -->
-      <div class="mt-6">
-        <h3 class="mb-3 text-sm text-muted capitalize">{{ formatWeekdayLong(selected) }}, {{ formatDay(selected) }}</h3>
-        <div v-if="dayEvents.length" class="grid gap-2">
-          <NuxtLink v-for="e in dayEvents" :key="e.id" :to="`/events/${e.id}`" class="group flex items-center gap-4 rim raised rounded-3xl p-2 pr-4">
-            <UiPhoto :src="e.photo" class="size-16 shrink-0 rounded-2xl" />
-            <div class="min-w-0 flex-1">
-              <p class="truncate font-medium group-hover:text-sand">{{ e.title }}</p>
-              <p class="truncate text-sm text-muted">{{ e.time }} · {{ artistNames(e) }}</p>
+        <div class="space-y-4 md:pt-2">
+          <p class="text-xs tracking-widest uppercase" :class="isWeekend(date) ? 'text-accent-text' : 'text-muted'">{{ formatWeekdayLong(date) }}</p>
+          <NuxtLink v-for="e in items" :key="e.id" :to="`/events/${e.id}`" class="group flex items-baseline justify-between gap-4">
+            <div class="min-w-0">
+              <p class="font-medium uppercase transition-colors group-hover:text-sand">{{ e.title }}</p>
+              <p class="mt-0.5 text-xs tracking-wider text-muted uppercase">{{ artistNames(e) }} · {{ e.time }}</p>
             </div>
-            <div class="text-right">
-              <p class="text-xs text-muted">вход</p>
-              <p class="text-sm whitespace-nowrap">от {{ formatPrice(minPrice(e)) }}</p>
-            </div>
+            <span class="shrink-0 text-sm tabular-nums">от {{ formatPrice(minPrice(e)) }}</span>
           </NuxtLink>
         </div>
-        <p v-else class="sunken rounded-3xl p-5 text-sm text-muted">В этот день выступлений нет - бар работает в обычном режиме.</p>
       </div>
     </div>
-
-    <!-- Лайнап выходных -->
-    <aside class="card h-fit p-5 sm:p-6">
-      <div class="mb-5 flex items-center gap-2">
-        <span class="glass-chip grid size-9 place-items-center rounded-full text-accent-text"><UiIcon name="music" :size="18" /></span>
-        <h3 class="text-lg font-medium">Лайнап на выходные</h3>
-      </div>
-      <ol v-if="weekendLineup.length" class="space-y-4">
-        <li v-for="e in weekendLineup" :key="e.id" class="flex gap-4">
-          <div class="w-12 shrink-0 text-center">
-            <div class="text-xs text-accent-text uppercase">{{ formatWeekday(e.date) }}</div>
-            <div class="text-xl font-medium">{{ e.time }}</div>
-          </div>
-          <div class="min-w-0 border-l border-line pl-4">
-            <NuxtLink :to="`/events/${e.id}`" class="font-medium hover:text-sand">{{ e.title }}</NuxtLink>
-            <p class="text-sm text-muted">{{ artistNames(e) }} · от {{ formatPrice(minPrice(e)) }}</p>
-          </div>
-        </li>
-      </ol>
-      <p v-else class="text-sm text-muted">Лайнап на ближайшие выходные ещё формируется.</p>
-    </aside>
+    <UiEmpty v-else icon="calendar" title="Выступлений пока нет" text="В эти даты бар работает в обычном режиме - загляните позже." />
   </div>
 </template>
