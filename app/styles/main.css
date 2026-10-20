@@ -3,7 +3,8 @@
 @source "../../src";
 
 @theme {
-  --font-sans: "Inter Tight", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Unbounded", "Manrope", ui-sans-serif, system-ui, sans-serif;
 
   --color-ink: #090909;
   --color-surface: rgb(18 18 20 / 0.75);
@@ -356,7 +357,8 @@
 
   /* ---------- Типографика ---------- */
   .h-display {
-    @apply font-medium tracking-[-0.045em] leading-[0.92];
+    /* Unbounded широкий - трекинг мягче, чем был у Inter Tight */
+    @apply font-display font-medium tracking-[-0.03em] leading-[0.95];
     text-shadow: 0 2px 30px rgb(0 0 0 / 0.35);
   }
 

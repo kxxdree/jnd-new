@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { genreName } from '@shared/config'
-import { compact } from '@shared/lib'
 import { UiPhoto } from '@shared/ui'
 import type { Artist } from '../model/types'
 
@@ -18,7 +17,7 @@ defineProps<{ artist: Artist; cityLabel?: string }>()
     </UiPhoto>
     <div class="px-3 pt-3 pb-2">
       <h3 class="text-lg font-medium transition-colors group-hover:text-sand">{{ artist.name }}</h3>
-      <p class="text-sm text-muted"><template v-if="cityLabel">{{ cityLabel }} · </template>{{ compact(artist.followers) }} подписчиков</p>
+      <p v-if="cityLabel" class="text-sm text-muted">{{ cityLabel }}</p>
     </div>
   </NuxtLink>
 </template>
