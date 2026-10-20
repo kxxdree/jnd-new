@@ -5,7 +5,7 @@ import { events, isUpcoming, minPrice } from '@entities/event'
 import { getVenue } from '@entities/venue'
 import { FavoriteButton } from '@features/favorites'
 import { genreName } from '@shared/config'
-import { dayNumber, formatDate, formatPrice, formatWeekday, monthShort } from '@shared/lib'
+import { dayNumber, formatPrice, formatWeekday, monthShort } from '@shared/lib'
 import { UiEmpty, UiIcon, UiPhoto, UiSectionHead } from '@shared/ui'
 
 const route = useRoute()
@@ -17,7 +17,6 @@ useHead({ title: `${a.name} - Joined`, meta: [{ name: 'description', content: a.
 
 const own = events.filter(e => e.artists.includes(a.slug))
 const upcoming = own.filter(isUpcoming).sort((x, y) => x.date.localeCompare(y.date))
-const past = own.filter(e => !isUpcoming(e)).sort((x, y) => y.date.localeCompare(x.date))
 const where = (venueSlug: string) => {
   const v = getVenue(venueSlug)
   return v ? `${v.name} · ${cityName(v.city)}` : ''
@@ -106,20 +105,6 @@ const where = (venueSlug: string) => {
         </div>
       </div>
       <UiEmpty v-else icon="calendar" title="Концертов пока нет" text="Новые даты появятся здесь, как только артист их объявит." />
-    </section>
-
-    <!-- Прошедшие -->
-    <section v-if="past.length" class="container-x mt-24">
-      <UiSectionHead eyebrow="Архив" title="Прошедшие выступления" />
-      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <div v-for="e in past" :key="e.id" class="card flex items-center gap-4 p-2 pr-4">
-          <UiPhoto :src="e.photo" class="size-16 shrink-0 rounded-2xl opacity-70 grayscale" />
-          <div class="min-w-0">
-            <p class="truncate font-medium">{{ e.title }}</p>
-            <p class="text-sm text-muted">{{ formatDate(e.date) }} · {{ getVenue(e.venue)?.name }}</p>
-          </div>
-        </div>
-      </div>
     </section>
   </div>
 </template>

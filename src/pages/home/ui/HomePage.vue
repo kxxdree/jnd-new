@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ArtistCard, artists } from "@entities/artist";
-import { cityName, useCurrentCity } from "@entities/city";
+import { artists } from "@entities/artist";
+import { useCurrentCity } from "@entities/city";
 import { byDateTime, EventCard, events, isUpcoming } from "@entities/event";
 import { getVenue, VenueCard, venues } from "@entities/venue";
 import { FavoriteButton } from "@features/favorites";
@@ -23,8 +23,6 @@ const upcoming = computed(() =>
 );
 
 const popularVenues = computed(() => [...cityVenues.value].sort((a, b) => b.popularity - a.popularity).slice(0, 3));
-
-const topArtists = [...artists].sort((a, b) => b.followers - a.followers).slice(0, 4);
 
 const search = () => navigateTo({ path: "/venues", query: { q: query.value || undefined } });
 
@@ -88,9 +86,9 @@ const stats = [
     <!-- ПОПУЛЯРНЫЕ БАРЫ -->
     <section class="container-x mt-28">
       <UiSectionHead
-        eyebrow="Популярное"
-        title="Популярные бары"
-        :subtitle="`Места, о которых говорят · ${city.name}`"
+        eyebrow="Рядом"
+        title="Заведения твоего города"
+        :subtitle="`Бары и сцены ${city.where}`"
         to="/venues"
         link-label="Все заведения"
       />
@@ -100,14 +98,6 @@ const stats = [
         </VenueCard>
       </div>
       <UiEmpty v-else icon="glass" title="Ничего не нашлось" text="В этом городе пока нет заведений." />
-    </section>
-
-    <!-- АРТИСТЫ -->
-    <section class="container-x mt-28">
-      <UiSectionHead eyebrow="Сцена" title="Артисты" subtitle="Группы и музыканты, которых стоит услышать вживую" to="/artists" link-label="Все артисты" />
-      <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <ArtistCard v-for="a in topArtists" :key="a.slug" :artist="a" :city-label="cityName(a.city)" />
-      </div>
     </section>
   </div>
 </template>
