@@ -39,9 +39,9 @@ const stats = [
       <UiBackdrop />
       <div class="container-x py-14 text-center sm:py-24">
         <h1 class="h-display text-[15vw] sm:text-8xl lg:text-[9rem]">Найди свой звук сегодня</h1>
-        <p class="mx-auto mt-7 max-w-xl text-base text-white/80 sm:text-lg">
+        <!-- <p class="mx-auto mt-7 max-w-xl text-base text-white/80 sm:text-lg">
           Бары, концерты и джем-сейшены - по жанрам, с расписанием выступлений и билетами в пару кликов
-        </p>
+        </p> -->
 
         <form class="glass lg-refract mx-auto mt-10 flex max-w-xl gap-2 rounded-full p-2 [--lg-refract-blur:12px]" role="search" @submit.prevent="search">
           <label class="flex flex-1 items-center gap-3 pl-4">
@@ -49,7 +49,7 @@ const stats = [
             <input
               v-model="query"
               type="search"
-              placeholder="Бар, артист или жанр"
+              placeholder="Место, артист или жанр"
               class="w-full bg-transparent py-2 text-sm placeholder:text-white/50"
               aria-label="Поиск"
             />
