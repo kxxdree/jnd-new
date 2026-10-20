@@ -38,7 +38,7 @@ const stats = [
 <template>
   <div>
     <!-- HERO: на всю высоту вьюпорта, заезжает под sticky-хедер (h-16 + pt-3 / sm:pt-4) -->
-    <section class="relative isolate -mt-[76px] flex min-h-dvh flex-col justify-center pt-[76px] sm:-mt-20 sm:pt-20">
+    <section class="relative isolate -mt-19 flex min-h-dvh flex-col justify-center pt-19 sm:-mt-20 sm:pt-20">
       <UiBackdrop />
       <div class="container-x py-14 text-center sm:py-24">
         <div class="mb-8 flex justify-center">

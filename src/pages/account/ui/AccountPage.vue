@@ -6,7 +6,6 @@ import { roleNames, useSession } from '@entities/session'
 import { ticketTypeNames, useTickets } from '@entities/ticket'
 import { getVenue, VenueCard, venues } from '@entities/venue'
 import { FavoriteButton, useFavorites } from '@features/favorites'
-import { NotificationSettings } from '@features/notification-settings'
 import { RefundTicketButton } from '@features/refund-ticket'
 import { formatDate, formatDay, formatPrice, plural, todayISO, useToast } from '@shared/lib'
 import { UiEmpty, UiIcon, UiModal, UiPhoto, UiQr, UiTabs } from '@shared/ui'
@@ -20,15 +19,14 @@ const { bookings, confirmed, cancel } = useBookings()
 const { favs, toggle } = useFavorites()
 const { push } = useToast()
 
-type Tab = 'tickets' | 'bookings' | 'history' | 'favorites' | 'notifications'
+type Tab = 'tickets' | 'bookings' | 'history' | 'favorites'
 const tabs = computed(() => [
   { id: 'tickets' as Tab, name: 'Мои билеты', icon: 'ticket', badge: active.value.length },
   { id: 'bookings' as Tab, name: 'Бронирования', icon: 'calendar', badge: confirmed.value.length },
   { id: 'history' as Tab, name: 'История посещений', icon: 'clock' },
   { id: 'favorites' as Tab, name: 'Избранное', icon: 'heart' },
-  { id: 'notifications' as Tab, name: 'Уведомления', icon: 'bell' },
 ])
-const tab = ref<Tab>((route.query.tab as Tab) || 'tickets')
+const tab = ref<Tab>(tabs.value.some(t => t.id === route.query.tab) ? (route.query.tab as Tab) : 'tickets')
 watch(tab, t => navigateTo({ query: { tab: t } }, { replace: true }))
 
 // --- QR билета
@@ -162,9 +160,6 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
             <p v-else class="card p-5 text-sm text-muted">Подпишитесь на группу, чтобы не пропустить её концерты.</p>
           </div>
         </div>
-
-        <!-- УВЕДОМЛЕНИЯ -->
-        <NotificationSettings v-else-if="tab === 'notifications'" :email="user?.email" />
       </div>
     </div>
 

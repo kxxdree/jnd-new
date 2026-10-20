@@ -1,6 +1,6 @@
 <script setup lang="ts">
-/** Фото с фирменной оранжевой дуотон-тонировкой; при ошибке загрузки остаётся градиент */
-const props = withDefaults(defineProps<{ src: string; alt?: string; tint?: boolean }>(), { alt: '', tint: true })
+/** Фото со стеклянным бликом; при ошибке загрузки остаётся градиент */
+const props = withDefaults(defineProps<{ src: string; alt?: string }>(), { alt: '' })
 const failed = ref(false)
 const img = ref<HTMLImageElement>()
 
@@ -20,13 +20,8 @@ watch(() => props.src, () => { failed.value = false })
       :alt="alt"
       loading="lazy"
       class="absolute inset-0 h-full w-full object-cover text-transparent"
-      :class="tint ? 'grayscale contrast-[1.15]' : ''"
       @error="failed = true"
     >
-    <template v-if="tint">
-      <div class="pointer-events-none absolute inset-0 bg-[#ff5a1f] mix-blend-multiply" />
-      <div class="pointer-events-none absolute inset-0 bg-[#3d0800] mix-blend-screen" />
-    </template>
     <!-- стеклянный блик сверху -->
     <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgb(255_255_255/0.14),transparent_35%)]" />
     <slot />
