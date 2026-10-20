@@ -40,26 +40,26 @@ const todayIdx = weekdayIndex();
     <section class="container-x pt-6">
       <NuxtLink to="/venues" class="btn-ghost mb-5 pl-3"><UiIcon name="chevron-left" :size="16" /> Все заведения</NuxtLink>
 
-      <!-- Обложка -->
-      <div class="grid gap-3 lg:grid-cols-[2fr_1fr]">
-        <div class="card p-2">
-          <UiPhoto :src="v.photo" :alt="v.name" class="aspect-4/3 rounded-[1.4rem] sm:aspect-video lg:aspect-auto lg:h-full lg:min-h-120">
-            <div class="absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent" />
-            <div class="absolute inset-x-0 bottom-0 p-5 sm:p-10">
-              <div class="mb-4 flex flex-wrap gap-1.5">
-                <span class="tag">{{ formatName(v.format) }}</span>
-                <span v-for="g in v.genres" :key="g" class="tag tag-neutral">{{ genreName(g) }}</span>
-              </div>
-              <h1 class="h-display text-5xl sm:text-7xl lg:text-8xl">{{ v.name }}</h1>
-              <p class="mt-3 max-w-xl text-white/85">{{ v.short }}</p>
-            </div>
-          </UiPhoto>
+      <!-- Обложка: постер с названием по центру, как у артиста; описание - под фото -->
+      <article class="rim relative overflow-hidden rounded-4xl bg-black">
+        <div class="relative aspect-4/5 sm:aspect-video lg:aspect-21/9">
+          <UiPhoto :src="v.photo" :alt="v.name" class="absolute inset-0 h-full w-full" />
+          <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black/10 via-transparent to-black" />
+
+          <div class="absolute inset-0 grid place-items-center px-4">
+            <h1 class="h-display text-center text-[13vw] font-bold lowercase sm:text-8xl lg:text-9xl">{{ v.name }}</h1>
+          </div>
         </div>
-        <div class="grid grid-cols-2 gap-3 lg:grid-cols-1 lg:grid-rows-2">
-          <div class="card p-2"><UiPhoto :src="v.gallery[0]!" class="aspect-square h-full rounded-[1.4rem] lg:aspect-auto" /></div>
-          <div class="card p-2"><UiPhoto :src="v.gallery[2]!" class="aspect-square h-full rounded-[1.4rem] lg:aspect-auto" /></div>
+
+        <!-- Описание под фото, на чёрном - чтобы не сливалось с изображением -->
+        <div class="p-6 sm:px-10 sm:pb-10 lg:px-14">
+          <p class="max-w-2xl text-white/85 sm:text-lg">{{ v.short }}</p>
+          <p class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold tracking-wider uppercase">
+            <span class="text-accent-text">{{ formatName(v.format) }}</span>
+            <span v-for="g in v.genres" :key="g">{{ genreName(g) }}</span>
+          </p>
         </div>
-      </div>
+      </article>
 
       <!-- Быстрые факты и действия -->
       <div class="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
