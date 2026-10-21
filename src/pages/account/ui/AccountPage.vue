@@ -115,7 +115,7 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
               <button v-if="b.status === 'confirmed'" class="btn-dark" @click="cancel(b.id); push('Бронь отменена, депозит будет возвращён')">Отменить</button>
             </article>
           </template>
-          <UiEmpty v-else icon="calendar" title="Нет бронирований" text="Забронируйте столик на странице заведения">
+          <UiEmpty v-else icon="calendar" title="Нет бронирований">
             <NuxtLink to="/venues" class="btn-primary">Выбрать бар</NuxtLink>
           </UiEmpty>
         </div>
@@ -124,7 +124,7 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
         <div v-else-if="tab === 'history'" class="card p-6 sm:p-8">
           <ol class="relative border-l border-white/15 pl-7">
             <li v-for="h in history" :key="h.id" class="relative pb-8 last:pb-0">
-              <span class="absolute top-1 -left-[34px] size-3 rounded-full bg-accent shadow-[0_0_0_4px_rgb(255_77_0/0.25),0_0_12px_#ff4d00]" />
+              <span class="absolute top-1 -left-8.5 size-3 rounded-full bg-accent shadow-[0_0_0_4px_rgb(255_77_0/0.25),0_0_12px_#ff4d00]" />
               <p class="text-xs text-muted">{{ formatDate(h.date) }} · {{ h.kind }}</p>
               <p class="mt-1 text-lg font-medium">{{ h.title }}</p>
               <NuxtLink :to="`/venues/${h.venue}`" class="mt-1 inline-flex items-center gap-1 text-sm text-soft hover:text-sand">

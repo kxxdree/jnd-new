@@ -64,19 +64,15 @@ const todayIdx = weekdayIndex();
 
       <!-- Быстрые факты и действия -->
       <div class="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
-        <div class="card grid grid-cols-2 gap-4 p-5 sm:grid-cols-3 sm:p-6">
+        <div class="card grid grid-cols-2 gap-4 p-5 sm:flex sm:gap-12 sm:p-6">
           <div>
             <p class="text-xs text-muted">Сегодня</p>
             <p class="mt-1 text-xl font-medium">{{ v.hours[todayIdx]!.time }}</p>
           </div>
-          <div v-if="v.metro">
-            <p class="text-xs text-muted">Метро</p>
-            <p class="mt-1 text-xl font-medium">{{ v.metro }}</p>
-          </div>
-          <div class="col-span-2 sm:col-span-1">
+          <a :href="`https://yandex.ru/maps/?pt=${v.lng},${v.lat}&z=16&l=map`" target="_blank" rel="noopener" class="group col-span-2 sm:col-span-1">
             <p class="text-xs text-muted">Адрес</p>
-            <p class="mt-1 text-sm">{{ cityName(v.city) }}, {{ v.address }}</p>
-          </div>
+            <p class="mt-1 text-xl font-medium underline decoration-white/30 underline-offset-4 transition-colors group-hover:text-sand group-hover:decoration-current">{{ cityName(v.city) }}, {{ v.address }}</p>
+          </a>
         </div>
         <div class="card flex items-center gap-2 p-3">
           <button class="btn-primary flex-1 py-3.5" @click="tab = 'booking'"><UiIcon name="calendar" :size="18" /> Забронировать</button>
@@ -135,12 +131,9 @@ const todayIdx = weekdayIndex();
       <!-- Правила: тот же вид, что у меню и условий бронирования -->
       <div v-else-if="tab === 'rules'" class="card p-6 sm:p-10">
         <h2 class="h-display mb-6 text-4xl sm:text-5xl">Правила посещения</h2>
-        <ol>
-          <li v-for="(r, i) in v.rules" :key="r" class="flex items-baseline gap-6 border-b border-line py-3.5 last:border-b-0">
-            <span class="shrink-0 text-xs text-muted tabular-nums">{{ String(i + 1).padStart(2, "0") }}</span>
-            <p class="min-w-0 text-base">{{ r }}</p>
-          </li>
-        </ol>
+        <ul>
+          <li v-for="r in v.rules" :key="r" class="border-b border-line py-3.5 text-base last:border-b-0">{{ r }}</li>
+        </ul>
       </div>
     </section>
   </div>

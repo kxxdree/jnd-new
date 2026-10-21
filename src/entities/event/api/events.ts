@@ -11,7 +11,7 @@ export const events: EventItem[] = [
   { id: 'e3', title: 'KINETIC Live', venue: 'neon-lounge', artists: ['kinetic'], genres: ['electronic'], date: day(3), time: '23:00', description: 'Четырёхчасовой live-сет на модульных синтезаторах с генеративными визуалами на панорамных окнах.', photo: ph('dj,lights', 403), tickets: [std(1800), vip(6000), table(25000, 4)] },
   { id: 'e4', title: 'Candlelight: Radiohead', venue: 'philharmonia-bar', artists: ['string-theory'], genres: ['classical'], date: day(4), time: '19:30', description: 'Хиты Radiohead в исполнении струнного квартета при свете сотен свечей.', photo: ph('candle,violin', 404), tickets: [std(2500, 40), vip(4500, 10)] },
   { id: 'e5', title: 'Кавер-вечеринка: 90-е', venue: 'dubliner', artists: [], genres: ['rock', 'live'], date: day(5), time: '21:00', description: 'Кавер-бэнд играет главные рок-хиты 90-х: от Nirvana до «Сплина». Вход свободный до 20:00.', photo: ph('pub,band', 405), tickets: [std(500, 200), table(4000)] },
-  { id: 'e6', title: 'Iron Wolves - «Стая» тур', venue: 'rock-n-roll-kazan', artists: ['iron-wolves'], genres: ['rock'], date: day(5), time: '20:00', description: 'Казанский хард-рок в родных стенах: полный сет и треки с нового альбома.', photo: ph('rock,concert', 406), tickets: [std(1200, 150), vip(3000)] },
+  { id: 'e6', title: 'Iron Wolves - «Стая» тур', venue: 'rock-n-roll-kazan', artists: ['iron-wolves', 'velvet-drive', 'delta-blues-band', 'orange-sunset'], genres: ['rock'], date: day(5), time: '20:00', description: 'Казанский хард-рок в родных стенах: полный сет и треки с нового альбома.', photo: ph('rock,concert', 406), tickets: [std(1200, 150), vip(3000)] },
   { id: 'e7', title: 'Акустика на Рубинштейна', venue: 'fonarik', artists: ['orange-sunset'], genres: ['indie', 'live'], date: day(6), time: '20:30', description: 'Камерный акустический сет Orange Sunset в Петербурге. Всего 60 мест.', photo: ph('acoustic,guitar', 407), tickets: [std(1500, 60)] },
   { id: 'e8', title: 'Big Band Night', venue: 'jazz-philharmonic', artists: ['blue-note-trio'], genres: ['jazz'], date: day(6), time: '19:00', description: 'Биг-бенд и гости: свинг, бибоп и танцы между столиками.', photo: ph('bigband,jazz', 408), tickets: [std(1900), vip(3500), table(10000)] },
   { id: 'e9', title: 'MC North & live band', venue: 'bass-cave', artists: ['mc-north'], genres: ['hiphop'], date: day(7), time: '22:00', description: 'Презентация альбома «Белые ночи» с живым составом.', photo: ph('hiphop,concert', 409), tickets: [std(1600, 250), vip(4000)] },
@@ -26,6 +26,40 @@ export const events: EventItem[] = [
   { id: 'p1', title: 'Orange Sunset - летний open-air', venue: 'garage-hall', artists: ['orange-sunset'], genres: ['indie'], date: day(-21), time: '19:00', description: 'Летний концерт во дворе площадки.', photo: ph('openair', 417), tickets: [std(1800, 0)] },
   { id: 'p2', title: 'Blue Note Trio: Monk Tribute', venue: 'red-velvet', artists: ['blue-note-trio'], genres: ['jazz'], date: day(-12), time: '21:00', description: 'Вечер музыки Телониуса Монка.', photo: ph('jazz,club', 418), tickets: [std(800, 0)] },
   { id: 'p3', title: 'KINETIC b2b Residents', venue: 'bass-cave', artists: ['kinetic'], genres: ['electronic'], date: day(-8), time: '23:00', description: 'Ночь резидентов.', photo: ph('dj,crowd', 419), tickets: [std(1000, 0)] },
+  ...moscowFiller(),
 ]
+
+// Демо: плотная московская афиша (8–14 событий в день на 3 недели), чтобы проверить большие списки
+function moscowFiller(): EventItem[] {
+  const venues = ['red-velvet', 'garage-hall', 'neon-lounge', 'dubliner', 'philharmonia-bar']
+  const shows: [string, EventItem['genres']][] = [
+    ['Open Mic', ['live']], ['Jazz Jam', ['jazz', 'live']], ['Rock Covers', ['rock']], ['Deep House Night', ['electronic']],
+    ['Pop Hits Party', ['pop']], ['Indie Showcase', ['indie']], ['Hip-Hop Cypher', ['hiphop']], ['Blues Evening', ['blues']],
+    ['Струнный квартет', ['classical']], ['Акустический вечер', ['live', 'indie']], ['Soul & Funk', ['jazz', 'pop']], ['Techno Rave', ['electronic']],
+    ['Панк-рок марафон', ['rock']], ['Lo-Fi Session', ['electronic', 'indie']], ['Караоке-вечеринка', ['pop', 'live']], ['Свинг-танцы', ['jazz']],
+  ]
+  const times = ['18:00', '19:00', '19:30', '20:00', '20:30', '21:00', '22:00', '23:00']
+  const list: EventItem[] = []
+  for (let d = 0; d < 21; d++) {
+    const count = 8 + ((d * 5) % 7)
+    for (let i = 0; i < count; i++) {
+      const n = d * 16 + i
+      const [title, genres] = shows[(d * 3 + i) % shows.length]!
+      list.push({
+        id: `m${n}`,
+        title,
+        venue: venues[(d + i) % venues.length]!,
+        artists: [],
+        genres,
+        date: day(d),
+        time: times[(i * 3 + d) % times.length]!,
+        description: 'Демо-событие для проверки длинной афиши.',
+        photo: ph(`${genres[0]},concert`, 500 + n),
+        tickets: [std(500 + ((n * 300) % 2500))],
+      })
+    }
+  }
+  return list
+}
 
 export const getEvent = (id: string) => events.find(e => e.id === id)

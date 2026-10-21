@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { getArtist } from '@entities/artist'
-import { type EventItem, events, isUpcoming } from '@entities/event'
+import { byDateTime, type EventItem, events, isUpcoming } from '@entities/event'
 import { useSession } from '@entities/session'
 import { getVenue, venues } from '@entities/venue'
 import { type GenreId, genres } from '@shared/config'
-import { addDays, formatDay, formatPrice, ph, plural, todayISO, useToast } from '@shared/lib'
-import { UiBarChart, UiIcon, UiModal, UiPhoto, UiPills, UiTabs } from '@shared/ui'
+import { addDays, dayNumber, formatDay, formatPrice, formatWeekdayLong, isWeekend, monthShort, ph, plural, todayISO, useToast } from '@shared/lib'
+import { UiEmpty, UiIcon, UiModal, UiPhoto, UiPills, UiTabs } from '@shared/ui'
 
 useHead({ title: 'Кабинет партнёра - Joined' })
 
@@ -17,34 +17,14 @@ const isVenue = computed(() => user.value?.role !== 'artist')
 const venue = getVenue('red-velvet')!
 const artist = getArtist('orange-sunset')!
 
-type Tab = 'overview' | 'profile' | 'events' | 'bookings' | 'media'
+type Tab = 'profile' | 'events' | 'bookings' | 'media'
 const tabs = computed(() => [
-  { id: 'overview' as Tab, name: 'Обзор', icon: 'chart' },
-  { id: 'profile' as Tab, name: isVenue.value ? 'Профиль заведения' : 'Профиль группы', icon: 'edit' },
   { id: 'events' as Tab, name: 'Мероприятия', icon: 'calendar' },
+  { id: 'profile' as Tab, name: isVenue.value ? 'Профиль заведения' : 'Профиль группы', icon: 'edit' },
   ...(isVenue.value ? [{ id: 'bookings' as Tab, name: 'Бронирования', icon: 'users', badge: incoming.value.filter(b => b.status === 'new').length }] : []),
   { id: 'media' as Tab, name: isVenue.value ? 'Фото и меню' : 'Медиа', icon: 'image' },
 ])
-const tab = ref<Tab>('overview')
-
-// --- Обзор
-const kpis = computed(() => isVenue.value
-  ? [
-      { label: 'Просмотры профиля', value: '12 480', delta: '+18%' },
-      { label: 'Продано билетов', value: '842', delta: '+9%' },
-      { label: 'Брони за месяц', value: '214', delta: '+24%' },
-      { label: 'Выручка', value: formatPrice(1284000), delta: '+12%' },
-    ]
-  : [
-      { label: 'Просмотры профиля', value: '8 640', delta: '+11%' },
-      { label: 'Прослушивания', value: '58 200', delta: '+31%' },
-      { label: 'Продано билетов', value: '1 930', delta: '+14%' },
-      { label: 'Концертов в месяц', value: '6', delta: '+2' },
-    ])
-const chart = [
-  { label: 'Пн', value: 120 }, { label: 'Вт', value: 98 }, { label: 'Ср', value: 160 },
-  { label: 'Чт', value: 210 }, { label: 'Пт', value: 420 }, { label: 'Сб', value: 480 }, { label: 'Вс', value: 260 },
-]
+const tab = ref<Tab>('events')
 
 // --- Профиль
 const profile = reactive({
@@ -63,7 +43,13 @@ const profile = reactive({
 const myEvents = ref<EventItem[]>(
   events.filter(e => isUpcoming(e) && (isVenue.value ? e.venue === venue.slug : e.artists.includes(artist.slug))),
 )
-const sold = (id: string) => (id.charCodeAt(id.length - 1) * 7) % 180 + 20
+// События, сгруппированные по дням - для афиши-постера
+const groupByDate = (list: EventItem[]) => {
+  const map = new Map<string, EventItem[]>()
+  for (const e of list) map.set(e.date, [...(map.get(e.date) ?? []), e])
+  return [...map.entries()]
+}
+const grouped = computed(() => groupByDate([...myEvents.value].sort(byDateTime)))
 const newOpen = ref(false)
 const draft = reactive({ title: '', date: todayISO(), time: '21:00', genre: 'live' as GenreId, price: 1000, vip: 0, description: '', venue: venue.slug })
 const createEvent = () => {
@@ -122,36 +108,8 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
       <aside class="lg:sticky lg:top-28 lg:h-fit"><UiTabs v-model="tab" :tabs="tabs" /></aside>
 
       <div class="min-w-0">
-        <!-- ОБЗОР -->
-        <div v-if="tab === 'overview'" class="grid gap-4">
-          <div class="grid grid-cols-2 gap-4 xl:grid-cols-4">
-            <div v-for="k in kpis" :key="k.label" class="card p-5">
-              <p class="text-sm text-muted">{{ k.label }}</p>
-              <p class="mt-2 text-2xl font-medium sm:text-3xl">{{ k.value }}</p>
-              <p class="mt-1 text-xs text-accent-text">{{ k.delta }} к прошлому месяцу</p>
-            </div>
-          </div>
-          <div class="card p-5 sm:p-6">
-            <div class="mb-8 flex items-baseline justify-between">
-              <h2 class="text-lg font-medium">{{ isVenue ? 'Посещаемость по дням недели' : 'Прослушивания за неделю' }}</h2>
-              <span class="text-xs text-muted">последние 7 дней</span>
-            </div>
-            <UiBarChart :data="chart" />
-          </div>
-          <div class="card p-5 sm:p-6">
-            <h2 class="mb-4 text-lg font-medium">Ближайшие события</h2>
-            <div class="divide-y divide-line">
-              <div v-for="e in myEvents.slice(0, 4)" :key="e.id" class="flex items-center gap-4 py-3">
-                <span class="w-16 shrink-0 text-sm text-muted">{{ formatDay(e.date) }}</span>
-                <span class="min-w-0 flex-1 truncate">{{ e.title }}</span>
-                <span class="text-sm text-soft">{{ sold(e.id) }} {{ plural(sold(e.id), ['билет', 'билета', 'билетов']) }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- ПРОФИЛЬ -->
-        <form v-else-if="tab === 'profile'" class="grid gap-4" @submit.prevent="push('Изменения отправлены на модерацию')">
+        <form v-if="tab === 'profile'" class="grid gap-4" @submit.prevent="push('Изменения отправлены на модерацию')">
           <div class="card grid gap-5 p-5 sm:p-8">
             <h2 class="text-xl font-medium">Основная информация</h2>
             <label><span class="label">Название</span><input v-model="profile.name" class="field"></label>
@@ -181,23 +139,31 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
             <h2 class="text-2xl font-medium">Мероприятия</h2>
             <button class="btn-primary" @click="newOpen = true"><UiIcon name="plus" :size="18" /> Новое событие</button>
           </div>
-          <div v-for="e in myEvents" :key="e.id" class="card flex flex-col gap-4 p-3 pr-4 sm:flex-row sm:items-center">
-            <UiPhoto :src="e.photo" class="hidden size-16 shrink-0 rounded-2xl sm:block" />
-            <div class="min-w-0 flex-1 px-1 sm:px-0">
-              <p class="truncate font-medium">{{ e.title }}</p>
-              <p class="text-sm text-muted">{{ formatDay(e.date) }}, {{ e.time }} · {{ getVenue(e.venue)?.name ?? '-' }}</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-32">
-                <div class="mb-1 flex justify-between text-xs text-muted"><span>Продано</span><span>{{ sold(e.id) }}/200</span></div>
-                <div class="h-2 overflow-hidden rounded-full bg-black/30 shadow-[inset_0_1px_2px_rgb(0_0_0/0.4)]">
-                  <div class="h-full rounded-full bg-linear-to-r from-[#ff4d00] to-[#ffb27a]" :style="{ width: `${sold(e.id) / 2}%` }" />
+          <!-- Афиша-постер: крупная дата слева, события дня с продажами и действиями справа -->
+          <div v-if="grouped.length" class="card p-5 sm:p-10">
+            <div v-for="[date, items] in grouped" :key="date" class="grid gap-4 border-t border-line py-5 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:gap-8">
+              <h3 class="h-display text-[12vw] leading-[0.85] uppercase sm:text-6xl md:self-center" :class="isWeekend(date) ? 'text-sand' : ''">
+                {{ monthShort(date) }} {{ dayNumber(date) }}
+              </h3>
+
+              <div class="space-y-5 md:pt-2">
+                <p class="text-xs tracking-widest uppercase" :class="isWeekend(date) ? 'text-accent-text' : 'text-muted'">{{ formatWeekdayLong(date) }}</p>
+                <div v-for="e in items" :key="e.id" class="grid gap-3">
+                  <div class="flex items-start justify-between gap-4">
+                    <div class="min-w-0">
+                      <p class="font-medium uppercase">{{ e.title }}</p>
+                      <p class="mt-0.5 text-xs tracking-wider text-muted uppercase">{{ getVenue(e.venue)?.name ?? '-' }} · {{ e.time }}</p>
+                    </div>
+                    <div class="flex shrink-0 gap-2">
+                      <NuxtLink v-if="!e.id.startsWith('new')" :to="`/events/${e.id}`" class="btn-icon size-9" aria-label="Открыть"><UiIcon name="eye" :size="16" /></NuxtLink>
+                      <button class="btn-icon size-9" aria-label="Снять с публикации" @click="removeEvent(e.id)"><UiIcon name="trash" :size="16" /></button>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <NuxtLink v-if="!e.id.startsWith('new')" :to="`/events/${e.id}`" class="btn-icon size-9" aria-label="Открыть"><UiIcon name="eye" :size="16" /></NuxtLink>
-              <button class="btn-icon size-9" aria-label="Снять с публикации" @click="removeEvent(e.id)"><UiIcon name="trash" :size="16" /></button>
             </div>
           </div>
+          <UiEmpty v-else icon="calendar" title="Пока нет событий" text="Нажмите «Новое событие», чтобы добавить первое." />
         </div>
 
         <!-- БРОНИ -->

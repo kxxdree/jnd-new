@@ -3,6 +3,9 @@ import { useCurrentCity } from '@entities/city'
 import { useToast } from '@shared/lib'
 import { UiIcon } from '@shared/ui'
 
+// inline - без «пилюли», для встраивания в строку поиска
+defineProps<{ inline?: boolean }>()
+
 const { cityId, city, cities, detect, locating } = useCurrentCity()
 const { push } = useToast()
 const open = ref(false)
@@ -23,7 +26,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
 
 <template>
   <div ref="root" class="relative">
-    <button type="button" class="pill" :aria-expanded="open" @click="open = !open">
+    <button type="button" :class="inline ? 'flex h-full items-center gap-2 px-3 text-sm whitespace-nowrap transition-colors hover:text-sand' : 'pill'" :aria-expanded="open" @click="open = !open">
       <UiIcon name="pin" :size="16" class="text-accent-text" />
       {{ city.name }}
       <UiIcon name="chevron-down" :size="16" class="text-muted transition-transform duration-300" :class="{ 'rotate-180': open }" />
@@ -34,7 +37,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
       leave-active-class="transition duration-150"
       leave-to-class="opacity-0 scale-95"
     >
-      <div v-if="open" class="absolute top-full left-1/2 z-40 mt-2 w-64 origin-top -translate-x-1/2 rounded-xl bg-[#1c1c1e] p-1 shadow-[0_16px_40px_-12px_rgb(0_0_0/0.8)] sm:left-0 sm:translate-x-0">
+      <div v-if="open" class="absolute top-full z-40 mt-2 w-64 origin-top rounded-xl bg-[#1c1c1e] p-1 shadow-[0_16px_40px_-12px_rgb(0_0_0/0.8)]" :class="inline ? 'left-0' : 'left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0'">
         <button type="button" class="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-accent-text hover:bg-white/10" @click="onDetect">
           <UiIcon name="locate" :size="16" />
           {{ locating ? 'Определяем…' : 'Определить автоматически' }}

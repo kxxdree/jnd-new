@@ -81,8 +81,6 @@ watch(open, (v) => {
       <button class="btn-primary mt-2 py-3.5" :disabled="!valid || processing" type="submit">
         <UiIcon v-if="processing" name="refresh" :size="16" class="animate-spin" />
         {{ processing ? "Обрабатываем платёж…" : `Оплатить ${formatPrice(amount)}` }}
-      </button>
-      <p class="flex items-center justify-center gap-1.5 text-xs text-muted"><UiIcon name="lock" :size="14" /> Демо-режим: деньги не списываются</p>
-    </form>
+      </button>    </form>
   </UiModal>
 </template>

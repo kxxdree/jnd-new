@@ -4,7 +4,7 @@ import { byDateTime, type EventItem, events, isUpcoming, minPrice } from "@entit
 import { getVenue } from "@entities/venue";
 import { CitySelect } from "@features/select-city";
 import { type GenreId, genres } from "@shared/config";
-import { addDays, dayNumber, formatPrice, formatWeekdayLong, isWeekend, monthShort, todayISO } from "@shared/lib";
+import { addDays, dayNumber, formatPrice, formatWeekdayLong, isWeekend, monthShort, plural, todayISO } from "@shared/lib";
 import { UiEmpty, UiPills } from "@shared/ui";
 
 useHead({ title: "Афиша - Joined" });
@@ -51,6 +51,18 @@ const grouped = computed(() => {
   for (const e of list) map.set(e.date, [...(map.get(e.date) ?? []), e]);
   return [...map.entries()];
 });
+
+// Длинная афиша: дни подгружаются порциями, а длинный день свёрнут до первых событий
+const DAYS_STEP = 7;
+const PER_DAY = 5;
+const daysShown = ref(DAYS_STEP);
+const expanded = ref(new Set<string>());
+const visible = computed(() => grouped.value.slice(0, daysShown.value));
+const expand = (date: string) => (expanded.value = new Set(expanded.value).add(date));
+watch([genre, period, cityId], () => {
+  daysShown.value = DAYS_STEP;
+  expanded.value = new Set();
+});
 </script>
 
 <template>
@@ -70,21 +82,28 @@ const grouped = computed(() => {
           <span class="text-soft">Афиша<br />{{ city.name }}</span>
         </div>
 
-        <div v-for="[date, items] in grouped" :key="date" class="grid gap-4 border-t border-line py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] md:gap-8">
+        <div v-for="[date, items] in visible" :key="date" class="grid gap-4 border-t border-line py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] md:gap-8">
           <h2 class="h-display text-[16vw] leading-[0.85] uppercase sm:text-8xl lg:text-9xl" :class="isWeekend(date) ? 'text-sand' : ''">
             {{ monthShort(date) }} {{ dayNumber(date) }}
           </h2>
 
           <div class="space-y-4 md:pt-2">
             <p class="text-xs tracking-widest uppercase" :class="isWeekend(date) ? 'text-accent-text' : 'text-muted'">{{ formatWeekdayLong(date) }}</p>
-            <NuxtLink v-for="e in items" :key="e.id" :to="`/events/${e.id}`" class="group flex items-baseline justify-between gap-4">
+            <NuxtLink v-for="e in expanded.has(date) ? items : items.slice(0, PER_DAY)" :key="e.id" :to="`/events/${e.id}`" class="group flex items-baseline justify-between gap-4">
               <div class="min-w-0">
                 <p class="font-medium uppercase transition-colors group-hover:text-sand">{{ e.title }}</p>
                 <p class="mt-0.5 text-xs tracking-wider text-muted uppercase">{{ getVenue(e.venue)?.name }} · {{ e.time }}</p>
               </div>
               <span class="shrink-0 text-sm tabular-nums">от {{ formatPrice(minPrice(e)) }}</span>
             </NuxtLink>
+            <button v-if="!expanded.has(date) && items.length > PER_DAY" class="text-xs tracking-widest text-accent-text uppercase transition-colors hover:text-sand" @click="expand(date)">
+              Ещё {{ items.length - PER_DAY }} {{ plural(items.length - PER_DAY, ["событие", "события", "событий"]) }}
+            </button>
           </div>
+        </div>
+
+        <div v-if="daysShown < grouped.length" class="border-t border-line pt-6 text-center">
+          <button class="btn-dark" @click="daysShown += DAYS_STEP">Показать ещё</button>
         </div>
       </div>
       <UiEmpty v-else icon="calendar" title="Событий не найдено" text="Попробуйте выбрать другой жанр, дату или город.">
