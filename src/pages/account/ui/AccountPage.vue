@@ -95,7 +95,7 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
               </div>
             </article>
           </template>
-          <UiEmpty v-else icon="ticket" title="Билетов пока нет" text="Найдите концерт по душе - билеты появятся здесь вместе с QR-кодом.">
+          <UiEmpty v-else icon="ticket" title="Билетов пока нет" text="Билеты появятся здесь вместе с QR-кодом">
             <NuxtLink to="/events" class="btn-primary">Открыть афишу</NuxtLink>
           </UiEmpty>
         </div>
@@ -115,7 +115,7 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
               <button v-if="b.status === 'confirmed'" class="btn-dark" @click="cancel(b.id); push('Бронь отменена, депозит будет возвращён')">Отменить</button>
             </article>
           </template>
-          <UiEmpty v-else icon="calendar" title="Нет бронирований" text="Забронируйте столик на странице любого бара.">
+          <UiEmpty v-else icon="calendar" title="Нет бронирований" text="Забронируйте столик на странице заведения">
             <NuxtLink to="/venues" class="btn-primary">Выбрать бар</NuxtLink>
           </UiEmpty>
         </div>
@@ -143,7 +143,10 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
                 <template #actions><FavoriteButton kind="venues" :id="v.slug" /></template>
               </VenueCard>
             </div>
-            <p v-else class="card p-5 text-sm text-muted">Нажмите ♥ на карточке бара, чтобы сохранить его здесь.</p>
+            <p v-else class="flex items-start gap-2 text-sm text-muted">
+              <UiIcon name="heart" :size="16" class="mt-0.5 shrink-0 text-accent-text" />
+              <span>Нажмите ♥ на карточке бара, чтобы сохранить его здесь.</span>
+            </p>
           </div>
           <div>
             <h2 class="mb-4 text-2xl font-medium">Артисты</h2>
@@ -157,7 +160,10 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
                 <button class="btn-dark" @click="toggle('artists', a.slug)">Убрать</button>
               </div>
             </div>
-            <p v-else class="card p-5 text-sm text-muted">Добавьте артиста в избранное на его странице, чтобы сохранить его здесь.</p>
+            <p v-else class="flex items-start gap-2 text-sm text-muted">
+              <UiIcon name="heart" :size="16" class="mt-0.5 shrink-0 text-accent-text" />
+              <span>Добавьте артиста в избранное на его странице, чтобы сохранить его здесь.</span>
+            </p>
           </div>
         </div>
       </div>

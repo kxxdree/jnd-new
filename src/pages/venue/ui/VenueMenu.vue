@@ -19,7 +19,7 @@ const tab = ref<'bar' | 'kitchen'>('bar')
     <!-- Прайс-лист: название + описание мелким в строку, цена справа -->
     <ul>
       <li v-for="item in venue.menu[tab]" :key="item.name" class="flex items-baseline justify-between gap-6 border-b border-line py-3.5 last:border-b-0">
-        <p class="min-w-0 text-sm">
+        <p class="min-w-0 text-base">
           {{ item.name }}
           <span v-if="item.desc" class="ml-2 text-xs text-muted">({{ item.desc }})</span>
         </p>

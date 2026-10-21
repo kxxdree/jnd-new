@@ -216,7 +216,7 @@ export const venues: Venue[] = [
     slug: 'bass-cave',
     name: 'Bass Cave',
     city: 'spb',
-    format: 'lounge',
+    format: 'club',
     genres: ['electronic', 'hiphop'],
     drinks: ['cocktails', 'snacks'],
     address: 'Конюшенная пл., 2',

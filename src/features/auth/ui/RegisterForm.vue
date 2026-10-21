@@ -69,11 +69,12 @@ const submit = () => {
         <input v-model="form.password" type="password" autocomplete="new-password" class="field" placeholder="Минимум 6 символов">
       </label>
       <label class="flex items-start gap-3 text-sm text-soft">
-        <input v-model="form.agree" type="checkbox" class="mt-0.5 size-4 accent-[#ff4d00]">
+        <input v-model="form.agree" type="checkbox" class="mt-0.5 size-4 accent-accent">
         <span>Принимаю <NuxtLink to="/rules" class="text-white underline-offset-2 hover:underline">условия сервиса</NuxtLink> и политику конфиденциальности</span>
       </label>
-      <p v-if="form.role !== 'user'" class="glass-chip rounded-2xl p-3 text-xs text-muted">
-        Профиль {{ form.role === 'venue' ? 'заведения' : 'группы' }} появится в каталоге после модерации - обычно это занимает до 24 часов.
+      <p v-if="form.role !== 'user'" class="flex items-start gap-2 text-xs text-muted">
+        <UiIcon name="clock" :size="14" class="mt-px shrink-0 text-accent-text" />
+        <span>Профиль {{ form.role === 'venue' ? 'заведения' : 'группы' }} появится в каталоге после модерации - обычно это занимает до 24 часов.</span>
       </p>
       <p v-if="error" class="text-sm text-accent-text">{{ error }}</p>
       <button class="btn-primary mt-2 py-3.5" type="submit">Создать аккаунт</button>
