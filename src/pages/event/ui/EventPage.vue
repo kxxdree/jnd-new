@@ -38,21 +38,21 @@ useHead({ title: `${ev.title} - Joined`, meta: [{ name: 'description', content: 
 
         <div class="card grid grid-cols-1 gap-5 p-6 sm:grid-cols-3">
           <div class="flex items-start gap-3">
-            <span class="glass-chip grid size-10 shrink-0 place-items-center rounded-full text-accent-text"><UiIcon name="calendar" :size="18" /></span>
+            <UiIcon name="calendar" :size="20" class="mt-0.5 shrink-0 text-accent-text" />
             <div>
               <p class="font-medium">{{ formatDay(ev.date) }}</p>
               <p class="text-sm text-muted capitalize">{{ formatWeekdayLong(ev.date) }}</p>
             </div>
           </div>
           <div class="flex items-start gap-3">
-            <span class="glass-chip grid size-10 shrink-0 place-items-center rounded-full text-accent-text"><UiIcon name="clock" :size="18" /></span>
+            <UiIcon name="clock" :size="20" class="mt-0.5 shrink-0 text-accent-text" />
             <div>
               <p class="font-medium">Начало в {{ ev.time }}</p>
               <p class="text-sm text-muted">открытие дверей за час</p>
             </div>
           </div>
           <NuxtLink :to="`/venues/${venue.slug}`" class="group flex items-start gap-3">
-            <span class="glass-chip grid size-10 shrink-0 place-items-center rounded-full text-accent-text"><UiIcon name="pin" :size="18" /></span>
+            <UiIcon name="pin" :size="20" class="mt-0.5 shrink-0 text-accent-text" />
             <div>
               <p class="font-medium group-hover:text-sand">{{ venue.name }}</p>
               <p class="text-sm text-muted">{{ venue.address }}</p>

@@ -83,7 +83,7 @@ const stats = [
     <section class="container-x mt-28">
       <UiSectionHead
         eyebrow="Рядом"
-        title="Заведения твоего города"
+        title="Места твоего города"
         :subtitle="`Бары и сцены ${city.where}`"
         to="/venues"
         link-label="Все заведения"
