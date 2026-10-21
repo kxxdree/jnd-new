@@ -4,6 +4,7 @@ import { useCurrentCity } from "@entities/city";
 import { byDateTime, EventCard, events, isUpcoming } from "@entities/event";
 import { getVenue, VenueCard, venues } from "@entities/venue";
 import { FavoriteButton } from "@features/favorites";
+import { CitySelect } from "@features/select-city";
 import { UiBackdrop, UiEmpty, UiIcon, UiSectionHead } from "@shared/ui";
 
 useHead({ title: "JOINED" });
@@ -43,8 +44,10 @@ const stats = [
           Бары, концерты и джем-сейшены - по жанрам, с расписанием выступлений и билетами в пару кликов
         </p> -->
 
-        <form class="search-bar mx-auto mt-10 flex max-w-xl gap-2 p-2" role="search" @submit.prevent="search">
-          <label class="flex flex-1 items-center gap-3 pl-4">
+        <form class="search-bar mx-auto mt-10 flex max-w-2xl gap-2 p-2" role="search" @submit.prevent="search">
+          <!-- Город прямо в строке поиска: задаёт и результаты, и блоки ниже -->
+          <CitySelect inline class="shrink-0 border-r border-white/15 pr-1 text-left" />
+          <label class="flex min-w-0 flex-1 items-center gap-3 pl-2">
             <UiIcon name="search" class="text-white/60" />
             <input
               v-model="query"
