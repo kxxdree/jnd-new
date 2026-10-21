@@ -115,7 +115,7 @@ const favArtists = computed(() => artists.filter(a => favs.value.artists.include
               <button v-if="b.status === 'confirmed'" class="btn-dark" @click="cancel(b.id); push('Бронь отменена, депозит будет возвращён')">Отменить</button>
             </article>
           </template>
-          <UiEmpty v-else icon="calendar" title="Нет бронирований" text="Забронируйте столик на странице заведения">
+          <UiEmpty v-else icon="calendar" title="Нет бронирований">
             <NuxtLink to="/venues" class="btn-primary">Выбрать бар</NuxtLink>
           </UiEmpty>
         </div>
