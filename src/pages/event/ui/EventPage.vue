@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getArtist } from '@entities/artist'
+import { cityName } from '@entities/city'
 import { getEvent } from '@entities/event'
 import { getVenue } from '@entities/venue'
 import { TicketPurchase } from '@features/buy-ticket'
@@ -64,18 +65,15 @@ useHead({ title: `${ev.title} - Joined`, meta: [{ name: 'description', content: 
           <p class="leading-relaxed text-soft">{{ ev.description }}</p>
         </div>
 
+        <!-- Лайнап списком, как события на странице «Афиша» -->
         <div v-if="lineup.length" class="card p-6 sm:p-8">
           <h2 class="mb-5 text-2xl font-medium">Лайнап</h2>
-          <div class="grid gap-3 sm:grid-cols-2">
-            <NuxtLink v-for="a in lineup" :key="a!.slug" :to="`/artists/${a!.slug}`" class="group flex items-center gap-4 rim raised rounded-3xl p-2 pr-4">
-              <UiPhoto :src="a!.photo" class="size-16 shrink-0 rounded-2xl" />
-              <div class="min-w-0">
-                <p class="truncate font-medium group-hover:text-sand">{{ a!.name }}</p>
-                <p class="truncate text-sm text-muted">{{ a!.genres.map(genreName).join(', ') }}</p>
-              </div>
-              <UiIcon name="arrow-up-right" class="ml-auto text-muted" :size="18" />
-            </NuxtLink>
-          </div>
+          <NuxtLink v-for="a in lineup" :key="a!.slug" :to="`/artists/${a!.slug}`" class="group flex items-center gap-4 border-t border-line py-4 last:pb-0">
+            <UiPhoto :src="a!.photo" :alt="a!.name" class="size-14 shrink-0" />
+            <div class="min-w-0 flex-1">
+              <p class="font-medium uppercase transition-colors group-hover:text-sand">{{ a!.name }}</p>
+              <p class="mt-0.5 text-xs tracking-wider text-muted uppercase">{{ cityName(a!.city) }} · {{ a!.genres.map(genreName).join(', ') }}</p>
+            </div>          </NuxtLink>
         </div>
       </div>
 
