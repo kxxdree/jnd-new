@@ -5,12 +5,13 @@ import { byDateTime, EventCard, events, isUpcoming } from "@entities/event";
 import { getVenue, VenueCard, venues } from "@entities/venue";
 import { FavoriteButton } from "@features/favorites";
 import { CitySelect } from "@features/select-city";
-import { UiBackdrop, UiEmpty, UiIcon, UiSectionHead } from "@shared/ui";
+import { type GenreId, genres } from "@shared/config";
+import { UiBackdrop, UiEmpty, UiSectionHead, UiSelect } from "@shared/ui";
 
 useHead({ title: "JOINED" });
 
 const { cityId, city } = useCurrentCity();
-const query = ref("");
+const genre = ref<GenreId | "">("");
 
 const cityVenues = computed(() => venues.filter((v) => v.city === cityId.value));
 const cityVenueSlugs = computed(() => new Set(cityVenues.value.map((v) => v.slug)));
@@ -24,7 +25,7 @@ const upcoming = computed(() =>
 
 const popularVenues = computed(() => [...cityVenues.value].sort((a, b) => b.popularity - a.popularity).slice(0, 3));
 
-const search = () => navigateTo({ path: "/venues", query: { q: query.value || undefined } });
+const search = () => navigateTo({ path: "/venues", query: { genre: genre.value || undefined } });
 
 const stats = [
   { value: venues.length * 37, label: "баров и площадок" },
@@ -44,19 +45,10 @@ const stats = [
           Бары, концерты и джем-сейшены - по жанрам, с расписанием выступлений и билетами в пару кликов
         </p> -->
 
-        <form class="search-bar mx-auto mt-10 flex max-w-2xl gap-2 p-2" role="search" @submit.prevent="search">
-          <!-- Город прямо в строке поиска: задаёт и результаты, и блоки ниже -->
-          <CitySelect inline class="shrink-0 border-r border-white/15 pr-1 text-left" />
-          <label class="flex min-w-0 flex-1 items-center gap-3 pl-2">
-            <UiIcon name="search" class="text-white/60" />
-            <input
-              v-model="query"
-              type="search"
-              placeholder="Место, артист или жанр"
-              class="w-full bg-transparent py-2 text-sm placeholder:text-white/50"
-              aria-label="Поиск"
-            />
-          </label>
+        <!-- Подбор по городу и жанру: жанр уходит в фильтры страницы мест -->
+        <form class="search-bar mx-auto mt-10 flex max-w-md gap-2 p-2 text-left" @submit.prevent="search">
+          <CitySelect inline class="shrink-0 border-r border-white/15 pr-1" />
+          <UiSelect v-model="genre" :options="genres" all-label="Любой жанр" icon="music" label="Жанр" inline class="min-w-0 flex-1" />
           <button class="btn-primary px-6" type="submit">Найти</button>
         </form>
       </div>

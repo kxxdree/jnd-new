@@ -24,7 +24,7 @@ const todayIdx = weekdayIndex()
         </div>
         <div class="p-5">
           <h3 class="mb-2 flex items-center gap-2 font-medium"><UiIcon name="pin" class="text-accent-text" :size="18" /> Как добраться</h3>
-          <p class="text-sm text-soft">{{ venue.address }}<span v-if="venue.metro"> · м. {{ venue.metro }}</span></p>
+          <p class="text-sm text-soft">{{ venue.address }}</p>
           <p class="mt-2 text-sm text-muted">{{ venue.directions }}</p>
         </div>
       </div>

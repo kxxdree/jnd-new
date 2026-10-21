@@ -64,19 +64,15 @@ const todayIdx = weekdayIndex();
 
       <!-- Быстрые факты и действия -->
       <div class="mt-3 grid gap-3 lg:grid-cols-[2fr_1fr]">
-        <div class="card grid grid-cols-2 gap-4 p-5 sm:grid-cols-3 sm:p-6">
+        <div class="card grid grid-cols-2 gap-4 p-5 sm:flex sm:gap-12 sm:p-6">
           <div>
             <p class="text-xs text-muted">Сегодня</p>
             <p class="mt-1 text-xl font-medium">{{ v.hours[todayIdx]!.time }}</p>
           </div>
-          <div v-if="v.metro">
-            <p class="text-xs text-muted">Метро</p>
-            <p class="mt-1 text-xl font-medium">{{ v.metro }}</p>
-          </div>
-          <div class="col-span-2 sm:col-span-1">
+          <a :href="`https://yandex.ru/maps/?pt=${v.lng},${v.lat}&z=16&l=map`" target="_blank" rel="noopener" class="group col-span-2 sm:col-span-1">
             <p class="text-xs text-muted">Адрес</p>
-            <p class="mt-1 text-sm">{{ cityName(v.city) }}, {{ v.address }}</p>
-          </div>
+            <p class="mt-1 text-xl font-medium underline decoration-white/30 underline-offset-4 transition-colors group-hover:text-sand group-hover:decoration-current">{{ cityName(v.city) }}, {{ v.address }}</p>
+          </a>
         </div>
         <div class="card flex items-center gap-2 p-3">
           <button class="btn-primary flex-1 py-3.5" @click="tab = 'booking'"><UiIcon name="calendar" :size="18" /> Забронировать</button>
