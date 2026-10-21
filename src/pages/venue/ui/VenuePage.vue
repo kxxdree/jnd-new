@@ -118,10 +118,10 @@ const todayIdx = weekdayIndex();
         <h2 class="h-display mb-6 text-4xl sm:text-5xl">Условия бронирования</h2>
         <ul>
           <li class="flex items-baseline justify-between gap-6 border-b border-line py-3.5">
-            <p class="min-w-0 text-sm">Количество гостей</p>
+            <p class="min-w-0 text-base">Количество гостей</p>
             <span class="shrink-0 text-base tabular-nums">{{ v.booking.minGuests }}–{{ v.booking.maxGuests }}</span>
           </li>
-          <li v-for="c in v.booking.conditions" :key="c" class="border-b border-line py-3.5 text-sm last:border-b-0">{{ c }}</li>
+          <li v-for="c in v.booking.conditions" :key="c" class="border-b border-line py-3.5 text-base last:border-b-0">{{ c }}</li>
         </ul>
 
         <div class="mt-8 flex flex-col gap-2 sm:flex-row">
@@ -138,7 +138,7 @@ const todayIdx = weekdayIndex();
         <ol>
           <li v-for="(r, i) in v.rules" :key="r" class="flex items-baseline gap-6 border-b border-line py-3.5 last:border-b-0">
             <span class="shrink-0 text-xs text-muted tabular-nums">{{ String(i + 1).padStart(2, "0") }}</span>
-            <p class="min-w-0 text-sm">{{ r }}</p>
+            <p class="min-w-0 text-base">{{ r }}</p>
           </li>
         </ol>
       </div>
