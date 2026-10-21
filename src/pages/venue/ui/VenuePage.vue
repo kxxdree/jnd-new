@@ -44,6 +44,7 @@ const todayIdx = weekdayIndex();
       <article class="rim relative overflow-hidden rounded-4xl bg-black">
         <div class="relative aspect-4/5 sm:aspect-video lg:aspect-21/9">
           <UiPhoto :src="v.photo" :alt="v.name" class="absolute inset-0 h-full w-full" />
+          <div class="pointer-events-none absolute inset-0 bg-black/30" />
           <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black/10 via-transparent to-black" />
 
           <div class="absolute inset-0 grid place-items-center px-4">

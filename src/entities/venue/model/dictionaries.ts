@@ -5,6 +5,7 @@ export const formats: Option<FormatId>[] = [
   { id: 'bar', name: 'Бар' },
   { id: 'pub', name: 'Паб' },
   { id: 'lounge', name: 'Лаунж' },
+  { id: 'club', name: 'Клуб' },
   { id: 'concert', name: 'Концертная площадка' },
 ]
 

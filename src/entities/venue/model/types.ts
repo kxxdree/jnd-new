@@ -1,6 +1,6 @@
 import type { GenreId } from '@shared/config'
 
-export type FormatId = 'bar' | 'pub' | 'lounge' | 'concert'
+export type FormatId = 'bar' | 'pub' | 'lounge' | 'club' | 'concert'
 
 export type DrinkId = 'cocktails' | 'craft' | 'wine' | 'kitchen' | 'snacks'
 
