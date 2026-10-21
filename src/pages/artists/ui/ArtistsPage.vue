@@ -25,7 +25,7 @@ const list = computed(() =>
       <h1 class="h-display text-[15vw] sm:text-8xl lg:text-[9rem]">Артисты</h1>
       <p class="mt-4 text-white/80">Группы, коллективы и музыканты</p>
 
-      <div class="search-bar relative z-10 mx-auto mt-8 flex max-w-xl flex-col gap-1 p-2 sm:flex-row">
+      <div class="search-bar relative z-10 mx-auto mt-8 flex max-w-2xl flex-col gap-1 p-2 sm:flex-row">
         <label class="flex flex-1 items-center gap-3 px-3">
           <UiIcon name="search" class="text-white/60" :size="18" />
           <input v-model="q" type="search" placeholder="Название группы" class="w-full bg-transparent py-2.5 text-sm placeholder:text-white/50" aria-label="Поиск артистов">
