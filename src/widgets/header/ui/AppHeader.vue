@@ -92,11 +92,10 @@ watch(open, (v) => {
             v-for="l in [...links, ...(cabinet ? [cabinet] : [])]"
             :key="l.to"
             :to="l.to"
-            class="flex items-center justify-between rounded-3xl px-4 py-3.5 text-xl font-medium tracking-tight transition-colors"
+            class="flex items-center rounded-3xl px-4 py-3.5 text-xl font-medium tracking-tight transition-colors"
             :class="isActive(l.to) ? 'bg-white/10 text-white' : 'text-white/75'"
           >
             {{ l.label }}
-            <UiIcon name="arrow-up-right" :size="20" :class="isActive(l.to) ? 'text-accent-text' : ''" />
           </NuxtLink>
 
           <div class="mt-6 flex flex-col gap-2 px-1 pb-1">

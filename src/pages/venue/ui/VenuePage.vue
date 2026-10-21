@@ -131,12 +131,9 @@ const todayIdx = weekdayIndex();
       <!-- Правила: тот же вид, что у меню и условий бронирования -->
       <div v-else-if="tab === 'rules'" class="card p-6 sm:p-10">
         <h2 class="h-display mb-6 text-4xl sm:text-5xl">Правила посещения</h2>
-        <ol>
-          <li v-for="(r, i) in v.rules" :key="r" class="flex items-baseline gap-6 border-b border-line py-3.5 last:border-b-0">
-            <span class="shrink-0 text-xs text-muted tabular-nums">{{ String(i + 1).padStart(2, "0") }}</span>
-            <p class="min-w-0 text-base">{{ r }}</p>
-          </li>
-        </ol>
+        <ul>
+          <li v-for="r in v.rules" :key="r" class="border-b border-line py-3.5 text-base last:border-b-0">{{ r }}</li>
+        </ul>
       </div>
     </section>
   </div>
