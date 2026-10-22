@@ -69,7 +69,7 @@ useHead({ title: `${ev.title} - Joined`, meta: [{ name: 'description', content: 
         <div v-if="lineup.length" class="card p-6 sm:p-8">
           <h2 class="mb-5 text-2xl font-medium">Лайнап</h2>
           <NuxtLink v-for="a in lineup" :key="a!.slug" :to="`/artists/${a!.slug}`" class="group flex items-center gap-4 border-t border-line py-4 last:pb-0">
-            <UiPhoto :src="a!.photo" :alt="a!.name" class="size-14 shrink-0" />
+            <UiPhoto :src="a!.photo" :alt="a!.name" class="size-14 shrink-0 rounded-lg" />
             <div class="min-w-0 flex-1">
               <p class="font-medium uppercase transition-colors group-hover:text-sand">{{ a!.name }}</p>
               <p class="mt-0.5 text-xs tracking-wider text-muted uppercase">{{ cityName(a!.city) }} · {{ a!.genres.map(genreName).join(', ') }}</p>
