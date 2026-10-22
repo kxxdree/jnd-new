@@ -132,19 +132,31 @@ const transactions = [
 
         <!-- МОДЕРАЦИЯ -->
         <div v-else-if="tab === 'moderation'" class="grid grid-cols-1 gap-4">
-          <div v-for="m in moderation" :key="m.id" class="card flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
-            <UiPhoto :src="m.photo" class="size-16 shrink-0 rounded-2xl" />
-            <div class="min-w-0 flex-1">
-              <span class="tag mb-1">{{ m.kind }}</span>
-              <p class="truncate font-medium">{{ m.name }}</p>
-              <p class="truncate text-sm text-muted">{{ m.city }} · {{ m.author }} · {{ m.date }}</p>
-            </div>
-            <div class="flex gap-2">
-              <button class="btn-dark" @click="moderate(m.id, false)">Отклонить</button>
-              <button class="btn-primary" @click="moderate(m.id, true)">Одобрить</button>
-            </div>
-          </div>
-          <UiEmpty v-if="!moderation.length" icon="check" title="Очередь пуста" text="Все заявки обработаны." />
+          <h2 class="text-2xl font-medium">Очередь модерации</h2>
+          <!-- Список в стиле афиши, как входящие брони партнёра: обложка, тип точкой, название заглавными -->
+          <ul v-if="moderation.length" class="card px-5 sm:px-8">
+            <li
+              v-for="m in moderation"
+              :key="m.id"
+              class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-5 gap-y-4 border-b border-line py-5 last:border-b-0 sm:grid-cols-[auto_minmax(0,1fr)_auto]"
+            >
+              <UiPhoto :src="m.photo" :alt="m.name" class="size-16 rounded-2xl sm:size-20" />
+              <div class="min-w-0">
+                <p class="flex items-center gap-2 text-xs font-semibold tracking-wider text-accent-text uppercase">
+                  <span class="size-1.5 rounded-full bg-accent" />
+                  {{ m.kind }}
+                </p>
+                <p class="mt-1.5 truncate font-medium uppercase">{{ m.name }}</p>
+                <p class="mt-0.5 truncate text-xs tracking-wider text-muted uppercase">{{ m.city }} · {{ m.date }}</p>
+                <p class="mt-0.5 truncate text-xs text-muted">{{ m.author }}</p>
+              </div>
+              <div class="col-span-2 flex gap-2 sm:col-span-1">
+                <button class="btn-dark flex-1 sm:flex-none" @click="moderate(m.id, false)">Отклонить</button>
+                <button class="btn-primary flex-1 sm:flex-none" @click="moderate(m.id, true)">Одобрить</button>
+              </div>
+            </li>
+          </ul>
+          <UiEmpty v-else icon="check" title="Очередь пуста" text="Все заявки обработаны." />
         </div>
 
         <!-- ГОРОДА -->
