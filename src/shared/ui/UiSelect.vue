@@ -1,25 +1,37 @@
 <script setup lang="ts" generic="T extends string">
+import { isPhone } from '@shared/lib'
 import UiIcon from './UiIcon.vue'
+import UiModal from './UiModal.vue'
 
-/** Стеклянный выпадающий список вместо нативного select. Пустая строка = allLabel; allLabel false - без пункта «Все»; inline - без «пилюли», для строки поиска */
+/**
+ * Стеклянный выпадающий список вместо нативного select. Пустая строка = allLabel; allLabel false - без пункта «Все»;
+ * inline - без «пилюли», для строки поиска; на телефоне выбор открывается нижней модалкой (sheet: false - всегда выпадашка)
+ */
 const props = withDefaults(
-  defineProps<{ options: readonly { id: T; name: string }[]; allLabel?: string | false; icon?: string; label?: string; inline?: boolean }>(),
-  { allLabel: 'Все', icon: undefined, label: undefined },
+  defineProps<{ options: readonly { id: T; name: string }[]; allLabel?: string | false; icon?: string; label?: string; inline?: boolean; sheet?: boolean }>(),
+  { allLabel: 'Все', icon: undefined, label: undefined, sheet: true },
 )
 const model = defineModel<T | ''>({ required: true })
 
 const open = ref(false)
+const asSheet = ref(false)
 const root = ref<HTMLElement>()
 const current = computed(() => props.options.find(o => o.id === model.value)?.name ?? (props.allLabel || ''))
 const items = computed(() => (props.allLabel === false ? props.options : [{ id: '' as T | '', name: props.allLabel }, ...props.options]))
+
+const toggle = () => {
+  asSheet.value = props.sheet && isPhone()
+  open.value = !open.value
+}
 
 const pick = (id: T | '') => {
   model.value = id
   open.value = false
 }
 
+// модалка телепортирована в body - клики в ней не должны закрывать её как «клик снаружи»
 const onDoc = (e: MouseEvent) => {
-  if (root.value && !root.value.contains(e.target as Node)) open.value = false
+  if (!asSheet.value && root.value && !root.value.contains(e.target as Node)) open.value = false
 }
 onMounted(() => document.addEventListener('click', onDoc))
 onBeforeUnmount(() => document.removeEventListener('click', onDoc))
@@ -27,7 +39,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
 
 <template>
   <div ref="root" class="relative" @keydown.esc="open = false">
-    <button type="button" class="w-full justify-between" :class="inline ? 'flex h-full items-center gap-2 px-3 text-sm transition-colors hover:text-sand' : 'pill'" :aria-expanded="open" aria-haspopup="listbox" :aria-label="label" @click="open = !open">
+    <button type="button" class="w-full justify-between" :class="inline ? 'flex h-full items-center gap-2 px-3 text-sm transition-colors hover:text-sand' : 'pill'" :aria-expanded="open" aria-haspopup="listbox" :aria-label="label" @click="toggle">
       <span class="flex min-w-0 items-center gap-2">
         <UiIcon v-if="icon" :name="icon" :size="16" class="shrink-0 text-accent-text" />
         <span class="truncate">{{ current }}</span>
@@ -40,7 +52,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
       leave-active-class="transition duration-150"
       leave-to-class="opacity-0 scale-95"
     >
-      <div v-if="open" role="listbox" class="absolute top-full z-40 mt-2 origin-top rounded-xl bg-[#1c1c1e] p-1 shadow-[0_16px_40px_-12px_rgb(0_0_0/0.8)]" :class="inline ? 'left-0 w-64 max-w-[calc(100vw-2rem)]' : 'right-0 left-0 sm:left-auto sm:w-64'">
+      <div v-if="open && !asSheet" role="listbox" class="absolute top-full z-40 mt-2 origin-top rounded-xl bg-[#1c1c1e] p-1 shadow-[0_16px_40px_-12px_rgb(0_0_0/0.8)]" :class="inline ? 'left-0 w-64 max-w-[calc(100vw-2rem)]' : 'right-0 left-0 sm:left-auto sm:w-64'">
         <button
           v-for="o in items"
           :key="o.id"
@@ -55,5 +67,23 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
         </button>
       </div>
     </Transition>
+
+    <!-- Телефон: выбор в нижней модалке, пункты крупнее -->
+    <UiModal v-if="sheet" :model-value="open && asSheet" :title="label" @update:model-value="open = $event">
+      <div role="listbox" class="-mx-2">
+        <button
+          v-for="o in items"
+          :key="o.id"
+          type="button"
+          role="option"
+          :aria-selected="o.id === model"
+          class="flex w-full items-center justify-between rounded-lg px-3 py-3.5 text-left text-base hover:bg-white/10"
+          @click="pick(o.id)"
+        >
+          {{ o.name }}
+          <UiIcon v-if="o.id === model" name="check" :size="18" class="text-accent-text" />
+        </button>
+      </div>
+    </UiModal>
   </div>
 </template>
