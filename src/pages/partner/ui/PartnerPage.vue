@@ -104,18 +104,18 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
       </NuxtLink>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-[260px_1fr]">
-      <aside class="lg:sticky lg:top-28 lg:h-fit"><UiTabs v-model="tab" :tabs="tabs" /></aside>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[260px_1fr]">
+      <aside class="min-w-0 lg:sticky lg:top-28 lg:h-fit"><UiTabs v-model="tab" :tabs="tabs" /></aside>
 
       <div class="min-w-0">
         <!-- ПРОФИЛЬ -->
         <form v-if="tab === 'profile'" class="grid gap-4" @submit.prevent="push('Изменения отправлены на модерацию')">
-          <div class="card grid gap-5 p-5 sm:p-8">
+          <div class="card grid grid-cols-1 gap-5 p-5 sm:p-8">
             <h2 class="text-xl font-medium">Основная информация</h2>
             <label><span class="label">Название</span><input v-model="profile.name" class="field"></label>
             <label><span class="label">Короткое описание</span><input v-model="profile.short" class="field"></label>
             <label><span class="label">{{ isVenue ? 'Описание' : 'О коллективе' }}</span><textarea v-model="profile.description" rows="5" class="field resize-none" /></label>
-            <div>
+            <div class="min-w-0">
               <span class="label">Музыкальные жанры</span>
               <UiPills v-model="profile.genres" :options="genres" multiple :all-label="false" />
             </div>
