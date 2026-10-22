@@ -81,12 +81,15 @@ const removeEvent = (id: string) => {
 
 // --- Фото: галерея и страницы меню бара и кухни (меню - только для заведения)
 type MediaKind = 'gallery' | 'bar' | 'kitchen'
+// title/eyebrow - для афиши-секции, name - для подписей и просмотра; units - склонение счётчика
+const photoUnits: [string, string, string] = ['фото', 'фото', 'фото']
+const pageUnits: [string, string, string] = ['страница', 'страницы', 'страниц']
 const mediaKinds = computed(() => [
-  { id: 'gallery' as MediaKind, name: isVenue.value ? 'Фотогалерея' : 'Фото и видео', target: 'в галерею', aspect: 'aspect-square', empty: 'Загрузите фото - их увидят гости на публичной странице' },
+  { id: 'gallery' as MediaKind, name: isVenue.value ? 'Фотогалерея' : 'Фото и видео', title: isVenue.value ? 'Галерея' : 'Фото', eyebrow: 'Интерьер и события', units: photoUnits, target: 'в галерею', aspect: 'aspect-square', empty: 'Загрузите фото - их увидят гости на публичной странице' },
   ...(isVenue.value
     ? [
-        { id: 'bar' as MediaKind, name: 'Меню бара', target: 'в меню', aspect: 'aspect-3/4', empty: 'Загрузите фото страниц меню - их увидят гости на странице заведения' },
-        { id: 'kitchen' as MediaKind, name: 'Меню кухни', target: 'в меню', aspect: 'aspect-3/4', empty: 'Загрузите фото страниц меню - их увидят гости на странице заведения' },
+        { id: 'bar' as MediaKind, name: 'Меню бара', title: 'Бар', eyebrow: 'Меню', units: pageUnits, target: 'в меню', aspect: 'aspect-3/4', empty: 'Загрузите фото страниц меню - их увидят гости на странице заведения' },
+        { id: 'kitchen' as MediaKind, name: 'Меню кухни', title: 'Кухня', eyebrow: 'Меню', units: pageUnits, target: 'в меню', aspect: 'aspect-3/4', empty: 'Загрузите фото страниц меню - их увидят гости на странице заведения' },
       ]
     : []),
 ])
@@ -245,31 +248,45 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
 
         <!-- МЕДИА -->
         <div v-else-if="tab === 'media'" class="grid grid-cols-1 gap-4">
-          <!-- Галерея и меню (фото страниц, отдельно бар и кухня) - одинаковые секции -->
-          <div v-for="k in mediaKinds" :key="k.id" class="card p-5 sm:p-6">
-            <div class="mb-5 flex items-center justify-between gap-4">
-              <h2 class="text-xl font-medium">{{ k.name }}</h2>
-              <label class="btn-dark cursor-pointer">
-                <UiIcon name="plus" :size="16" /> Загрузить
+          <h2 class="text-2xl font-medium">{{ isVenue ? 'Фото и меню' : 'Медиа' }}</h2>
+          <!-- Афиша-постер, как у мероприятий: галерея и меню (бар, кухня) - секции через линию -->
+          <div class="card p-5 sm:p-10">
+            <section v-for="k in mediaKinds" :key="k.id" class="border-t border-line py-6 first:border-t-0 first:pt-0 last:pb-0 sm:py-8">
+              <div class="mb-5 flex items-end justify-between gap-4">
+                <div class="min-w-0">
+                  <p class="text-xs tracking-widest text-accent-text uppercase">
+                    {{ k.eyebrow }} · {{ media[k.id].length }} {{ plural(media[k.id].length, k.units) }}
+                  </p>
+                  <h3 class="h-display mt-2 text-3xl uppercase sm:text-5xl">{{ k.title }}</h3>
+                </div>
+                <label class="btn-dark shrink-0 cursor-pointer">
+                  <UiIcon name="plus" :size="16" /> Загрузить
+                  <input type="file" accept="image/*" multiple class="sr-only" @change="addPhotos(k.id, $event)">
+                </label>
+              </div>
+              <!-- Лента: 3 фото в ряд на телефоне, 6 - шире; не влезают - листаются стрелками -->
+              <UiCarousel v-if="media[k.id].length">
+                <div v-for="(src, i) in media[k.id]" :key="src" class="group/item relative w-[calc((100%-1rem)/3)] shrink-0 snap-start sm:w-[calc((100%-2.5rem)/6)]">
+                  <button type="button" class="block w-full overflow-hidden rounded-2xl" :aria-label="`Открыть фото ${i + 1}`" @click="viewer = { kind: k.id, index: i }">
+                    <UiPhoto :src="src" :alt="`${k.name}, фото ${i + 1}`" class="transition-transform duration-700 ease-liquid group-hover/item:scale-[1.03]" :class="k.aspect" />
+                  </button>
+                  <!-- с мышью - появляется при наведении, на тач-экранах видна всегда -->
+                  <button
+                    type="button"
+                    class="btn-icon absolute top-1.5 right-1.5 size-8 bg-black/50 transition-opacity focus-visible:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/item:opacity-100"
+                    :aria-label="`Удалить фото ${i + 1}`"
+                    @click="removePhoto(k.id, src)"
+                  >
+                    <UiIcon name="trash" :size="14" />
+                  </button>
+                </div>
+              </UiCarousel>
+              <label v-else class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed border-white/15 px-4 py-10 text-center text-sm text-muted transition-colors hover:border-white/30 hover:text-white">
+                <UiIcon name="image" :size="22" class="text-accent-text" />
+                {{ k.empty }}
                 <input type="file" accept="image/*" multiple class="sr-only" @change="addPhotos(k.id, $event)">
               </label>
-            </div>
-            <!-- Лента: 3 фото в ряд на телефоне, 6 - шире; не влезают - листаются стрелками -->
-            <UiCarousel v-if="media[k.id].length">
-              <div v-for="(src, i) in media[k.id]" :key="src" class="relative w-[calc((100%-1rem)/3)] shrink-0 snap-start sm:w-[calc((100%-2.5rem)/6)]">
-                <button type="button" class="group block w-full overflow-hidden rounded-2xl" :aria-label="`Открыть фото ${i + 1}`" @click="viewer = { kind: k.id, index: i }">
-                  <UiPhoto :src="src" :alt="`${k.name}, фото ${i + 1}`" class="transition-transform duration-700 ease-liquid group-hover:scale-[1.03]" :class="k.aspect" />
-                </button>
-                <button type="button" class="btn-icon absolute top-1.5 right-1.5 size-8 bg-black/50" :aria-label="`Удалить фото ${i + 1}`" @click="removePhoto(k.id, src)">
-                  <UiIcon name="trash" :size="14" />
-                </button>
-              </div>
-            </UiCarousel>
-            <label v-else class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed border-white/15 px-4 py-10 text-center text-sm text-muted transition-colors hover:border-white/30 hover:text-white">
-              <UiIcon name="image" :size="22" class="text-accent-text" />
-              {{ k.empty }}
-              <input type="file" accept="image/*" multiple class="sr-only" @change="addPhotos(k.id, $event)">
-            </label>
+            </section>
           </div>
         </div>
       </div>
