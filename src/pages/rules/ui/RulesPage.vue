@@ -35,14 +35,15 @@ const sections = [
 <template>
   <section class="container-x max-w-4xl pt-12 sm:pt-20">
     <h1 class="h-display text-[14vw] sm:text-8xl">Условия</h1>
-    <div class="mt-12 grid gap-6">
+    <div class="mt-12 grid grid-cols-1 gap-6">
       <!-- Разделы оформлены как меню заведения: карточка-список -->
-      <div v-for="s in sections" :id="s.id" :key="s.id" class="card scroll-mt-28 p-6 sm:p-10">
-        <h2 class="h-display mb-6 text-4xl sm:text-5xl">{{ s.title }}</h2>
+      <div v-for="s in sections" :id="s.id" :key="s.id" class="card min-w-0 scroll-mt-28 p-6 sm:p-10">
+        <!-- на мобильных мельче: длинные слова («Конфиденциальность») не влезают в 36px -->
+        <h2 class="h-display mb-6 text-2xl wrap-break-word sm:text-5xl">{{ s.title }}</h2>
         <ol>
-          <li v-for="(t, i) in s.items" :key="t" class="flex items-baseline justify-between gap-6 border-b border-line py-3.5 last:border-b-0">
-            <p class="min-w-0 text-sm">{{ t }}</p>
-            <span class="shrink-0 text-base tabular-nums">{{ String(i + 1).padStart(2, "0") }}</span>
+          <li v-for="(t, i) in s.items" :key="t" class="flex items-baseline gap-6 border-b border-line py-3.5 last:border-b-0">
+            <span class="shrink-0 text-xs text-muted tabular-nums">{{ String(i + 1).padStart(2, "0") }}</span>
+            <p class="min-w-0 text-base">{{ t }}</p>
           </li>
         </ol>
       </div>

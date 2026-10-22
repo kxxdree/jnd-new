@@ -4,7 +4,7 @@ import { byDateTime, type EventItem, events, isUpcoming } from '@entities/event'
 import { useSession } from '@entities/session'
 import { getVenue, venues } from '@entities/venue'
 import { type GenreId, genres } from '@shared/config'
-import { addDays, dayNumber, formatDay, formatPrice, formatWeekdayLong, isWeekend, monthShort, ph, plural, todayISO, useToast } from '@shared/lib'
+import { addDays, dayNumber, formatWeekdayLong, isWeekend, monthShort, ph, plural, todayISO, useToast } from '@shared/lib'
 import { UiEmpty, UiIcon, UiModal, UiPhoto, UiPills, UiTabs } from '@shared/ui'
 
 useHead({ title: 'Кабинет партнёра - Joined' })
@@ -34,6 +34,7 @@ const profile = reactive({
   phone: venue.phone,
   address: venue.address,
   instagram: venue.instagram,
+  telegram: venue.telegram,
   genres: [...(isVenue.value ? venue.genres : artist.genres)] as GenreId[],
   rules: venue.rules.join('\n'),
   deposit: venue.booking.deposit,
@@ -78,13 +79,37 @@ const removeEvent = (id: string) => {
   push('Событие снято с публикации')
 }
 
+// --- Меню: фото страниц бара и кухни (только для заведения)
+type MenuKind = 'bar' | 'kitchen'
+const menuKinds = [
+  { id: 'bar' as MenuKind, name: 'Меню бара' },
+  { id: 'kitchen' as MenuKind, name: 'Меню кухни' },
+]
+const menu = reactive({ bar: [...venue.menu.bar], kitchen: [...venue.menu.kitchen] })
+// Демо без бэкенда: локальные превью файлов, сразу видны на странице заведения
+const syncMenu = (kind: MenuKind) => { venue.menu[kind] = [...menu[kind]] }
+const addMenuPhotos = (kind: MenuKind, e: Event) => {
+  const input = e.target as HTMLInputElement
+  const files = [...(input.files ?? [])].filter(f => f.type.startsWith('image/'))
+  input.value = ''
+  if (!files.length) return
+  menu[kind].push(...files.map(f => URL.createObjectURL(f)))
+  syncMenu(kind)
+  push(`${files.length} ${plural(files.length, ['фото добавлено', 'фото добавлены', 'фото добавлено'])} в меню`)
+}
+const removeMenuPhoto = (kind: MenuKind, src: string) => {
+  menu[kind] = menu[kind].filter(s => s !== src)
+  if (src.startsWith('blob:')) URL.revokeObjectURL(src)
+  syncMenu(kind)
+}
+
 // --- Входящие брони (только для заведения)
 type BookingStatus = 'new' | 'ok' | 'no'
 const incoming = ref<{ id: string; name: string; phone: string; date: string; time: string; guests: number; status: BookingStatus }[]>([
-  { id: 'b1', name: 'Мария Л.', phone: '+7 916 ***-12-40', date: todayISO(), time: '20:00', guests: 4, status: 'new' },
-  { id: 'b2', name: 'Илья К.', phone: '+7 903 ***-55-11', date: todayISO(), time: '21:00', guests: 2, status: 'new' },
-  { id: 'b3', name: 'Компания «Ромашка»', phone: '+7 495 ***-00-00', date: addDays(todayISO(), 2), time: '19:00', guests: 10, status: 'new' },
-  { id: 'b4', name: 'Анна В.', phone: '+7 926 ***-87-01', date: addDays(todayISO(), 3), time: '22:00', guests: 3, status: 'ok' },
+  { id: 'b1', name: 'Мария Л.', phone: '+7 916 482-12-40', date: todayISO(), time: '20:00', guests: 4, status: 'new' },
+  { id: 'b2', name: 'Илья К.', phone: '+7 903 617-55-11', date: todayISO(), time: '21:00', guests: 2, status: 'new' },
+  { id: 'b3', name: 'Компания «Ромашка»', phone: '+7 495 230-14-00', date: addDays(todayISO(), 2), time: '19:00', guests: 10, status: 'new' },
+  { id: 'b4', name: 'Анна В.', phone: '+7 926 354-87-01', date: addDays(todayISO(), 3), time: '22:00', guests: 3, status: 'ok' },
 ])
 const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
   incoming.value = incoming.value.map(b => (b.id === id ? { ...b, status } : b))
@@ -104,18 +129,18 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
       </NuxtLink>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-[260px_1fr]">
-      <aside class="lg:sticky lg:top-28 lg:h-fit"><UiTabs v-model="tab" :tabs="tabs" /></aside>
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[260px_1fr]">
+      <aside class="min-w-0 lg:sticky lg:top-28 lg:h-fit"><UiTabs v-model="tab" :tabs="tabs" /></aside>
 
       <div class="min-w-0">
         <!-- ПРОФИЛЬ -->
-        <form v-if="tab === 'profile'" class="grid gap-4" @submit.prevent="push('Изменения отправлены на модерацию')">
-          <div class="card grid gap-5 p-5 sm:p-8">
+        <form v-if="tab === 'profile'" class="grid grid-cols-1 gap-4" @submit.prevent="push('Изменения отправлены на модерацию')">
+          <div class="card grid grid-cols-1 gap-5 p-5 sm:p-8">
             <h2 class="text-xl font-medium">Основная информация</h2>
             <label><span class="label">Название</span><input v-model="profile.name" class="field"></label>
             <label><span class="label">Короткое описание</span><input v-model="profile.short" class="field"></label>
             <label><span class="label">{{ isVenue ? 'Описание' : 'О коллективе' }}</span><textarea v-model="profile.description" rows="5" class="field resize-none" /></label>
-            <div>
+            <div class="min-w-0">
               <span class="label">Музыкальные жанры</span>
               <UiPills v-model="profile.genres" :options="genres" multiple :all-label="false" />
             </div>
@@ -124,9 +149,10 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
             <h2 class="text-xl font-medium">Контакты и бронирование</h2>
             <div class="grid gap-5 sm:grid-cols-2">
               <label><span class="label">Телефон</span><input v-model="profile.phone" class="field"></label>
+              <label><span class="label">Telegram</span><input v-model="profile.telegram" class="field" placeholder="@username"></label>
               <label><span class="label">Instagram</span><input v-model="profile.instagram" class="field"></label>
-              <label class="sm:col-span-2"><span class="label">Адрес</span><input v-model="profile.address" class="field"></label>
               <label><span class="label">Депозит с гостя, ₽</span><input v-model.number="profile.deposit" type="number" min="0" step="100" class="field"></label>
+              <label class="sm:col-span-2"><span class="label">Адрес</span><input v-model="profile.address" class="field"></label>
             </div>
             <label><span class="label">Правила посещения (по строке на пункт)</span><textarea v-model="profile.rules" rows="5" class="field resize-none" /></label>
           </div>
@@ -134,14 +160,14 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
         </form>
 
         <!-- МЕРОПРИЯТИЯ -->
-        <div v-else-if="tab === 'events'" class="grid gap-4">
-          <div class="flex items-center justify-between">
+        <div v-else-if="tab === 'events'" class="grid grid-cols-1 gap-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
             <h2 class="text-2xl font-medium">Мероприятия</h2>
             <button class="btn-primary" @click="newOpen = true"><UiIcon name="plus" :size="18" /> Новое событие</button>
           </div>
           <!-- Афиша-постер: крупная дата слева, события дня с продажами и действиями справа -->
           <div v-if="grouped.length" class="card p-5 sm:p-10">
-            <div v-for="[date, items] in grouped" :key="date" class="grid gap-4 border-t border-line py-5 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:gap-8">
+            <div v-for="[date, items] in grouped" :key="date" class="grid grid-cols-1 gap-4 border-t border-line py-5 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:gap-8">
               <h3 class="h-display text-[12vw] leading-[0.85] uppercase sm:text-6xl md:self-center" :class="isWeekend(date) ? 'text-sand' : ''">
                 {{ monthShort(date) }} {{ dayNumber(date) }}
               </h3>
@@ -167,23 +193,42 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
         </div>
 
         <!-- БРОНИ -->
-        <div v-else-if="tab === 'bookings'" class="grid gap-4">
+        <div v-else-if="tab === 'bookings'" class="grid grid-cols-1 gap-4">
           <h2 class="text-2xl font-medium">Входящие брони</h2>
-          <div v-for="b in incoming" :key="b.id" class="card flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
-            <div class="min-w-0 flex-1">
-              <p class="font-medium">{{ b.name }} <span class="text-sm text-muted">· {{ b.phone }}</span></p>
-              <p class="text-sm text-muted">{{ formatDay(b.date) }}, {{ b.time }} · {{ b.guests }} {{ plural(b.guests, ['гость', 'гостя', 'гостей']) }}</p>
-            </div>
-            <div v-if="b.status === 'new'" class="flex gap-2">
-              <button class="btn-dark" @click="setStatus(b.id, 'no')">Отклонить</button>
-              <button class="btn-primary" @click="setStatus(b.id, 'ok')">Подтвердить</button>
-            </div>
-            <span v-else class="tag" :class="b.status === 'no' ? 'tag-neutral' : ''">{{ b.status === 'ok' ? 'Подтверждена' : 'Отклонена' }}</span>
-          </div>
+          <!-- Список в стиле афиши: дата крупно слева, гость и время, статус точкой -->
+          <ul v-if="incoming.length" class="card px-5 sm:px-8">
+            <li
+              v-for="b in incoming"
+              :key="b.id"
+              class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-5 gap-y-4 border-b border-line py-5 last:border-b-0 sm:grid-cols-[auto_minmax(0,1fr)_auto]"
+              :class="b.status === 'no' ? 'opacity-50' : ''"
+            >
+              <div class="w-14 text-center">
+                <p class="h-display text-3xl leading-none">{{ dayNumber(b.date) }}</p>
+                <p class="mt-1 text-xs tracking-widest text-muted uppercase">{{ monthShort(b.date) }}</p>
+              </div>
+              <div class="min-w-0">
+                <p class="truncate font-medium uppercase">{{ b.name }}</p>
+                <p class="mt-0.5 text-xs tracking-wider text-muted uppercase">
+                  {{ b.time }} · {{ b.guests }} {{ plural(b.guests, ['гость', 'гостя', 'гостей']) }} ·
+                  <a :href="`tel:${b.phone.replace(/[^\d+]/g, '')}`" class="hover:text-white">{{ b.phone }}</a>
+                </p>
+              </div>
+              <div v-if="b.status === 'new'" class="col-span-2 flex gap-2 sm:col-span-1">
+                <button class="btn-dark flex-1 sm:flex-none" @click="setStatus(b.id, 'no')">Отклонить</button>
+                <button class="btn-primary flex-1 sm:flex-none" @click="setStatus(b.id, 'ok')">Подтвердить</button>
+              </div>
+              <p v-else class="col-span-2 flex items-center gap-2 text-xs font-semibold tracking-wider uppercase sm:col-span-1" :class="b.status === 'ok' ? 'text-white' : 'text-muted'">
+                <span class="size-1.5 rounded-full" :class="b.status === 'ok' ? 'bg-accent' : 'bg-white/20'" />
+                {{ b.status === 'ok' ? 'Подтверждена' : 'Отклонена' }}
+              </p>
+            </li>
+          </ul>
+          <UiEmpty v-else icon="users" title="Броней пока нет" text="Новые заявки гостей появятся здесь" />
         </div>
 
         <!-- МЕДИА -->
-        <div v-else-if="tab === 'media'" class="grid gap-4">
+        <div v-else-if="tab === 'media'" class="grid grid-cols-1 gap-4">
           <div class="card p-5 sm:p-6">
             <div class="mb-5 flex items-center justify-between">
               <h2 class="text-xl font-medium">{{ isVenue ? 'Фотогалерея' : 'Фото и видео' }}</h2>
@@ -193,14 +238,28 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
               <UiPhoto v-for="src in venue.gallery" :key="src" :src="src" class="aspect-square rounded-2xl" />
             </div>
           </div>
-          <div v-if="isVenue" class="card p-5 sm:p-6">
-            <h2 class="mb-4 text-xl font-medium">Меню бара</h2>
-            <div class="divide-y divide-line">
-              <div v-for="m in venue.menu.bar" :key="m.name" class="flex items-center justify-between gap-4 py-3">
-                <span class="truncate">{{ m.name }}</span>
-                <span class="text-soft">{{ formatPrice(m.price) }}</span>
+          <!-- Меню: фото страниц, отдельно бар и кухня -->
+          <div v-for="k in isVenue ? menuKinds : []" :key="k.id" class="card p-5 sm:p-6">
+            <div class="mb-5 flex items-center justify-between gap-4">
+              <h2 class="text-xl font-medium">{{ k.name }}</h2>
+              <label class="btn-dark cursor-pointer">
+                <UiIcon name="plus" :size="16" /> Загрузить
+                <input type="file" accept="image/*" multiple class="sr-only" @change="addMenuPhotos(k.id, $event)">
+              </label>
+            </div>
+            <div v-if="menu[k.id].length" class="grid grid-cols-3 gap-2 sm:grid-cols-6">
+              <div v-for="(src, i) in menu[k.id]" :key="src" class="relative">
+                <UiPhoto :src="src" :alt="`${k.name}, страница ${i + 1}`" class="aspect-3/4 rounded-2xl" />
+                <button type="button" class="btn-icon absolute top-1.5 right-1.5 size-8 bg-black/50" :aria-label="`Удалить страницу ${i + 1}`" @click="removeMenuPhoto(k.id, src)">
+                  <UiIcon name="trash" :size="14" />
+                </button>
               </div>
             </div>
+            <label v-else class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed border-white/15 px-4 py-10 text-center text-sm text-muted transition-colors hover:border-white/30 hover:text-white">
+              <UiIcon name="image" :size="22" class="text-accent-text" />
+              Загрузите фото страниц меню - их увидят гости на странице заведения
+              <input type="file" accept="image/*" multiple class="sr-only" @change="addMenuPhotos(k.id, $event)">
+            </label>
           </div>
         </div>
       </div>

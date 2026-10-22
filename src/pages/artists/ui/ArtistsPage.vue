@@ -30,7 +30,10 @@ const list = computed(() =>
           <UiIcon name="search" class="text-white/60" :size="18" />
           <input v-model="q" type="search" placeholder="Название группы" class="w-full bg-transparent py-2.5 text-sm placeholder:text-white/50" aria-label="Поиск артистов">
         </label>
-        <UiSelect v-model="city" :options="cities" all-label="Все города" icon="pin" label="Город" class="sm:w-48" />
+        <!-- Обёртка как у CitySelect на странице мест: кнопка тянется на всю высоту строки -->
+        <div class="flex sm:w-48">
+          <UiSelect v-model="city" :options="cities" all-label="Все города" icon="pin" label="Город" class="min-w-0 flex-1 [&>button]:h-full [&>button]:w-full" />
+        </div>
       </div>
       <div class="mt-6"><UiPills v-model="genre" :options="genres" center /></div>
     </section>
@@ -39,7 +42,7 @@ const list = computed(() =>
       <div v-if="list.length" class="grid grid-cols-2 md:grid-cols-3">
         <ArtistCard v-for="a in list" :key="a.slug" :artist="a" :city-label="cityName(a.city)" />
       </div>
-      <UiEmpty v-else icon="music" title="Никого не нашли" text="Попробуйте другой жанр или город." />
+      <UiEmpty v-else icon="music" title="Никого не нашли" text="Попробуйте другой жанр или город" />
     </section>
   </div>
 </template>

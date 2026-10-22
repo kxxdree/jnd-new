@@ -69,7 +69,7 @@ watch([genre, period, cityId], () => {
   <div>
     <section class="container-x pt-12 pb-12 text-center sm:pt-20">
       <h1 class="h-display text-[17vw] sm:text-8xl lg:text-[9rem]">Афиша</h1>
-      <p class="mt-4 text-white/80">Концерты, джем-сейшены и вечеринки</p>
+      <p class="mt-4 text-white/80">Концерты и вечеринки твоего города</p>
       <div class="mt-8 flex justify-center"><CitySelect /></div>
       <div class="mt-6"><UiPills v-model="genre" :options="genres" center /></div>
       <div class="mt-3"><UiPills v-model="period" :options="periods" all-label="Любая дата" center /></div>

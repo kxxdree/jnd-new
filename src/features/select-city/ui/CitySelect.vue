@@ -10,6 +10,24 @@ const { cityId, city, cities, detect, locating } = useCurrentCity()
 const { push } = useToast()
 const open = ref(false)
 const root = ref<HTMLElement>()
+const input = ref<HTMLInputElement>()
+const query = ref('')
+
+const filtered = computed(() => {
+  const q = query.value.trim().toLowerCase()
+  return q ? cities.filter(c => c.name.toLowerCase().includes(q)) : cities
+})
+
+// при открытии - фокус в поиск, при закрытии - сброс запроса
+watch(open, (v) => {
+  if (v) nextTick(() => input.value?.focus())
+  else query.value = ''
+})
+
+const pick = (id: string) => {
+  cityId.value = id
+  open.value = false
+}
 
 const onDetect = async () => {
   const id = await detect()
@@ -43,16 +61,31 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
           {{ locating ? 'Определяем…' : 'Определить автоматически' }}
         </button>
         <div class="mx-3 my-1 h-px bg-line" />
-        <button
-          v-for="c in cities"
-          :key="c.id"
-          type="button"
-          class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm hover:bg-white/10"
-          @click="cityId = c.id; open = false"
-        >
-          {{ c.name }}
-          <UiIcon v-if="c.id === cityId" name="check" :size="16" class="text-accent-text" />
-        </button>
+        <label class="mb-1 flex items-center gap-2 rounded-lg bg-white/5 px-3">
+          <UiIcon name="search" :size="16" class="shrink-0 text-muted" />
+          <input
+            ref="input"
+            v-model="query"
+            type="search"
+            placeholder="Найти город"
+            class="w-full bg-transparent py-2.5 text-sm placeholder:text-muted"
+            aria-label="Поиск города"
+            @keydown.enter.prevent="filtered[0] && pick(filtered[0].id)"
+          >
+        </label>
+        <div class="max-h-64 overflow-y-auto">
+          <button
+            v-for="c in filtered"
+            :key="c.id"
+            type="button"
+            class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm hover:bg-white/10"
+            @click="pick(c.id)"
+          >
+            {{ c.name }}
+            <UiIcon v-if="c.id === cityId" name="check" :size="16" class="text-accent-text" />
+          </button>
+          <p v-if="!filtered.length" class="px-3 py-2.5 text-sm text-muted">Город не найден</p>
+        </div>
       </div>
     </Transition>
   </div>
