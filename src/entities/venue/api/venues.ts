@@ -45,6 +45,12 @@ const gallery = (seed: number) => [
   ph('bartender', seed + 3),
   ph('nightclub', seed + 4),
   ph('guitar,live', seed + 5),
+  ph('dj,party', seed + 6),
+  ph('piano', seed + 7),
+  ph('wine,bar', seed + 8),
+  ph('saxophone', seed + 9),
+  ph('crowd,concert', seed + 10),
+  ph('neon,sign', seed + 11),
 ]
 
 export const venues: Venue[] = [

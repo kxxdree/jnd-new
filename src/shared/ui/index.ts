@@ -1,6 +1,7 @@
 export { default as UiBackdrop } from './UiBackdrop.vue'
 export { default as UiPageBackground } from './UiPageBackground.vue'
 export { default as UiBarChart } from './UiBarChart.vue'
+export { default as UiCarousel } from './UiCarousel.vue'
 export { default as UiEmpty } from './UiEmpty.vue'
 export { default as UiGlassDefs } from './UiGlassDefs.vue'
 export { default as UiIcon } from './UiIcon.vue'

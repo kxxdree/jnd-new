@@ -5,7 +5,7 @@ import { useSession } from '@entities/session'
 import { getVenue, venues } from '@entities/venue'
 import { type GenreId, genres } from '@shared/config'
 import { addDays, dayNumber, formatWeekdayLong, isWeekend, monthShort, ph, plural, todayISO, useToast } from '@shared/lib'
-import { UiEmpty, UiIcon, UiModal, UiPhoto, UiPills, UiTabs } from '@shared/ui'
+import { UiCarousel, UiEmpty, UiIcon, UiModal, UiPhoto, UiPills, UiTabs } from '@shared/ui'
 
 useHead({ title: 'Кабинет партнёра - Joined' })
 
@@ -79,28 +79,36 @@ const removeEvent = (id: string) => {
   push('Событие снято с публикации')
 }
 
-// --- Меню: фото страниц бара и кухни (только для заведения)
-type MenuKind = 'bar' | 'kitchen'
-const menuKinds = [
-  { id: 'bar' as MenuKind, name: 'Меню бара' },
-  { id: 'kitchen' as MenuKind, name: 'Меню кухни' },
-]
-const menu = reactive({ bar: [...venue.menu.bar], kitchen: [...venue.menu.kitchen] })
+// --- Фото: галерея и страницы меню бара и кухни (меню - только для заведения)
+type MediaKind = 'gallery' | 'bar' | 'kitchen'
+const mediaKinds = computed(() => [
+  { id: 'gallery' as MediaKind, name: isVenue.value ? 'Фотогалерея' : 'Фото и видео', target: 'в галерею', aspect: 'aspect-square', empty: 'Загрузите фото - их увидят гости на публичной странице' },
+  ...(isVenue.value
+    ? [
+        { id: 'bar' as MediaKind, name: 'Меню бара', target: 'в меню', aspect: 'aspect-3/4', empty: 'Загрузите фото страниц меню - их увидят гости на странице заведения' },
+        { id: 'kitchen' as MediaKind, name: 'Меню кухни', target: 'в меню', aspect: 'aspect-3/4', empty: 'Загрузите фото страниц меню - их увидят гости на странице заведения' },
+      ]
+    : []),
+])
+const media = reactive({ gallery: [...venue.gallery], bar: [...venue.menu.bar], kitchen: [...venue.menu.kitchen] })
 // Демо без бэкенда: локальные превью файлов, сразу видны на странице заведения
-const syncMenu = (kind: MenuKind) => { venue.menu[kind] = [...menu[kind]] }
-const addMenuPhotos = (kind: MenuKind, e: Event) => {
+const syncMedia = (kind: MediaKind) => {
+  if (kind === 'gallery') venue.gallery = [...media.gallery]
+  else venue.menu[kind] = [...media[kind]]
+}
+const addPhotos = (kind: MediaKind, e: Event) => {
   const input = e.target as HTMLInputElement
   const files = [...(input.files ?? [])].filter(f => f.type.startsWith('image/'))
   input.value = ''
   if (!files.length) return
-  menu[kind].push(...files.map(f => URL.createObjectURL(f)))
-  syncMenu(kind)
-  push(`${files.length} ${plural(files.length, ['фото добавлено', 'фото добавлены', 'фото добавлено'])} в меню`)
+  media[kind].push(...files.map(f => URL.createObjectURL(f)))
+  syncMedia(kind)
+  push(`${files.length} ${plural(files.length, ['фото добавлено', 'фото добавлены', 'фото добавлено'])} ${mediaKinds.value.find(k => k.id === kind)?.target}`)
 }
-const removeMenuPhoto = (kind: MenuKind, src: string) => {
-  menu[kind] = menu[kind].filter(s => s !== src)
+const removePhoto = (kind: MediaKind, src: string) => {
+  media[kind] = media[kind].filter(s => s !== src)
   if (src.startsWith('blob:')) URL.revokeObjectURL(src)
-  syncMenu(kind)
+  syncMedia(kind)
 }
 
 // --- Входящие брони (только для заведения)
@@ -229,36 +237,28 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
 
         <!-- МЕДИА -->
         <div v-else-if="tab === 'media'" class="grid grid-cols-1 gap-4">
-          <div class="card p-5 sm:p-6">
-            <div class="mb-5 flex items-center justify-between">
-              <h2 class="text-xl font-medium">{{ isVenue ? 'Фотогалерея' : 'Фото и видео' }}</h2>
-              <button class="btn-dark" @click="push('Загрузка файлов появится с бэкендом')"><UiIcon name="plus" :size="16" /> Загрузить</button>
-            </div>
-            <div class="grid grid-cols-3 gap-2 sm:grid-cols-6">
-              <UiPhoto v-for="src in venue.gallery" :key="src" :src="src" class="aspect-square rounded-2xl" />
-            </div>
-          </div>
-          <!-- Меню: фото страниц, отдельно бар и кухня -->
-          <div v-for="k in isVenue ? menuKinds : []" :key="k.id" class="card p-5 sm:p-6">
+          <!-- Галерея и меню (фото страниц, отдельно бар и кухня) - одинаковые секции -->
+          <div v-for="k in mediaKinds" :key="k.id" class="card p-5 sm:p-6">
             <div class="mb-5 flex items-center justify-between gap-4">
               <h2 class="text-xl font-medium">{{ k.name }}</h2>
               <label class="btn-dark cursor-pointer">
                 <UiIcon name="plus" :size="16" /> Загрузить
-                <input type="file" accept="image/*" multiple class="sr-only" @change="addMenuPhotos(k.id, $event)">
+                <input type="file" accept="image/*" multiple class="sr-only" @change="addPhotos(k.id, $event)">
               </label>
             </div>
-            <div v-if="menu[k.id].length" class="grid grid-cols-3 gap-2 sm:grid-cols-6">
-              <div v-for="(src, i) in menu[k.id]" :key="src" class="relative">
-                <UiPhoto :src="src" :alt="`${k.name}, страница ${i + 1}`" class="aspect-3/4 rounded-2xl" />
-                <button type="button" class="btn-icon absolute top-1.5 right-1.5 size-8 bg-black/50" :aria-label="`Удалить страницу ${i + 1}`" @click="removeMenuPhoto(k.id, src)">
+            <!-- Лента: 3 фото в ряд на телефоне, 6 - шире; не влезают - листаются стрелками -->
+            <UiCarousel v-if="media[k.id].length">
+              <div v-for="(src, i) in media[k.id]" :key="src" class="relative w-[calc((100%-1rem)/3)] shrink-0 snap-start sm:w-[calc((100%-2.5rem)/6)]">
+                <UiPhoto :src="src" :alt="`${k.name}, фото ${i + 1}`" class="rounded-2xl" :class="k.aspect" />
+                <button type="button" class="btn-icon absolute top-1.5 right-1.5 size-8 bg-black/50" :aria-label="`Удалить фото ${i + 1}`" @click="removePhoto(k.id, src)">
                   <UiIcon name="trash" :size="14" />
                 </button>
               </div>
-            </div>
+            </UiCarousel>
             <label v-else class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed border-white/15 px-4 py-10 text-center text-sm text-muted transition-colors hover:border-white/30 hover:text-white">
               <UiIcon name="image" :size="22" class="text-accent-text" />
-              Загрузите фото страниц меню - их увидят гости на странице заведения
-              <input type="file" accept="image/*" multiple class="sr-only" @change="addMenuPhotos(k.id, $event)">
+              {{ k.empty }}
+              <input type="file" accept="image/*" multiple class="sr-only" @change="addPhotos(k.id, $event)">
             </label>
           </div>
         </div>
