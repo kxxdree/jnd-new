@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import UiIcon from './UiIcon.vue'
 
-withDefaults(defineProps<{ title?: string; wide?: boolean }>(), { wide: false })
+/** panelClass - доп. классы для самой панели (например, плотнее фон) */
+withDefaults(defineProps<{ title?: string; wide?: boolean; panelClass?: string }>(), { wide: false, panelClass: '' })
 const open = defineModel<boolean>({ required: true })
 
 const onKey = (e: KeyboardEvent) => {
@@ -33,7 +34,7 @@ onBeforeUnmount(() => {
           role="dialog"
           aria-modal="true"
           class="glass-strong lg-refract max-h-[92vh] w-full overflow-y-auto rounded-t-[2rem] p-5 transition-transform duration-300 [--lg-refract-blur:30px] sm:rounded-[2rem] sm:p-8"
-          :class="wide ? 'sm:max-w-3xl' : 'sm:max-w-lg'"
+          :class="[wide ? 'sm:max-w-3xl' : 'sm:max-w-lg', panelClass]"
         >
           <div class="mx-auto mb-4 h-1 w-10 rounded-full bg-white/25 sm:hidden" />
           <div class="mb-6 flex items-start justify-between gap-4">
