@@ -11,22 +11,12 @@ const weekHours = (weekday: string, weekend: string) => [
   { day: 'Вс', time: weekday },
 ]
 
-const barMenu = [
-  { name: 'Negroni Sbagliato', desc: 'кампари, красный вермут, игристое', price: 690 },
-  { name: 'Old Fashioned', desc: 'бурбон, биттер, апельсиновая цедра', price: 750 },
-  { name: 'Spicy Margarita', desc: 'текила, лайм, халапеньо, агава', price: 720 },
-  { name: 'Espresso Martini', desc: 'водка, эспрессо, кофейный ликёр', price: 680 },
-  { name: 'Крафтовый IPA 0,5', desc: 'локальная пивоварня, ротация кранов', price: 450 },
-  { name: 'Бокал оранжевого вина', desc: 'Грузия, ркацители, 150 мл', price: 590 },
-]
-
-const kitchenMenu = [
-  { name: 'Брускетты с томатами', desc: 'чиабатта, страчателла, базилик', price: 490 },
-  { name: 'Картофель фри с трюфелем', desc: 'пармезан, трюфельное масло', price: 420 },
-  { name: 'Смэш-бургер', desc: 'двойная котлета, чеддер, соус барбекю', price: 790 },
-  { name: 'Куриные крылья', desc: 'острый соус, сельдерей, блю-чиз', price: 590 },
-  { name: 'Сырная тарелка', desc: '4 вида сыра, мёд, орехи', price: 890 },
-]
+// Меню - фото страниц (вертикальные, как лист меню); в демо - заглушки
+const menuPage = (keywords: string, lock: number) => ph(keywords, lock, 700, 990)
+const menuPhotos = (seed: number) => ({
+  bar: [menuPage('cocktail', seed), menuPage('wine', seed + 1), menuPage('beer', seed + 2)],
+  kitchen: [menuPage('candle', seed + 3), menuPage('whiskey', seed + 4)],
+})
 
 const baseRules = [
   'Вход строго 18+, при себе необходимо иметь документ, удостоверяющий личность',
@@ -76,7 +66,7 @@ export const venues: Venue[] = [
     hours: weekHours('18:00 - 02:00', '18:00 - 05:00'),
     photo: ph('cocktail,bar', 11),
     gallery: gallery(100),
-    menu: { bar: barMenu, kitchen: kitchenMenu.slice(0, 3) },
+    menu: menuPhotos(0),
     booking: baseBooking(1500),
     rules: baseRules,
   },
@@ -98,7 +88,7 @@ export const venues: Venue[] = [
     hours: weekHours('16:00 - 00:00', '16:00 - 04:00'),
     photo: ph('concert,crowd', 12),
     gallery: gallery(110),
-    menu: { bar: barMenu.slice(3), kitchen: kitchenMenu },
+    menu: menuPhotos(5),
     booking: baseBooking(1000),
     rules: baseRules,
   },
@@ -120,7 +110,7 @@ export const venues: Venue[] = [
     hours: weekHours('12:00 - 01:00', '12:00 - 06:00'),
     photo: ph('lounge,neon', 13),
     gallery: gallery(120),
-    menu: { bar: barMenu, kitchen: kitchenMenu },
+    menu: menuPhotos(10),
     booking: baseBooking(3000),
     rules: [...baseRules, 'Дресс-код: smart casual, без спортивной одежды'],
   },
@@ -142,7 +132,7 @@ export const venues: Venue[] = [
     hours: weekHours('12:00 - 02:00', '12:00 - 04:00'),
     photo: ph('pub,beer', 14),
     gallery: gallery(130),
-    menu: { bar: barMenu.slice(4), kitchen: kitchenMenu },
+    menu: menuPhotos(15),
     booking: baseBooking(1000),
     rules: baseRules,
   },
@@ -164,7 +154,7 @@ export const venues: Venue[] = [
     hours: weekHours('17:00 - 00:00', '17:00 - 02:00'),
     photo: ph('wine,candle', 15),
     gallery: gallery(140),
-    menu: { bar: barMenu.slice(5).concat(barMenu.slice(0, 2)), kitchen: kitchenMenu.slice(4) },
+    menu: menuPhotos(20),
     booking: baseBooking(2000),
     rules: baseRules,
   },
@@ -186,7 +176,7 @@ export const venues: Venue[] = [
     hours: weekHours('16:00 - 02:00', '16:00 - 06:00'),
     photo: ph('bar,lights', 16),
     gallery: gallery(150),
-    menu: { bar: barMenu, kitchen: kitchenMenu.slice(0, 2) },
+    menu: menuPhotos(25),
     booking: baseBooking(800),
     rules: baseRules,
   },
@@ -208,7 +198,7 @@ export const venues: Venue[] = [
     hours: weekHours('18:00 - 23:30', '18:00 - 01:00'),
     photo: ph('jazz,saxophone', 17),
     gallery: gallery(160),
-    menu: { bar: barMenu.slice(0, 3), kitchen: kitchenMenu },
+    menu: menuPhotos(30),
     booking: baseBooking(2000),
     rules: baseRules,
   },
@@ -230,7 +220,7 @@ export const venues: Venue[] = [
     hours: weekHours('20:00 - 03:00', '22:00 - 08:00'),
     photo: ph('dj,club', 18),
     gallery: gallery(170),
-    menu: { bar: barMenu, kitchen: kitchenMenu.slice(1, 3) },
+    menu: menuPhotos(35),
     booking: baseBooking(1500),
     rules: baseRules,
   },
@@ -252,7 +242,7 @@ export const venues: Venue[] = [
     hours: weekHours('14:00 - 02:00', '14:00 - 05:00'),
     photo: ph('rock,guitar', 19),
     gallery: gallery(180),
-    menu: { bar: barMenu.slice(4), kitchen: kitchenMenu },
+    menu: menuPhotos(40),
     booking: baseBooking(700),
     rules: baseRules,
   },
@@ -274,7 +264,7 @@ export const venues: Venue[] = [
     hours: weekHours('18:00 - 00:00', '18:00 - 04:00'),
     photo: ph('stage,lights', 20),
     gallery: gallery(190),
-    menu: { bar: barMenu.slice(3), kitchen: kitchenMenu.slice(0, 2) },
+    menu: menuPhotos(45),
     booking: baseBooking(800),
     rules: baseRules,
   },
@@ -296,7 +286,7 @@ export const venues: Venue[] = [
     hours: weekHours('18:00 - 01:00', '18:00 - 03:00'),
     photo: ph('jazz,club', 21),
     gallery: gallery(200),
-    menu: { bar: barMenu, kitchen: kitchenMenu },
+    menu: menuPhotos(50),
     booking: baseBooking(1200),
     rules: baseRules,
   },

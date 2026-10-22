@@ -4,12 +4,6 @@ export type FormatId = 'bar' | 'pub' | 'lounge' | 'club' | 'concert'
 
 export type DrinkId = 'cocktails' | 'craft' | 'wine' | 'kitchen' | 'snacks'
 
-export interface MenuItem {
-  name: string
-  desc?: string
-  price: number
-}
-
 export interface Venue {
   slug: string
   name: string
@@ -32,7 +26,8 @@ export interface Venue {
   hours: { day: string; time: string }[]
   photo: string
   gallery: string[]
-  menu: { bar: MenuItem[]; kitchen: MenuItem[] }
+  /** меню - фотографии страниц, которые загружает заведение */
+  menu: { bar: string[]; kitchen: string[] }
   booking: { deposit: number; minGuests: number; maxGuests: number; conditions: string[] }
   rules: string[]
 }

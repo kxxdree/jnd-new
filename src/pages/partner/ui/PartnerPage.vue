@@ -4,7 +4,7 @@ import { byDateTime, type EventItem, events, isUpcoming } from '@entities/event'
 import { useSession } from '@entities/session'
 import { getVenue, venues } from '@entities/venue'
 import { type GenreId, genres } from '@shared/config'
-import { addDays, dayNumber, formatPrice, formatWeekdayLong, isWeekend, monthShort, ph, plural, todayISO, useToast } from '@shared/lib'
+import { addDays, dayNumber, formatWeekdayLong, isWeekend, monthShort, ph, plural, todayISO, useToast } from '@shared/lib'
 import { UiEmpty, UiIcon, UiModal, UiPhoto, UiPills, UiTabs } from '@shared/ui'
 
 useHead({ title: 'Кабинет партнёра - Joined' })
@@ -77,6 +77,30 @@ const createEvent = () => {
 const removeEvent = (id: string) => {
   myEvents.value = myEvents.value.filter(e => e.id !== id)
   push('Событие снято с публикации')
+}
+
+// --- Меню: фото страниц бара и кухни (только для заведения)
+type MenuKind = 'bar' | 'kitchen'
+const menuKinds = [
+  { id: 'bar' as MenuKind, name: 'Меню бара' },
+  { id: 'kitchen' as MenuKind, name: 'Меню кухни' },
+]
+const menu = reactive({ bar: [...venue.menu.bar], kitchen: [...venue.menu.kitchen] })
+// Демо без бэкенда: локальные превью файлов, сразу видны на странице заведения
+const syncMenu = (kind: MenuKind) => { venue.menu[kind] = [...menu[kind]] }
+const addMenuPhotos = (kind: MenuKind, e: Event) => {
+  const input = e.target as HTMLInputElement
+  const files = [...(input.files ?? [])].filter(f => f.type.startsWith('image/'))
+  input.value = ''
+  if (!files.length) return
+  menu[kind].push(...files.map(f => URL.createObjectURL(f)))
+  syncMenu(kind)
+  push(`${files.length} ${plural(files.length, ['фото добавлено', 'фото добавлены', 'фото добавлено'])} в меню`)
+}
+const removeMenuPhoto = (kind: MenuKind, src: string) => {
+  menu[kind] = menu[kind].filter(s => s !== src)
+  if (src.startsWith('blob:')) URL.revokeObjectURL(src)
+  syncMenu(kind)
 }
 
 // --- Входящие брони (только для заведения)
@@ -214,14 +238,28 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
               <UiPhoto v-for="src in venue.gallery" :key="src" :src="src" class="aspect-square rounded-2xl" />
             </div>
           </div>
-          <div v-if="isVenue" class="card p-5 sm:p-6">
-            <h2 class="mb-4 text-xl font-medium">Меню бара</h2>
-            <div class="divide-y divide-line">
-              <div v-for="m in venue.menu.bar" :key="m.name" class="flex items-center justify-between gap-4 py-3">
-                <span class="truncate">{{ m.name }}</span>
-                <span class="text-soft">{{ formatPrice(m.price) }}</span>
+          <!-- Меню: фото страниц, отдельно бар и кухня -->
+          <div v-for="k in isVenue ? menuKinds : []" :key="k.id" class="card p-5 sm:p-6">
+            <div class="mb-5 flex items-center justify-between gap-4">
+              <h2 class="text-xl font-medium">{{ k.name }}</h2>
+              <label class="btn-dark cursor-pointer">
+                <UiIcon name="plus" :size="16" /> Загрузить
+                <input type="file" accept="image/*" multiple class="sr-only" @change="addMenuPhotos(k.id, $event)">
+              </label>
+            </div>
+            <div v-if="menu[k.id].length" class="grid grid-cols-3 gap-2 sm:grid-cols-6">
+              <div v-for="(src, i) in menu[k.id]" :key="src" class="relative">
+                <UiPhoto :src="src" :alt="`${k.name}, страница ${i + 1}`" class="aspect-3/4 rounded-2xl" />
+                <button type="button" class="btn-icon absolute top-1.5 right-1.5 size-8 bg-black/50" :aria-label="`Удалить страницу ${i + 1}`" @click="removeMenuPhoto(k.id, src)">
+                  <UiIcon name="trash" :size="14" />
+                </button>
               </div>
             </div>
+            <label v-else class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed border-white/15 px-4 py-10 text-center text-sm text-muted transition-colors hover:border-white/30 hover:text-white">
+              <UiIcon name="image" :size="22" class="text-accent-text" />
+              Загрузите фото страниц меню - их увидят гости на странице заведения
+              <input type="file" accept="image/*" multiple class="sr-only" @change="addMenuPhotos(k.id, $event)">
+            </label>
           </div>
         </div>
       </div>
