@@ -43,15 +43,15 @@ watch(open, (v) => {
       class="glass lg-refract mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 rounded-3xl pr-3 pl-5 transition-[box-shadow,background] duration-500 [--lg-refract-blur:14px] sm:pl-6"
       :class="scrolled ? '[--lg-tint:rgb(16_16_18/0.66)]' : '[--lg-tint:rgb(16_16_18/0.42)]'"
     >
-      <UiLogo />
+      <UiLogo class="transition-opacity duration-300 hover:opacity-70" />
 
       <nav class="hidden items-center gap-1 md:flex" aria-label="Основная навигация">
         <NuxtLink
           v-for="l in links"
           :key="l.to"
           :to="l.to"
-          class="relative rounded-full px-4 py-2 text-sm transition-colors duration-300"
-          :class="isActive(l.to) ? 'rim bg-white/10 text-white' : 'text-soft hover:text-white'"
+          class="pill"
+          :class="isActive(l.to) ? 'pill-active' : 'bg-transparent text-soft hover:bg-white/10 hover:text-white'"
         >
           {{ l.label }}
         </NuxtLink>
@@ -94,8 +94,8 @@ watch(open, (v) => {
             v-for="l in [...links, ...(cabinet ? [cabinet] : [])]"
             :key="l.to"
             :to="l.to"
-            class="flex items-center rounded-3xl px-4 py-3.5 text-xl font-medium tracking-tight transition-colors"
-            :class="isActive(l.to) ? 'bg-white/10 text-white' : 'text-white/75'"
+            class="flex items-center rounded-lg px-4 py-3.5 text-xl font-medium tracking-tight transition-colors"
+            :class="isActive(l.to) ? 'bg-white text-ink' : 'text-white/75 hover:bg-white/10'"
           >
             {{ l.label }}
           </NuxtLink>
