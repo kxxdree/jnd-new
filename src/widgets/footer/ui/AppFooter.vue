@@ -7,6 +7,7 @@ const nav = [
   { to: "/venues", label: "Места" },
   { to: "/events", label: "Афиша" },
   { to: "/artists", label: "Артисты" },
+  { to: "/about", label: "О нас" },
 ];
 const partners = [
   { to: "/register?role=venue", label: "Для заведений" },

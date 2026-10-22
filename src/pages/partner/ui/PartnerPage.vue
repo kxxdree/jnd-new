@@ -5,7 +5,7 @@ import { useSession } from '@entities/session'
 import { getVenue, venues } from '@entities/venue'
 import { type GenreId, genres } from '@shared/config'
 import { addDays, dayNumber, formatWeekdayLong, isWeekend, monthShort, ph, plural, todayISO, useToast } from '@shared/lib'
-import { UiEmpty, UiIcon, UiModal, UiPhoto, UiPills, UiTabs } from '@shared/ui'
+import { UiCarousel, UiEmpty, UiIcon, UiModal, UiPhoto, UiPills, UiTabs } from '@shared/ui'
 
 useHead({ title: 'Кабинет партнёра - Joined' })
 
@@ -79,28 +79,47 @@ const removeEvent = (id: string) => {
   push('Событие снято с публикации')
 }
 
-// --- Меню: фото страниц бара и кухни (только для заведения)
-type MenuKind = 'bar' | 'kitchen'
-const menuKinds = [
-  { id: 'bar' as MenuKind, name: 'Меню бара' },
-  { id: 'kitchen' as MenuKind, name: 'Меню кухни' },
-]
-const menu = reactive({ bar: [...venue.menu.bar], kitchen: [...venue.menu.kitchen] })
+// --- Фото: галерея и страницы меню бара и кухни (меню - только для заведения)
+type MediaKind = 'gallery' | 'bar' | 'kitchen'
+// title/eyebrow - для афиши-секции, name - для подписей и просмотра; units - склонение счётчика
+const photoUnits: [string, string, string] = ['фото', 'фото', 'фото']
+const pageUnits: [string, string, string] = ['страница', 'страницы', 'страниц']
+const mediaKinds = computed(() => [
+  { id: 'gallery' as MediaKind, name: isVenue.value ? 'Фотогалерея' : 'Фото и видео', title: isVenue.value ? 'Галерея' : 'Фото', eyebrow: 'Интерьер и события', units: photoUnits, target: 'в галерею', aspect: 'aspect-square', empty: 'Загрузите фото - их увидят гости на публичной странице' },
+  ...(isVenue.value
+    ? [
+        { id: 'bar' as MediaKind, name: 'Меню бара', title: 'Бар', eyebrow: 'Меню', units: pageUnits, target: 'в меню', aspect: 'aspect-3/4', empty: 'Загрузите фото страниц меню - их увидят гости на странице заведения' },
+        { id: 'kitchen' as MediaKind, name: 'Меню кухни', title: 'Кухня', eyebrow: 'Меню', units: pageUnits, target: 'в меню', aspect: 'aspect-3/4', empty: 'Загрузите фото страниц меню - их увидят гости на странице заведения' },
+      ]
+    : []),
+])
+const media = reactive({ gallery: [...venue.gallery], bar: [...venue.menu.bar], kitchen: [...venue.menu.kitchen] })
 // Демо без бэкенда: локальные превью файлов, сразу видны на странице заведения
-const syncMenu = (kind: MenuKind) => { venue.menu[kind] = [...menu[kind]] }
-const addMenuPhotos = (kind: MenuKind, e: Event) => {
+const syncMedia = (kind: MediaKind) => {
+  if (kind === 'gallery') venue.gallery = [...media.gallery]
+  else venue.menu[kind] = [...media[kind]]
+}
+const addPhotos = (kind: MediaKind, e: Event) => {
   const input = e.target as HTMLInputElement
   const files = [...(input.files ?? [])].filter(f => f.type.startsWith('image/'))
   input.value = ''
   if (!files.length) return
-  menu[kind].push(...files.map(f => URL.createObjectURL(f)))
-  syncMenu(kind)
-  push(`${files.length} ${plural(files.length, ['фото добавлено', 'фото добавлены', 'фото добавлено'])} в меню`)
+  media[kind].push(...files.map(f => URL.createObjectURL(f)))
+  syncMedia(kind)
+  push(`${files.length} ${plural(files.length, ['фото добавлено', 'фото добавлены', 'фото добавлено'])} ${mediaKinds.value.find(k => k.id === kind)?.target}`)
 }
-const removeMenuPhoto = (kind: MenuKind, src: string) => {
-  menu[kind] = menu[kind].filter(s => s !== src)
+const removePhoto = (kind: MediaKind, src: string) => {
+  media[kind] = media[kind].filter(s => s !== src)
   if (src.startsWith('blob:')) URL.revokeObjectURL(src)
-  syncMenu(kind)
+  syncMedia(kind)
+}
+// Просмотр фото крупно, с листанием - как на странице заведения
+const viewer = ref<{ kind: MediaKind; index: number } | null>(null)
+const viewerOpen = computed({ get: () => viewer.value !== null, set: (v) => { if (!v) viewer.value = null } })
+const viewerPhotos = computed(() => (viewer.value ? media[viewer.value.kind] : []))
+const viewerTitle = computed(() => (viewer.value ? `${mediaKinds.value.find(k => k.id === viewer.value!.kind)?.name} · ${viewer.value.index + 1} / ${viewerPhotos.value.length}` : ''))
+const stepViewer = (d: number) => {
+  if (viewer.value) viewer.value.index = Math.min(Math.max(viewer.value.index + d, 0), viewerPhotos.value.length - 1)
 }
 
 // --- Входящие брони (только для заведения)
@@ -229,41 +248,58 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
 
         <!-- МЕДИА -->
         <div v-else-if="tab === 'media'" class="grid grid-cols-1 gap-4">
-          <div class="card p-5 sm:p-6">
-            <div class="mb-5 flex items-center justify-between">
-              <h2 class="text-xl font-medium">{{ isVenue ? 'Фотогалерея' : 'Фото и видео' }}</h2>
-              <button class="btn-dark" @click="push('Загрузка файлов появится с бэкендом')"><UiIcon name="plus" :size="16" /> Загрузить</button>
-            </div>
-            <div class="grid grid-cols-3 gap-2 sm:grid-cols-6">
-              <UiPhoto v-for="src in venue.gallery" :key="src" :src="src" class="aspect-square rounded-2xl" />
-            </div>
-          </div>
-          <!-- Меню: фото страниц, отдельно бар и кухня -->
-          <div v-for="k in isVenue ? menuKinds : []" :key="k.id" class="card p-5 sm:p-6">
-            <div class="mb-5 flex items-center justify-between gap-4">
-              <h2 class="text-xl font-medium">{{ k.name }}</h2>
-              <label class="btn-dark cursor-pointer">
-                <UiIcon name="plus" :size="16" /> Загрузить
-                <input type="file" accept="image/*" multiple class="sr-only" @change="addMenuPhotos(k.id, $event)">
-              </label>
-            </div>
-            <div v-if="menu[k.id].length" class="grid grid-cols-3 gap-2 sm:grid-cols-6">
-              <div v-for="(src, i) in menu[k.id]" :key="src" class="relative">
-                <UiPhoto :src="src" :alt="`${k.name}, страница ${i + 1}`" class="aspect-3/4 rounded-2xl" />
-                <button type="button" class="btn-icon absolute top-1.5 right-1.5 size-8 bg-black/50" :aria-label="`Удалить страницу ${i + 1}`" @click="removeMenuPhoto(k.id, src)">
-                  <UiIcon name="trash" :size="14" />
-                </button>
+          <h2 class="text-2xl font-medium">{{ isVenue ? 'Фото и меню' : 'Медиа' }}</h2>
+          <!-- Афиша-постер, как у мероприятий: галерея и меню (бар, кухня) - секции через линию -->
+          <div class="card p-5 sm:p-10">
+            <section v-for="k in mediaKinds" :key="k.id" class="border-t border-line py-6 first:border-t-0 first:pt-0 last:pb-0 sm:py-8">
+              <div class="mb-5 flex items-end justify-between gap-4">
+                <div class="min-w-0">
+                  <p class="text-xs tracking-widest text-accent-text uppercase">
+                    {{ k.eyebrow }} · {{ media[k.id].length }} {{ plural(media[k.id].length, k.units) }}
+                  </p>
+                  <h3 class="h-display mt-2 text-3xl uppercase sm:text-5xl">{{ k.title }}</h3>
+                </div>
+                <label class="btn-dark shrink-0 cursor-pointer">
+                  <UiIcon name="plus" :size="16" /> Загрузить
+                  <input type="file" accept="image/*" multiple class="sr-only" @change="addPhotos(k.id, $event)">
+                </label>
               </div>
-            </div>
-            <label v-else class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed border-white/15 px-4 py-10 text-center text-sm text-muted transition-colors hover:border-white/30 hover:text-white">
-              <UiIcon name="image" :size="22" class="text-accent-text" />
-              Загрузите фото страниц меню - их увидят гости на странице заведения
-              <input type="file" accept="image/*" multiple class="sr-only" @change="addMenuPhotos(k.id, $event)">
-            </label>
+              <!-- Лента: 3 фото в ряд на телефоне, 6 - шире; не влезают - листаются стрелками -->
+              <UiCarousel v-if="media[k.id].length">
+                <div v-for="(src, i) in media[k.id]" :key="src" class="group/item relative w-[calc((100%-1rem)/3)] shrink-0 snap-start sm:w-[calc((100%-2.5rem)/6)]">
+                  <button type="button" class="block w-full overflow-hidden rounded-2xl" :aria-label="`Открыть фото ${i + 1}`" @click="viewer = { kind: k.id, index: i }">
+                    <UiPhoto :src="src" :alt="`${k.name}, фото ${i + 1}`" class="transition-transform duration-700 ease-liquid group-hover/item:scale-[1.03]" :class="k.aspect" />
+                  </button>
+                  <!-- с мышью - появляется при наведении, на тач-экранах видна всегда -->
+                  <button
+                    type="button"
+                    class="btn-icon absolute top-1.5 right-1.5 size-8 bg-black/50 transition-opacity focus-visible:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/item:opacity-100"
+                    :aria-label="`Удалить фото ${i + 1}`"
+                    @click="removePhoto(k.id, src)"
+                  >
+                    <UiIcon name="trash" :size="14" />
+                  </button>
+                </div>
+              </UiCarousel>
+              <label v-else class="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed border-white/15 px-4 py-10 text-center text-sm text-muted transition-colors hover:border-white/30 hover:text-white">
+                <UiIcon name="image" :size="22" class="text-accent-text" />
+                {{ k.empty }}
+                <input type="file" accept="image/*" multiple class="sr-only" @change="addPhotos(k.id, $event)">
+              </label>
+            </section>
           </div>
         </div>
       </div>
     </div>
+
+    <UiModal v-model="viewerOpen" :title="viewerTitle" wide>
+      <!-- целиком, без обрезки: фото бывают любых пропорций -->
+      <img v-if="viewer" :src="viewerPhotos[viewer.index]" :alt="viewerTitle" class="mx-auto max-h-[70vh] w-auto rounded-3xl object-contain">
+      <div class="mt-4 flex justify-between">
+        <button class="btn-icon" :disabled="!viewer?.index" aria-label="Предыдущее фото" @click="stepViewer(-1)"><UiIcon name="chevron-left" :size="20" /></button>
+        <button class="btn-icon" :disabled="viewer?.index === viewerPhotos.length - 1" aria-label="Следующее фото" @click="stepViewer(1)"><UiIcon name="chevron-right" :size="20" /></button>
+      </div>
+    </UiModal>
 
     <UiModal v-model="newOpen" title="Новое событие">
       <form class="grid gap-4" @submit.prevent="createEvent">

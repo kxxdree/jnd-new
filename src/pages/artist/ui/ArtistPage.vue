@@ -32,6 +32,8 @@ const where = (venueSlug: string) => {
   <div>
     <!-- Карточка артиста: постер с именем + «паспорт» на чёрном -->
     <section class="container-x pt-6">
+      <NuxtLink to="/artists" class="btn-ghost mb-5 pl-3"><UiIcon name="chevron-left" :size="16" /> Все артисты</NuxtLink>
+
       <article class="rim relative overflow-hidden rounded-4xl bg-black">
         <!-- Постер -->
         <div class="relative aspect-4/5 sm:aspect-video lg:aspect-21/9">
