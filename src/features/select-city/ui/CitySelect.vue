@@ -3,8 +3,9 @@ import { useCurrentCity } from '@entities/city'
 import { isPhone, useToast } from '@shared/lib'
 import { UiIcon, UiModal } from '@shared/ui'
 
-// inline - без «пилюли», для встраивания в строку поиска; на телефоне выбор открывается нижней модалкой (sheet: false - всегда выпадашка)
-const props = withDefaults(defineProps<{ inline?: boolean; sheet?: boolean }>(), { sheet: true })
+// inline - без «пилюли», для встраивания в строку поиска; на телефоне выбор открывается нижней модалкой (sheet: false - всегда выпадашка,
+// modal - всегда модалка, и на десктопе)
+const props = withDefaults(defineProps<{ inline?: boolean; sheet?: boolean; modal?: boolean }>(), { sheet: true })
 
 const { cityId, city, cities, detect, locating } = useCurrentCity()
 const { push } = useToast()
@@ -20,7 +21,7 @@ const filtered = computed(() => {
 })
 
 const toggle = () => {
-  asSheet.value = props.sheet && isPhone()
+  asSheet.value = props.modal || (props.sheet && isPhone())
   open.value = !open.value
 }
 
@@ -96,8 +97,8 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
       </div>
     </Transition>
 
-    <!-- Телефон: выбор в нижней модалке, пункты крупнее -->
-    <UiModal v-if="sheet" :model-value="open && asSheet" title="Город" @update:model-value="open = $event">
+    <!-- Телефон (или modal): выбор в модалке, пункты крупнее -->
+    <UiModal v-if="sheet || modal":model-value="open && asSheet" title="Город" panel-class="[--lg-tint:rgb(18_18_20/0.92)]" @update:model-value="open = $event">
       <div class="-mx-2">
         <button type="button" class="flex w-full items-center gap-2 rounded-lg px-3 py-3.5 text-left text-base text-accent-text hover:bg-white/10" @click="onDetect">
           <UiIcon name="locate" :size="18" />
@@ -114,17 +115,20 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
             @keydown.enter.prevent="filtered[0] && pick(filtered[0].id)"
           >
         </label>
-        <button
-          v-for="c in filtered"
-          :key="c.id"
-          type="button"
-          class="flex w-full items-center justify-between rounded-lg px-3 py-3.5 text-left text-base hover:bg-white/10"
-          @click="pick(c.id)"
-        >
-          {{ c.name }}
-          <UiIcon v-if="c.id === cityId" name="check" :size="18" class="text-accent-text" />
-        </button>
-        <p v-if="!filtered.length" class="px-3 py-3.5 text-base text-muted">Город не найден</p>
+        <!-- фиксированная высота: окно не ужимается при фильтрации -->
+        <div class="h-[min(24rem,50dvh)] overflow-y-auto">
+          <button
+            v-for="c in filtered"
+            :key="c.id"
+            type="button"
+            class="flex w-full items-center justify-between rounded-lg px-3 py-3.5 text-left text-base hover:bg-white/10"
+            @click="pick(c.id)"
+          >
+            {{ c.name }}
+            <UiIcon v-if="c.id === cityId" name="check" :size="18" class="text-accent-text" />
+          </button>
+          <p v-if="!filtered.length" class="px-3 py-3.5 text-base text-muted">Город не найден</p>
+        </div>
       </div>
     </UiModal>
   </div>

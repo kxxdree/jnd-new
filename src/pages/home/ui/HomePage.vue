@@ -48,9 +48,9 @@ const stats = [
         <!-- Подбор по городу и жанру: жанр уходит в фильтры страницы мест -->
         <!-- На мобильных - в колонку, чтобы названия не обрезались -->
         <form class="search-bar mx-auto mt-10 flex max-w-md flex-col gap-2 p-2 text-left sm:flex-row" @submit.prevent="search">
-          <!-- Телефон: текст крупнее (выбор открывается нижней модалкой - по умолчанию у селектов) -->
-          <CitySelect inline class="h-12 shrink-0 border-b border-white/15 pb-2 sm:h-auto sm:border-r sm:border-b-0 sm:pr-1 sm:pb-0 [&>button]:text-base sm:[&>button]:text-sm" />
-          <UiSelect v-model="genre" :options="genres" all-label="Любой жанр" icon="music" label="Жанр" inline class="h-12 min-w-0 sm:h-auto sm:flex-1 [&>button]:text-base sm:[&>button]:text-sm" />
+          <!-- Выбор всегда в модалке: выпадашки уезжали за низ экрана. Телефон: текст крупнее -->
+          <CitySelect inline modal class="h-12 shrink-0 border-b border-white/15 pb-2 sm:h-auto sm:border-r sm:border-b-0 sm:pr-1 sm:pb-0 [&>button]:text-base sm:[&>button]:text-sm" />
+          <UiSelect v-model="genre" :options="genres" all-label="Любой жанр" icon="music" label="Жанр" inline modal class="h-12 min-w-0 sm:h-auto sm:flex-1 [&>button]:text-base sm:[&>button]:text-sm" />
           <button class="btn-primary px-6 py-3 sm:py-2" type="submit">Найти</button>
         </form>
       </div>

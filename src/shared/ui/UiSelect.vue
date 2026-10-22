@@ -5,10 +5,11 @@ import UiModal from './UiModal.vue'
 
 /**
  * Стеклянный выпадающий список вместо нативного select. Пустая строка = allLabel; allLabel false - без пункта «Все»;
- * inline - без «пилюли», для строки поиска; на телефоне выбор открывается нижней модалкой (sheet: false - всегда выпадашка)
+ * inline - без «пилюли», для строки поиска; на телефоне выбор открывается нижней модалкой (sheet: false - всегда выпадашка,
+ * modal - всегда модалка, и на десктопе)
  */
 const props = withDefaults(
-  defineProps<{ options: readonly { id: T; name: string }[]; allLabel?: string | false; icon?: string; label?: string; inline?: boolean; sheet?: boolean }>(),
+  defineProps<{ options: readonly { id: T; name: string }[]; allLabel?: string | false; icon?: string; label?: string; inline?: boolean; sheet?: boolean; modal?: boolean }>(),
   { allLabel: 'Все', icon: undefined, label: undefined, sheet: true },
 )
 const model = defineModel<T | ''>({ required: true })
@@ -20,7 +21,7 @@ const current = computed(() => props.options.find(o => o.id === model.value)?.na
 const items = computed(() => (props.allLabel === false ? props.options : [{ id: '' as T | '', name: props.allLabel }, ...props.options]))
 
 const toggle = () => {
-  asSheet.value = props.sheet && isPhone()
+  asSheet.value = props.modal || (props.sheet && isPhone())
   open.value = !open.value
 }
 
@@ -68,8 +69,8 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
       </div>
     </Transition>
 
-    <!-- Телефон: выбор в нижней модалке, пункты крупнее -->
-    <UiModal v-if="sheet" :model-value="open && asSheet" :title="label" @update:model-value="open = $event">
+    <!-- Телефон (или modal): выбор в модалке, пункты крупнее -->
+    <UiModal v-if="sheet || modal":model-value="open && asSheet" :title="label" panel-class="[--lg-tint:rgb(18_18_20/0.92)]" @update:model-value="open = $event">
       <div role="listbox" class="-mx-2">
         <button
           v-for="o in items"
