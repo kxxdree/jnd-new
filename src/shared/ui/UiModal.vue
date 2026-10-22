@@ -1,41 +1,42 @@
 <script lang="ts">
 // стек открытых окон - общий для всех UiModal, живёт только на клиенте
-const stack: symbol[] = []
+const stack: symbol[] = [];
 </script>
 
 <script setup lang="ts">
-import UiIcon from './UiIcon.vue'
+import UiIcon from "./UiIcon.vue";
 
 /** panelClass - доп. классы для самой панели (например, плотнее фон) */
-withDefaults(defineProps<{ title?: string; wide?: boolean; panelClass?: string }>(), { wide: false, panelClass: '' })
-const open = defineModel<boolean>({ required: true })
+withDefaults(defineProps<{ title?: string; wide?: boolean; panelClass?: string }>(), { wide: false, panelClass: "" });
+const open = defineModel<boolean>({ required: true });
 
-// Окна могут открываться друг поверх друга (селект внутри фильтров):
-// общий стек - скролл страницы разблокируется после последнего окна, Esc закрывает только верхнее
-const id = Symbol('modal')
+const id = Symbol("modal");
 
 const onKey = (e: KeyboardEvent) => {
-  if (e.key === 'Escape' && stack.at(-1) === id) open.value = false
-}
+  if (e.key === "Escape" && stack.at(-1) === id) open.value = false;
+};
 const release = () => {
-  const i = stack.indexOf(id)
-  if (i === -1) return
-  stack.splice(i, 1)
-  if (!stack.length) document.body.style.overflow = ''
-  window.removeEventListener('keydown', onKey)
-}
-watch(open, (v) => {
-  if (!import.meta.client) return
-  if (v) {
-    stack.push(id)
-    document.body.style.overflow = 'hidden'
-    window.addEventListener('keydown', onKey)
+  const i = stack.indexOf(id);
+  if (i === -1) return;
+  stack.splice(i, 1);
+  if (!stack.length) {
+    document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
   }
-  else release()
-})
+  window.removeEventListener("keydown", onKey);
+};
+watch(open, (v) => {
+  if (!import.meta.client) return;
+  if (v) {
+    if (!stack.length) document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
+    stack.push(id);
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+  } else release();
+});
 onBeforeUnmount(() => {
-  if (import.meta.client) release()
-})
+  if (import.meta.client) release();
+});
 </script>
 
 <template>
@@ -46,7 +47,11 @@ onBeforeUnmount(() => {
       leave-active-class="transition duration-200"
       leave-to-class="opacity-0"
     >
-      <div v-if="open" class="fixed inset-0 z-[100] flex items-end justify-center bg-black/45 backdrop-blur-[3px] sm:items-center sm:p-6" @click.self="open = false">
+      <div
+        v-if="open"
+        class="fixed inset-0 z-[100] flex items-end justify-center bg-black/45 backdrop-blur-[3px] sm:items-center sm:p-6"
+        @click.self="open = false"
+      >
         <div
           role="dialog"
           aria-modal="true"

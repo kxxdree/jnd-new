@@ -3,8 +3,9 @@ import { useCurrentCity } from '@entities/city'
 import { isPhone, useToast } from '@shared/lib'
 import { UiIcon, UiModal } from '@shared/ui'
 
-// inline - без «пилюли», для встраивания в строку поиска; на телефоне выбор открывается нижней модалкой (sheet: false - всегда выпадашка)
-const props = withDefaults(defineProps<{ inline?: boolean; sheet?: boolean }>(), { sheet: true })
+// inline - без «пилюли», для встраивания в строку поиска; на телефоне выбор открывается нижней модалкой (sheet: false - всегда выпадашка,
+// modal - всегда модалка, и на десктопе)
+const props = withDefaults(defineProps<{ inline?: boolean; sheet?: boolean; modal?: boolean }>(), { sheet: true })
 
 const { cityId, city, cities, detect, locating } = useCurrentCity()
 const { push } = useToast()
@@ -20,7 +21,7 @@ const filtered = computed(() => {
 })
 
 const toggle = () => {
-  asSheet.value = props.sheet && isPhone()
+  asSheet.value = props.modal || (props.sheet && isPhone())
   open.value = !open.value
 }
 
@@ -96,8 +97,8 @@ onBeforeUnmount(() => document.removeEventListener('click', onDoc))
       </div>
     </Transition>
 
-    <!-- Телефон: выбор в нижней модалке, пункты крупнее -->
-    <UiModal v-if="sheet" :model-value="open && asSheet" title="Город" @update:model-value="open = $event">
+    <!-- Телефон (или modal): выбор в модалке, пункты крупнее -->
+    <UiModal v-if="sheet || modal":model-value="open && asSheet" title="Город" panel-class="[--lg-tint:rgb(18_18_20/0.92)]" @update:model-value="open = $event">
       <div class="-mx-2">
         <button type="button" class="flex w-full items-center gap-2 rounded-lg px-3 py-3.5 text-left text-base text-accent-text hover:bg-white/10" @click="onDetect">
           <UiIcon name="locate" :size="18" />
