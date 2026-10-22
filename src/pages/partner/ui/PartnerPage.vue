@@ -110,6 +110,14 @@ const removePhoto = (kind: MediaKind, src: string) => {
   if (src.startsWith('blob:')) URL.revokeObjectURL(src)
   syncMedia(kind)
 }
+// Просмотр фото крупно, с листанием - как на странице заведения
+const viewer = ref<{ kind: MediaKind; index: number } | null>(null)
+const viewerOpen = computed({ get: () => viewer.value !== null, set: (v) => { if (!v) viewer.value = null } })
+const viewerPhotos = computed(() => (viewer.value ? media[viewer.value.kind] : []))
+const viewerTitle = computed(() => (viewer.value ? `${mediaKinds.value.find(k => k.id === viewer.value!.kind)?.name} · ${viewer.value.index + 1} / ${viewerPhotos.value.length}` : ''))
+const stepViewer = (d: number) => {
+  if (viewer.value) viewer.value.index = Math.min(Math.max(viewer.value.index + d, 0), viewerPhotos.value.length - 1)
+}
 
 // --- Входящие брони (только для заведения)
 type BookingStatus = 'new' | 'ok' | 'no'
@@ -249,7 +257,9 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
             <!-- Лента: 3 фото в ряд на телефоне, 6 - шире; не влезают - листаются стрелками -->
             <UiCarousel v-if="media[k.id].length">
               <div v-for="(src, i) in media[k.id]" :key="src" class="relative w-[calc((100%-1rem)/3)] shrink-0 snap-start sm:w-[calc((100%-2.5rem)/6)]">
-                <UiPhoto :src="src" :alt="`${k.name}, фото ${i + 1}`" class="rounded-2xl" :class="k.aspect" />
+                <button type="button" class="group block w-full overflow-hidden rounded-2xl" :aria-label="`Открыть фото ${i + 1}`" @click="viewer = { kind: k.id, index: i }">
+                  <UiPhoto :src="src" :alt="`${k.name}, фото ${i + 1}`" class="transition-transform duration-700 ease-liquid group-hover:scale-[1.03]" :class="k.aspect" />
+                </button>
                 <button type="button" class="btn-icon absolute top-1.5 right-1.5 size-8 bg-black/50" :aria-label="`Удалить фото ${i + 1}`" @click="removePhoto(k.id, src)">
                   <UiIcon name="trash" :size="14" />
                 </button>
@@ -264,6 +274,15 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
         </div>
       </div>
     </div>
+
+    <UiModal v-model="viewerOpen" :title="viewerTitle" wide>
+      <!-- целиком, без обрезки: фото бывают любых пропорций -->
+      <img v-if="viewer" :src="viewerPhotos[viewer.index]" :alt="viewerTitle" class="mx-auto max-h-[70vh] w-auto rounded-3xl object-contain">
+      <div class="mt-4 flex justify-between">
+        <button class="btn-icon" :disabled="!viewer?.index" aria-label="Предыдущее фото" @click="stepViewer(-1)"><UiIcon name="chevron-left" :size="20" /></button>
+        <button class="btn-icon" :disabled="viewer?.index === viewerPhotos.length - 1" aria-label="Следующее фото" @click="stepViewer(1)"><UiIcon name="chevron-right" :size="20" /></button>
+      </div>
+    </UiModal>
 
     <UiModal v-model="newOpen" title="Новое событие">
       <form class="grid gap-4" @submit.prevent="createEvent">
