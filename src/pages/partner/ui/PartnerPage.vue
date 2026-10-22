@@ -4,7 +4,7 @@ import { byDateTime, type EventItem, events, isUpcoming } from '@entities/event'
 import { useSession } from '@entities/session'
 import { getVenue, venues } from '@entities/venue'
 import { type GenreId, genres } from '@shared/config'
-import { addDays, dayNumber, formatDay, formatPrice, formatWeekdayLong, isWeekend, monthShort, ph, plural, todayISO, useToast } from '@shared/lib'
+import { addDays, dayNumber, formatPrice, formatWeekdayLong, isWeekend, monthShort, ph, plural, todayISO, useToast } from '@shared/lib'
 import { UiEmpty, UiIcon, UiModal, UiPhoto, UiPills, UiTabs } from '@shared/ui'
 
 useHead({ title: 'Кабинет партнёра - Joined' })
@@ -82,10 +82,10 @@ const removeEvent = (id: string) => {
 // --- Входящие брони (только для заведения)
 type BookingStatus = 'new' | 'ok' | 'no'
 const incoming = ref<{ id: string; name: string; phone: string; date: string; time: string; guests: number; status: BookingStatus }[]>([
-  { id: 'b1', name: 'Мария Л.', phone: '+7 916 ***-12-40', date: todayISO(), time: '20:00', guests: 4, status: 'new' },
-  { id: 'b2', name: 'Илья К.', phone: '+7 903 ***-55-11', date: todayISO(), time: '21:00', guests: 2, status: 'new' },
-  { id: 'b3', name: 'Компания «Ромашка»', phone: '+7 495 ***-00-00', date: addDays(todayISO(), 2), time: '19:00', guests: 10, status: 'new' },
-  { id: 'b4', name: 'Анна В.', phone: '+7 926 ***-87-01', date: addDays(todayISO(), 3), time: '22:00', guests: 3, status: 'ok' },
+  { id: 'b1', name: 'Мария Л.', phone: '+7 916 482-12-40', date: todayISO(), time: '20:00', guests: 4, status: 'new' },
+  { id: 'b2', name: 'Илья К.', phone: '+7 903 617-55-11', date: todayISO(), time: '21:00', guests: 2, status: 'new' },
+  { id: 'b3', name: 'Компания «Ромашка»', phone: '+7 495 230-14-00', date: addDays(todayISO(), 2), time: '19:00', guests: 10, status: 'new' },
+  { id: 'b4', name: 'Анна В.', phone: '+7 926 354-87-01', date: addDays(todayISO(), 3), time: '22:00', guests: 3, status: 'ok' },
 ])
 const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
   incoming.value = incoming.value.map(b => (b.id === id ? { ...b, status } : b))
@@ -171,17 +171,36 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
         <!-- БРОНИ -->
         <div v-else-if="tab === 'bookings'" class="grid grid-cols-1 gap-4">
           <h2 class="text-2xl font-medium">Входящие брони</h2>
-          <div v-for="b in incoming" :key="b.id" class="card flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
-            <div class="min-w-0 flex-1">
-              <p class="font-medium">{{ b.name }} <span class="text-sm text-muted">· {{ b.phone }}</span></p>
-              <p class="text-sm text-muted">{{ formatDay(b.date) }}, {{ b.time }} · {{ b.guests }} {{ plural(b.guests, ['гость', 'гостя', 'гостей']) }}</p>
-            </div>
-            <div v-if="b.status === 'new'" class="flex gap-2">
-              <button class="btn-dark" @click="setStatus(b.id, 'no')">Отклонить</button>
-              <button class="btn-primary" @click="setStatus(b.id, 'ok')">Подтвердить</button>
-            </div>
-            <span v-else class="tag" :class="b.status === 'no' ? 'tag-neutral' : ''">{{ b.status === 'ok' ? 'Подтверждена' : 'Отклонена' }}</span>
-          </div>
+          <!-- Список в стиле афиши: дата крупно слева, гость и время, статус точкой -->
+          <ul v-if="incoming.length" class="card px-5 sm:px-8">
+            <li
+              v-for="b in incoming"
+              :key="b.id"
+              class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-5 gap-y-4 border-b border-line py-5 last:border-b-0 sm:grid-cols-[auto_minmax(0,1fr)_auto]"
+              :class="b.status === 'no' ? 'opacity-50' : ''"
+            >
+              <div class="w-14 text-center">
+                <p class="h-display text-3xl leading-none">{{ dayNumber(b.date) }}</p>
+                <p class="mt-1 text-xs tracking-widest text-muted uppercase">{{ monthShort(b.date) }}</p>
+              </div>
+              <div class="min-w-0">
+                <p class="truncate font-medium uppercase">{{ b.name }}</p>
+                <p class="mt-0.5 text-xs tracking-wider text-muted uppercase">
+                  {{ b.time }} · {{ b.guests }} {{ plural(b.guests, ['гость', 'гостя', 'гостей']) }} ·
+                  <a :href="`tel:${b.phone.replace(/[^\d+]/g, '')}`" class="hover:text-white">{{ b.phone }}</a>
+                </p>
+              </div>
+              <div v-if="b.status === 'new'" class="col-span-2 flex gap-2 sm:col-span-1">
+                <button class="btn-dark flex-1 sm:flex-none" @click="setStatus(b.id, 'no')">Отклонить</button>
+                <button class="btn-primary flex-1 sm:flex-none" @click="setStatus(b.id, 'ok')">Подтвердить</button>
+              </div>
+              <p v-else class="col-span-2 flex items-center gap-2 text-xs font-semibold tracking-wider uppercase sm:col-span-1" :class="b.status === 'ok' ? 'text-white' : 'text-muted'">
+                <span class="size-1.5 rounded-full" :class="b.status === 'ok' ? 'bg-accent' : 'bg-white/20'" />
+                {{ b.status === 'ok' ? 'Подтверждена' : 'Отклонена' }}
+              </p>
+            </li>
+          </ul>
+          <UiEmpty v-else icon="users" title="Броней пока нет" text="Новые заявки гостей появятся здесь" />
         </div>
 
         <!-- МЕДИА -->
