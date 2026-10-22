@@ -1,5 +1,6 @@
 export * from './date'
 export * from './format'
+export * from './media'
 export * from './photo'
 export * from './persisted'
 export * from './toast'
