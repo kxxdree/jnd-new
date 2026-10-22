@@ -35,8 +35,11 @@ const toggleFilters = () => {
   else sheetOpen.value = true;
 };
 
+// сброс сразу закрывает фильтры - и панель на десктопе, и лист на мобайле
 const reset = () => {
   filters.value = emptyFilters();
+  panelOpen.value = false;
+  sheetOpen.value = false;
 };
 </script>
 
@@ -46,7 +49,6 @@ const reset = () => {
       <h1 class="h-display text-[14vw] sm:text-8xl lg:text-[8.5rem]">Бары и сцены</h1>
       <p class="mt-4 text-white/80">{{ results.length }} {{ plural(results.length, ["место", "места", "мест"]) }} {{ city.where }}</p>
 
-      <!-- Поиск как на странице артистов: строка с городом и фильтрами, жанры пилюлями -->
       <div class="search-bar relative z-30 mx-auto mt-8 flex max-w-2xl flex-col gap-1 p-2 sm:flex-row">
         <label class="flex flex-1 items-center gap-3 px-3">
           <UiIcon name="search" class="text-white/60" :size="18" />
