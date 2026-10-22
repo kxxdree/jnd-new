@@ -34,6 +34,7 @@ const profile = reactive({
   phone: venue.phone,
   address: venue.address,
   instagram: venue.instagram,
+  telegram: venue.telegram,
   genres: [...(isVenue.value ? venue.genres : artist.genres)] as GenreId[],
   rules: venue.rules.join('\n'),
   deposit: venue.booking.deposit,
@@ -124,9 +125,10 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
             <h2 class="text-xl font-medium">Контакты и бронирование</h2>
             <div class="grid gap-5 sm:grid-cols-2">
               <label><span class="label">Телефон</span><input v-model="profile.phone" class="field"></label>
+              <label><span class="label">Telegram</span><input v-model="profile.telegram" class="field" placeholder="@username"></label>
               <label><span class="label">Instagram</span><input v-model="profile.instagram" class="field"></label>
-              <label class="sm:col-span-2"><span class="label">Адрес</span><input v-model="profile.address" class="field"></label>
               <label><span class="label">Депозит с гостя, ₽</span><input v-model.number="profile.deposit" type="number" min="0" step="100" class="field"></label>
+              <label class="sm:col-span-2"><span class="label">Адрес</span><input v-model="profile.address" class="field"></label>
             </div>
             <label><span class="label">Правила посещения (по строке на пункт)</span><textarea v-model="profile.rules" rows="5" class="field resize-none" /></label>
           </div>
