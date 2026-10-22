@@ -100,20 +100,20 @@ const transactions = [
       <h1 class="h-display mt-2 text-4xl sm:text-6xl">Управление платформой</h1>
     </div>
 
-    <div class="grid gap-8 lg:grid-cols-[260px_1fr]">
-      <aside class="lg:sticky lg:top-28 lg:h-fit"><UiTabs v-model="tab" :tabs="tabs" /></aside>
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-[260px_1fr]">
+      <aside class="min-w-0 lg:sticky lg:top-28 lg:h-fit"><UiTabs v-model="tab" :tabs="tabs" /></aside>
 
       <div class="min-w-0">
         <!-- СТАТИСТИКА -->
-        <div v-if="tab === 'overview'" class="grid gap-4">
+        <div v-if="tab === 'overview'" class="grid grid-cols-1 gap-4">
           <div class="grid grid-cols-2 gap-3 xl:grid-cols-4">
-            <div v-for="k in kpis" :key="k.label" class="card p-5">
+            <div v-for="k in kpis" :key="k.label" class="card p-4 sm:p-5">
               <p class="text-sm text-muted">{{ k.label }}</p>
-              <p class="mt-2 text-2xl font-medium sm:text-3xl">{{ k.value }}</p>
+              <p class="mt-2 text-xl font-medium sm:text-3xl">{{ k.value }}</p>
               <p class="mt-1 text-xs text-accent-text">{{ k.delta }} м/м</p>
             </div>
           </div>
-          <div class="grid gap-3 xl:grid-cols-[1.4fr_1fr]">
+          <div class="grid grid-cols-1 gap-3 xl:grid-cols-[1.4fr_1fr]">
             <div class="card p-5 sm:p-6">
               <h2 class="mb-8 text-lg font-medium">Посещения по месяцам</h2>
               <UiBarChart :data="visits" :height="220" />
@@ -131,7 +131,7 @@ const transactions = [
         </div>
 
         <!-- МОДЕРАЦИЯ -->
-        <div v-else-if="tab === 'moderation'" class="grid gap-4">
+        <div v-else-if="tab === 'moderation'" class="grid grid-cols-1 gap-4">
           <div v-for="m in moderation" :key="m.id" class="card flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
             <UiPhoto :src="m.photo" class="size-16 shrink-0 rounded-2xl" />
             <div class="min-w-0 flex-1">
@@ -148,7 +148,7 @@ const transactions = [
         </div>
 
         <!-- ГОРОДА -->
-        <div v-else-if="tab === 'cities'" class="grid gap-4">
+        <div v-else-if="tab === 'cities'" class="grid grid-cols-1 gap-4">
           <form class="flex gap-2" @submit.prevent="addCity">
             <input v-model="newCity" class="field" placeholder="Новый город или регион">
             <button class="btn-primary shrink-0" type="submit"><UiIcon name="plus" :size="16" /> Добавить</button>
@@ -166,7 +166,7 @@ const transactions = [
         </div>
 
         <!-- ТЕГИ -->
-        <div v-else-if="tab === 'tags'" class="grid gap-4">
+        <div v-else-if="tab === 'tags'" class="grid grid-cols-1 gap-4">
           <div v-for="(g, i) in tagGroups" :key="g.title" class="card p-5 sm:p-6">
             <h2 class="mb-4 text-lg font-medium">{{ g.title }}</h2>
             <div class="flex flex-wrap gap-2">
@@ -183,12 +183,14 @@ const transactions = [
         </div>
 
         <!-- ПОЛЬЗОВАТЕЛИ -->
-        <div v-else-if="tab === 'users'" class="grid gap-4">
+        <div v-else-if="tab === 'users'" class="grid grid-cols-1 gap-4">
           <label class="search-bar flex items-center gap-3 px-5">
             <UiIcon name="search" class="text-muted" :size="18" />
             <input v-model="userQuery" type="search" placeholder="Имя или email" class="w-full bg-transparent py-3 text-sm placeholder:text-muted">
           </label>
-          <div class="card overflow-x-auto">
+          <!-- Скролл во внутреннем блоке: иначе рамка карточки (::before) уезжает вместе с таблицей -->
+          <div class="card overflow-hidden">
+            <div class="overflow-x-auto">
             <table class="w-full min-w-160 text-left text-sm">
               <thead class="text-muted">
                 <tr class="border-b border-line">
@@ -220,12 +222,13 @@ const transactions = [
                 </tr>
               </tbody>
             </table>
+            </div>
           </div>
         </div>
 
         <!-- ПЛАТЕЖИ -->
-        <div v-else-if="tab === 'payments'" class="grid gap-4">
-          <form class="card grid gap-5 p-5 sm:p-8" @submit.prevent="push('Настройки сохранены')">
+        <div v-else-if="tab === 'payments'" class="grid grid-cols-1 gap-4">
+          <form class="card grid grid-cols-1 gap-5 p-5 sm:p-8" @submit.prevent="push('Настройки сохранены')">
             <h2 class="text-xl font-medium">Комиссии</h2>
             <div class="grid gap-5 sm:grid-cols-3">
               <label><span class="label">С продажи билетов, %</span><input v-model.number="payments.ticketFee" type="number" min="0" max="30" step="0.5" class="field"></label>
