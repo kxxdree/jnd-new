@@ -76,8 +76,10 @@ watch(open, (v) => {
       </button>
     </div>
 
-    <!-- Подложка под мобильным меню: тап вне меню закрывает его -->
-    <div v-if="open" class="fixed inset-0 -z-10 md:hidden" aria-hidden="true" @click="open = false" />
+    <!-- Подложка под мобильным меню: затемняет экран, тап вне меню закрывает его -->
+    <Transition enter-active-class="transition duration-300" enter-from-class="opacity-0" leave-active-class="transition duration-200" leave-to-class="opacity-0">
+      <div v-if="open" class="fixed inset-0 -z-10 bg-black/60 backdrop-blur-sm md:hidden" aria-hidden="true" @click="open = false" />
+    </Transition>
 
     <!-- Мобильное меню: стеклянный лист -->
     <Transition
