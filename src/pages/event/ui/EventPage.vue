@@ -24,17 +24,27 @@ useHead({ title: `${ev.title} - Joined`, meta: [{ name: 'description', content: 
 
     <div class="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
       <div class="grid gap-4">
-        <div class="card p-2">
-          <UiPhoto :src="ev.photo" :alt="ev.title" class="aspect-4/3 rounded-[1.4rem] sm:aspect-video">
-            <div class="absolute inset-0 bg-linear-to-t from-black/85 via-black/10 to-transparent" />
-            <div class="absolute inset-x-0 bottom-0 p-5 sm:p-10">
-              <div class="mb-4 flex flex-wrap gap-1.5">
-                <span v-for="g in ev.genres" :key="g" class="tag">{{ genreName(g) }}</span>
-              </div>
-              <h1 class="h-display text-4xl sm:text-6xl lg:text-7xl">{{ ev.title }}</h1>
+        <!-- Обложка: постер с названием по центру, как у заведения; описание - под фото -->
+        <article class="rim relative overflow-hidden rounded-4xl bg-black">
+          <div class="relative aspect-4/5 sm:aspect-video">
+            <UiPhoto :src="ev.photo" :alt="ev.title" class="absolute inset-0 h-full w-full" />
+            <div class="pointer-events-none absolute inset-0 bg-black/30" />
+            <div class="pointer-events-none absolute inset-0 bg-linear-to-b from-black/10 via-transparent to-black" />
+
+            <div class="absolute inset-0 grid place-items-center px-4">
+              <h1 class="h-display text-center text-[11vw] font-bold text-balance lowercase sm:text-6xl xl:text-7xl">{{ ev.title }}</h1>
             </div>
-          </UiPhoto>
-        </div>
+          </div>
+
+          <!-- Описание под фото, на чёрном - чтобы не сливалось с изображением -->
+          <div class="p-6 sm:px-10 sm:pb-10">
+            <p class="max-w-2xl text-white/85 sm:text-lg">{{ ev.description }}</p>
+            <p class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold tracking-wider uppercase">
+              <span class="text-accent-text">{{ formatDay(ev.date) }} · {{ ev.time }}</span>
+              <span v-for="g in ev.genres" :key="g">{{ genreName(g) }}</span>
+            </p>
+          </div>
+        </article>
 
         <div class="card grid grid-cols-1 gap-5 p-6 sm:grid-cols-3">
           <div class="flex items-start gap-3">
@@ -58,11 +68,6 @@ useHead({ title: `${ev.title} - Joined`, meta: [{ name: 'description', content: 
               <p class="text-sm text-muted">{{ venue.address }}</p>
             </div>
           </NuxtLink>
-        </div>
-
-        <div class="card p-6 sm:p-8">
-          <h2 class="mb-3 text-2xl font-medium">О событии</h2>
-          <p class="leading-relaxed text-soft">{{ ev.description }}</p>
         </div>
 
         <!-- Лайнап списком, как события на странице «Афиша» -->
