@@ -109,7 +109,7 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
 
       <div class="min-w-0">
         <!-- ПРОФИЛЬ -->
-        <form v-if="tab === 'profile'" class="grid gap-4" @submit.prevent="push('Изменения отправлены на модерацию')">
+        <form v-if="tab === 'profile'" class="grid grid-cols-1 gap-4" @submit.prevent="push('Изменения отправлены на модерацию')">
           <div class="card grid grid-cols-1 gap-5 p-5 sm:p-8">
             <h2 class="text-xl font-medium">Основная информация</h2>
             <label><span class="label">Название</span><input v-model="profile.name" class="field"></label>
@@ -134,14 +134,14 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
         </form>
 
         <!-- МЕРОПРИЯТИЯ -->
-        <div v-else-if="tab === 'events'" class="grid gap-4">
-          <div class="flex items-center justify-between">
+        <div v-else-if="tab === 'events'" class="grid grid-cols-1 gap-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
             <h2 class="text-2xl font-medium">Мероприятия</h2>
             <button class="btn-primary" @click="newOpen = true"><UiIcon name="plus" :size="18" /> Новое событие</button>
           </div>
           <!-- Афиша-постер: крупная дата слева, события дня с продажами и действиями справа -->
           <div v-if="grouped.length" class="card p-5 sm:p-10">
-            <div v-for="[date, items] in grouped" :key="date" class="grid gap-4 border-t border-line py-5 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:gap-8">
+            <div v-for="[date, items] in grouped" :key="date" class="grid grid-cols-1 gap-4 border-t border-line py-5 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] md:gap-8">
               <h3 class="h-display text-[12vw] leading-[0.85] uppercase sm:text-6xl md:self-center" :class="isWeekend(date) ? 'text-sand' : ''">
                 {{ monthShort(date) }} {{ dayNumber(date) }}
               </h3>
@@ -167,7 +167,7 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
         </div>
 
         <!-- БРОНИ -->
-        <div v-else-if="tab === 'bookings'" class="grid gap-4">
+        <div v-else-if="tab === 'bookings'" class="grid grid-cols-1 gap-4">
           <h2 class="text-2xl font-medium">Входящие брони</h2>
           <div v-for="b in incoming" :key="b.id" class="card flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
             <div class="min-w-0 flex-1">
@@ -183,7 +183,7 @@ const setStatus = (id: string, status: Exclude<BookingStatus, 'new'>) => {
         </div>
 
         <!-- МЕДИА -->
-        <div v-else-if="tab === 'media'" class="grid gap-4">
+        <div v-else-if="tab === 'media'" class="grid grid-cols-1 gap-4">
           <div class="card p-5 sm:p-6">
             <div class="mb-5 flex items-center justify-between">
               <h2 class="text-xl font-medium">{{ isVenue ? 'Фотогалерея' : 'Фото и видео' }}</h2>
