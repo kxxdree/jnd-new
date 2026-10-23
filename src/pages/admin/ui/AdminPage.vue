@@ -35,7 +35,7 @@ const kpis = [
   { label: 'Оборот платформы', value: formatPrice(38_400_000), delta: '+17%' },
 ]
 const visits = ['Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт'].map((label, i) => ({ label, value: [620, 710, 820, 790, 1040, 1240][i]! * 1000 }))
-const byGenre = genres.map((g, i) => ({ label: g.name, value: [34, 22, 18, 12, 6, 4, 2, 1, 1][i]! }))
+const byGenre = genres.map((g, i) => ({ label: g.name, value: [34, 22, 18, 12, 6, 4, 2, 1, 1, 1][i]! }))
 
 // --- Города
 const cityList = ref(baseCities.map(c => ({ ...c, venues: venues.filter(v => v.city === c.id).length, active: true })))
